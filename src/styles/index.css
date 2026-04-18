@@ -1,0 +1,61 @@
+:root {
+  --font-size: 16px;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+
+  --background: #12172f;
+  --foreground: #f8fafc;
+  --card: #1e2139;
+  --input-background: #252945;
+  --muted-foreground: #94a3b8;
+  --placeholder: #6b7280;
+  --border: rgba(88, 28, 135, 0.2);
+  --input-border: rgba(88, 28, 135, 0.3);
+  --sidebar: #0f1024;
+  --sidebar-foreground: #d7d9e8;
+  --sidebar-accent: rgba(255, 255, 255, 0.08);
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+
+  --primary: #9333ea;
+  --primary-hover: #7e22ce;
+  --accent: #2563eb;
+  --accent-hover: #1d4ed8;
+
+  --bg-main: var(--background);
+  --bg-sidebar: var(--sidebar);
+  --bg-card: var(--card);
+  --bg-input: var(--input-background);
+  --text-primary: var(--foreground);
+  --text-secondary: var(--muted-foreground);
+  --text-muted: var(--placeholder);
+  --border-purple-soft: var(--input-border);
+  --border-purple-subtle: var(--border);
+  --primary-dark: var(--primary-hover);
+  --accent-dark: var(--accent-hover);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  min-height: 100%;
+  font-size: var(--font-size);
+}
+
+body {
+  min-height: 100vh;
+  font-family: Arial, Helvetica, sans-serif;
+  background:
+    radial-gradient(circle at 100% 0%, rgba(37, 99, 235, 0.16), transparent 34%),
+    linear-gradient(90deg, #111225 0%, #12172f 48%, #102846 100%);
+  color: var(--foreground);
+}
+
+input,
+button {
+  font-family: inherit;
+}
