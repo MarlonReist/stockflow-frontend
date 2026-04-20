@@ -10,6 +10,7 @@ import Almoxarifado from "./pages/Almoxarifado";
 import Fornecedor from "./pages/Fornecedor";
 import Colaborador from "./pages/Colaborador";
 import Produto from "./pages/Produto";
+import Usuario from "./pages/Usuario";
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
           <Route path="/fornecedores" element={<Fornecedor />} />
           <Route path="/colaboradores" element={<Colaborador />} />
           <Route path="/produtos" element={<Produto />} />
+          <Route path="/usuarios" element={<Usuario />} />
         </Routes>
       </div>
     </div>
