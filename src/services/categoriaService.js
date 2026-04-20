@@ -8,4 +8,8 @@ function cadastrarCategoria(categoria) {
     return api.post("/categorias", categoria)
 }
 
-export {cadastrarCategoria}
+function listarCategorias() {
+    return api.get("/categorias")
+}
+
+export {cadastrarCategoria, listarCategorias}
