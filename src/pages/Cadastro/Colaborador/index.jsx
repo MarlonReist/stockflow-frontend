@@ -1,22 +1,21 @@
 import React, { useState } from "react";
-import "./Clientes.css";
-import { cadastrarCliente } from "../../services/clientesService";
+import "./Colaborador.css";
+import { cadastrarColaborador } from "../../../services/colaboradorService";
 
-const clienteInicial = {
+const colaboradorInicial = {
   nome: "",
   cpf: "",
+  cargo: "",
   telefone: "",
-  email: "",
-  endereco: "",
 };
 
-const Clientes = () => {
-  const [cliente, setCliente] = useState({ ...clienteInicial });
+const Colaborador = () => {
+  const [colaborador, setColaborador] = useState({ ...colaboradorInicial });
   const [mensagens, setMensagens] = useState([]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setCliente({ ...cliente, [name]: value });
+    setColaborador({ ...colaborador, [name]: value });
   };
 
   const mostrarMensagem = (texto, tipo) => {
@@ -34,23 +33,20 @@ const Clientes = () => {
     }, 3000);
   };
 
-  const validarCliente = () => {
+  const validarColaborador = () => {
     const erros = [];
 
-    if (!cliente.nome.trim()) {
+    if (!colaborador.nome.trim()) {
       erros.push("Nome é obrigatório");
     }
-    if (!cliente.cpf.trim()) {
+    if (!colaborador.cpf.trim()) {
       erros.push("CPF é obrigatório");
     }
-    if (!cliente.telefone.trim()) {
+    if (!colaborador.cargo.trim()) {
+      erros.push("Cargo é obrigatório");
+    }
+    if (!colaborador.telefone.trim()) {
       erros.push("Telefone é obrigatório");
-    }
-    if (!cliente.email.trim()) {
-      erros.push("Email é obrigatório");
-    }
-    if (!cliente.endereco.trim()) {
-      erros.push("Endereço é obrigatório");
     }
     return erros;
   };
@@ -58,7 +54,7 @@ const Clientes = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const erros = validarCliente();
+    const erros = validarColaborador();
     if (erros.length > 0) {
       erros.forEach((erro) => {
         mostrarMensagem(erro, "erro");
@@ -67,38 +63,36 @@ const Clientes = () => {
     }
 
     try {
-      await cadastrarCliente(cliente);
-      mostrarMensagem("Cliente cadastrado com sucesso", "sucesso");
+      await cadastrarColaborador(colaborador);
+      mostrarMensagem("Colaborador cadastrado com sucesso", "sucesso");
       handleClear();
     } catch (error) {
       const mensagemErro =
-        error.response?.data?.message || "Erro ao cadastrar cliente.";
+        error.response?.data?.message || "Erro ao cadastrar colaborador.";
 
       mostrarMensagem(mensagemErro, "erro");
-
-      return;
     }
   };
 
   const handleClear = () => {
-    setCliente({ ...clienteInicial });
+    setColaborador({ ...colaboradorInicial });
   };
 
   return (
-    <div className="clientes-page">
-      <div className="clientes-header">
-        <h1>Cadastro de Clientes</h1>
-        <p>Adicione novos clientes ao sistema</p>
+    <div className="colaborador-page">
+      <div className="colaborador-header">
+        <h1>Cadastro de Colaborador</h1>
+        <p>Adicione novos colaboradores ao sistema</p>
       </div>
-      <div className="clientes-card">
-        <form className="clientes-form" onSubmit={handleSubmit}>
+      <div className="colaborador-card">
+        <form className="colaborador-form" onSubmit={handleSubmit}>
           <div className="form-group">
             <label>Nome</label>
             <input
               type="text"
               name="nome"
-              placeholder="Digite o nome do cliente"
-              value={cliente.nome}
+              placeholder="Digite o nome do colaborador"
+              value={colaborador.nome}
               onChange={handleChange}
             />
           </div>
@@ -109,38 +103,28 @@ const Clientes = () => {
                 type="text"
                 name="cpf"
                 placeholder="000.000.000-00"
-                value={cliente.cpf}
+                value={colaborador.cpf}
                 onChange={handleChange}
               />
             </div>
             <div className="form-group">
-              <label>Telefone</label>
+              <label>Cargo</label>
               <input
                 type="text"
-                name="telefone"
-                placeholder="(00) 00000-0000"
-                value={cliente.telefone}
+                name="cargo"
+                placeholder="Ex: Técnico, Gerente"
+                value={colaborador.cargo}
                 onChange={handleChange}
               />
             </div>
           </div>
           <div className="form-group">
-            <label>Email</label>
-            <input
-              type="email"
-              name="email"
-              placeholder="exemplo@email.com"
-              value={cliente.email}
-              onChange={handleChange}
-            />
-          </div>
-          <div className="form-group">
-            <label>Endereço</label>
+            <label>Telefone</label>
             <input
               type="text"
-              name="endereco"
-              placeholder="Rua, Número, Bairro, cidade, UF"
-              value={cliente.endereco}
+              name="telefone"
+              placeholder="(00) 00000-0000"
+              value={colaborador.telefone}
               onChange={handleChange}
             />
           </div>
@@ -166,4 +150,4 @@ const Clientes = () => {
   );
 };
 
-export default Clientes;
+export default Colaborador;

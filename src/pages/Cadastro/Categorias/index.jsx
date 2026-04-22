@@ -1,18 +1,18 @@
 import React, { useState } from "react";
-import "./Almoxarifado.css";
-import { cadastrarAlmoxarifado } from "../../services/almoxarifadoService";
+import "./Categoria.css";
+import { cadastrarCategoria } from "../../../services/categoriaService";
 
-const almoxarifadoInicial = {
+const categoriaInicial = {
   nome: "",
 };
 
-const Almoxarifado = () => {
-  const [almoxarifado, setAlmoxarifado] = useState({ ...almoxarifadoInicial });
+const Categorias = () => {
+  const [categoria, setCategoria] = useState({ ...categoriaInicial });
   const [mensagens, setMensagens] = useState([]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setAlmoxarifado({ ...almoxarifado, [name]: value });
+    setCategoria({ ...categoria, [name]: value });
   };
 
   const mostrarMensagem = (texto, tipo) => {
@@ -30,10 +30,10 @@ const Almoxarifado = () => {
     }, 3000);
   };
 
-  const validarAlmoxarifado = () => {
+  const validarCategoria = () => {
     const erros = [];
 
-    if (!almoxarifado.nome.trim()) {
+    if (!categoria.nome.trim()) {
       erros.push("Nome é obrigatório");
     }
     return erros;
@@ -42,7 +42,7 @@ const Almoxarifado = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const erros = validarAlmoxarifado();
+    const erros = validarCategoria();
     if (erros.length > 0) {
       erros.forEach((erro) => {
         mostrarMensagem(erro, "erro");
@@ -51,36 +51,36 @@ const Almoxarifado = () => {
     }
 
     try {
-      await cadastrarAlmoxarifado(almoxarifado);
-      mostrarMensagem("Almoxarifado cadastrado com sucesso", "sucesso");
+      await cadastrarCategoria(categoria);
+      mostrarMensagem("Categoria cadastrada com sucesso", "sucesso");
       handleClear();
     } catch (error) {
       const mensagemErro =
-        error.response?.data?.message || "Erro ao cadastrar almoxarifado.";
+        error.response?.data?.message || "Erro ao cadastrar categoria.";
 
       mostrarMensagem(mensagemErro, "erro");
     }
   };
 
   const handleClear = () => {
-    setAlmoxarifado({ ...almoxarifadoInicial });
+    setCategoria({ ...categoriaInicial });
   };
 
   return (
-    <div className="almoxarifado-page">
-      <div className="almoxarifado-header">
-        <h1>Cadastro de Almoxarifado</h1>
-        <p>Adicione novos almoxarifados ao sistema</p>
+    <div className="categorias-page">
+      <div className="categorias-header">
+        <h1>Cadastro de Categorias</h1>
+        <p>Adicione novas categorias ao sistema</p>
       </div>
-      <div className="almoxarifado-card">
-        <form className="almoxarifado-form" onSubmit={handleSubmit}>
+      <div className="categorias-card">
+        <form className="categorias-form" onSubmit={handleSubmit}>
           <div className="form-group">
             <label>Nome</label>
             <input
               type="text"
               name="nome"
-              placeholder="Digite o nome do almoxarifado"
-              value={almoxarifado.nome}
+              placeholder="Digite o nome da categoria"
+              value={categoria.nome}
               onChange={handleChange}
             />
           </div>
@@ -106,4 +106,4 @@ const Almoxarifado = () => {
   );
 };
 
-export default Almoxarifado;
+export default Categorias;

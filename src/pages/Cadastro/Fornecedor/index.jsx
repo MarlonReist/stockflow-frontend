@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "./Fornecedor.css";
-import { cadastrarFornecedor } from "../../services/fornecedorService";
+import { cadastrarFornecedor } from "../../../services/fornecedorService";
 
 const fornecedorInicial = {
   nome: "",

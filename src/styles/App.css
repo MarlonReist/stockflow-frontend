@@ -5,12 +5,15 @@
 
 .sidebar {
   width: 255px;
-  min-height: 100vh;
+  height: 100vh;
+  position: sticky;
+  top: 0;
   background-color: var(--bg-sidebar);
   padding: 18px 16px;
   display: flex;
   flex-direction: column;
-  gap: 28px;
+  gap: 18px;
+  overflow: hidden;
 }
 
 .sidebar-header {
@@ -27,9 +30,27 @@
 }
 
 .sidebar-menu {
+  min-height: 0;
+  flex: 1;
   display: flex;
   flex-direction: column;
   gap: 10px;
+  overflow-y: auto;
+  padding-right: 4px;
+  padding-bottom: 18px;
+}
+
+.sidebar-menu::-webkit-scrollbar {
+  width: 4px;
+}
+
+.sidebar-menu::-webkit-scrollbar-thumb {
+  background-color: rgba(147, 51, 234, 0.45);
+  border-radius: 999px;
+}
+
+.sidebar-menu::-webkit-scrollbar-track {
+  background-color: transparent;
 }
 
 .sidebar-link,
@@ -96,7 +117,7 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
-  padding: 4px 0 8px 16px;
+  padding: 2px 0 10px 16px;
 }
 
 .sidebar-submenu a {

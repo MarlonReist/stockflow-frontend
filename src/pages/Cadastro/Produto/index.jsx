@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./Produto.css";
-import { cadastrarProduto } from "../../services/produtoService";
-import { listarCategorias } from "../../services/categoriaService";
+import { cadastrarProduto } from "../../../services/produtoService";
+import { listarCategorias } from "../../../services/categoriaService";
 
 const produtoInicial = {
   nome: "",

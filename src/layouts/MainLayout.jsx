@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
-import { FiChevronDown, FiGrid, FiUserPlus } from "react-icons/fi";
+import { FiChevronDown, FiGrid, FiSettings, FiUserPlus } from "react-icons/fi";
 
 const MainLayout = () => {
   const [cadastroAberto, setCadastroAberto] = useState(false);
+  const [gerenciamentoAberto, setGerenciamentoAberto] = useState(false);
 
   return (
     <div className="sidebar">
@@ -37,15 +38,43 @@ const MainLayout = () => {
             <NavLink to="/almoxarifados">Almoxarifado</NavLink>
             <NavLink to="/colaboradores">Colaborador</NavLink>
             <NavLink to="/fornecedores">Fornecedor</NavLink>
-            <NavLink to="/usuarios">Usuário</NavLink>
+            <NavLink to="/usuarios">Usuario</NavLink>
           </div>
         )}
 
-        <a href="#" className="sidebar-link">Entrada</a>
-        <a href="#" className="sidebar-link">Saída</a>
-        <a href="#" className="sidebar-link">Ordem de Serviço</a>
-        <a href="#" className="sidebar-link">Estoque</a>
-        <a href="#" className="sidebar-link">Relatórios</a>
+        <button
+          type="button"
+          className={`sidebar-toggle ${gerenciamentoAberto ? "open" : ""}`}
+          onClick={() => setGerenciamentoAberto(!gerenciamentoAberto)}
+        >
+          <span className="sidebar-item-content">
+            <FiSettings />
+            <span>Gerenciamento</span>
+          </span>
+          <FiChevronDown className="sidebar-chevron" />
+        </button>
+
+        {gerenciamentoAberto && (
+          <div className="sidebar-submenu">
+            <NavLink to="/gerenciamento/clientes">Clientes</NavLink>
+          </div>
+        )}
+
+        <a href="#" className="sidebar-link">
+          Entrada
+        </a>
+        <a href="#" className="sidebar-link">
+          Saida
+        </a>
+        <a href="#" className="sidebar-link">
+          Ordem de Servico
+        </a>
+        <a href="#" className="sidebar-link">
+          Estoque
+        </a>
+        <a href="#" className="sidebar-link">
+          Relatorios
+        </a>
       </nav>
     </div>
   );

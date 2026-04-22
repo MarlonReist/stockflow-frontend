@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "./Usuario.css";
-import { cadastrarUsuario } from "../../services/usuarioService";
+import { cadastrarUsuario } from "../../../services/usuarioService";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 
 const usuarioInicial = {
