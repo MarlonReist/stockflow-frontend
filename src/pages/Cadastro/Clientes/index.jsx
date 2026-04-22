@@ -5,7 +5,7 @@ import {
   buscarClientePorID,
   atualizarCliente,
 } from "../../../services/clientesService";
-import {useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 const clienteInicial = {
   nome: "",
@@ -184,8 +184,17 @@ const Clientes = () => {
           </div>
           <div className="form-actions">
             <button type="submit">{modoEdicao ? "Atualizar" : "Salvar"}</button>
-            <button type="button" onClick={handleClear}>
-              Limpar
+            <button
+              type="button"
+              onClick={() => {
+                if (modoEdicao) {
+                  navigate("/gerenciamento/clientes");
+                } else {
+                  handleClear();
+                }
+              }}
+            >
+              {modoEdicao ? "Voltar" : "Limpar"}
             </button>
           </div>
         </form>

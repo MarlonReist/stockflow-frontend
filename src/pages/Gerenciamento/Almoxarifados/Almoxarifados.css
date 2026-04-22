@@ -1,0 +1,390 @@
+.gerenciamento-almoxarifados-page {
+  width: 100%;
+  padding: 24px 32px;
+}
+
+.gerenciamento-almoxarifados-header {
+  width: min(100%, 1280px);
+  margin-bottom: 24px;
+}
+
+.gerenciamento-almoxarifados-header h1 {
+  margin: 0 0 8px;
+  color: var(--text-primary);
+  font-size: 28px;
+  font-weight: 700;
+}
+
+.gerenciamento-almoxarifados-header p {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 15px;
+}
+
+.gerenciamento-almoxarifados-actions,
+.gerenciamento-almoxarifados-card {
+  width: min(100%, 1280px);
+}
+
+.gerenciamento-almoxarifados-actions {
+  margin-bottom: 18px;
+  padding: 18px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-purple-subtle);
+  border-radius: var(--radius-xl);
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.16);
+}
+
+.gerenciamento-almoxarifados-actions input {
+  flex: 1;
+  height: 46px;
+  min-width: 0;
+  padding: 0 16px;
+  background-color: var(--bg-input);
+  border: 1px solid var(--border-purple-soft);
+  border-radius: var(--radius-lg);
+  color: var(--text-primary);
+  font-size: 14px;
+}
+
+.gerenciamento-almoxarifados-actions input::placeholder {
+  color: var(--text-muted);
+}
+
+.gerenciamento-almoxarifados-actions input:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(147, 51, 234, 0.25);
+}
+
+.gerenciamento-almoxarifados-actions button {
+  height: 46px;
+  padding: 0 24px;
+  border: none;
+  border-radius: var(--radius-lg);
+  color: #ffffff;
+  background: linear-gradient(to right, var(--primary), var(--accent));
+  box-shadow: 0 4px 6px rgba(124, 58, 237, 0.35);
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
+}
+
+.gerenciamento-almoxarifados-actions button:hover {
+  background: linear-gradient(to right, var(--primary-dark), var(--accent-dark));
+  box-shadow: 0 6px 12px rgba(124, 58, 237, 0.45);
+  transform: translateY(-1px);
+}
+
+.gerenciamento-almoxarifados-card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-purple-subtle);
+  border-radius: var(--radius-xl);
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2);
+}
+
+.gerenciamento-almoxarifados-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: auto;
+}
+
+.gerenciamento-almoxarifados-table th,
+.gerenciamento-almoxarifados-table td {
+  padding: 18px 20px;
+  text-align: left;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.08);
+  color: var(--text-secondary);
+  font-size: 14px;
+  vertical-align: middle;
+}
+
+.gerenciamento-almoxarifados-table th {
+  color: var(--text-primary);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.gerenciamento-almoxarifados-table th:nth-child(1),
+.gerenciamento-almoxarifados-table td:nth-child(1) {
+  width: 58px;
+}
+
+.gerenciamento-almoxarifados-table th:nth-child(2),
+.gerenciamento-almoxarifados-table td:nth-child(2) {
+  width: auto;
+  text-align: left;
+}
+
+.gerenciamento-almoxarifados-table th:nth-child(3),
+.gerenciamento-almoxarifados-table td:nth-child(3) {
+  width: 140px;
+  text-align: center;
+}
+
+.gerenciamento-almoxarifados-table td:nth-child(1) {
+  color: #c084fc;
+  font-weight: 700;
+}
+
+.gerenciamento-almoxarifados-table td:nth-child(2) {
+  color: var(--text-primary);
+  font-weight: 700;
+}
+
+.gerenciamento-almoxarifados-table tr:last-child td {
+  border-bottom: none;
+}
+
+.gerenciamento-almoxarifados-table tbody tr {
+  transition: background-color 0.2s ease;
+}
+
+.gerenciamento-almoxarifados-table tbody tr:hover {
+  background-color: rgba(255, 255, 255, 0.03);
+}
+
+.gerenciamento-almoxarifados-table td:last-child {
+  white-space: nowrap;
+  text-align: center;
+}
+
+.gerenciamento-almoxarifados-table .action-button {
+  width: 32px;
+  height: 32px;
+  margin-right: 10px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background-color: transparent;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.gerenciamento-almoxarifados-table .action-button svg {
+  width: 16px;
+  height: 16px;
+}
+
+.gerenciamento-almoxarifados-table .action-button:last-child {
+  margin-right: 0;
+}
+
+.gerenciamento-almoxarifados-table .edit-button {
+  border-color: rgba(37, 99, 235, 0.35);
+  color: #93c5fd;
+}
+
+.gerenciamento-almoxarifados-table .edit-button:hover {
+  background-color: rgba(37, 99, 235, 0.16);
+  color: #bfdbfe;
+}
+
+.gerenciamento-almoxarifados-table .delete-button {
+  border-color: rgba(239, 68, 68, 0.35);
+  color: #fca5a5;
+}
+
+.gerenciamento-almoxarifados-table .delete-button:hover {
+  background-color: rgba(239, 68, 68, 0.14);
+  color: #fecaca;
+}
+
+.toast-container {
+  position: fixed;
+  right: 24px;
+  top: 24px;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: flex-end;
+}
+
+.form-message {
+  min-width: 280px;
+  max-width: 360px;
+  padding: 16px 18px;
+  border-radius: 16px;
+  background: var(--bg-card);
+  border: 1px solid transparent;
+  color: var(--text-primary);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.35);
+  font-size: 14px;
+  font-weight: 600;
+  white-space: pre-line;
+}
+
+.form-message::before {
+  content: "";
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  margin-right: 10px;
+  border-radius: 999px;
+  vertical-align: middle;
+}
+
+.form-message-sucesso {
+  border-color: rgba(34, 197, 94, 0.45);
+}
+
+.form-message-sucesso::before {
+  background: #22c55e;
+  box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.12);
+}
+
+.form-message-erro {
+  border-color: rgba(239, 68, 68, 0.45);
+}
+
+.form-message-erro::before {
+  background: #ef4444;
+  box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.12);
+}
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background-color: rgba(3, 7, 18, 0.68);
+  backdrop-filter: blur(6px);
+}
+
+.confirm-modal {
+  width: min(100%, 420px);
+  padding: 24px;
+  background-color: var(--bg-card);
+  border: 1px solid rgba(239, 68, 68, 0.32);
+  border-radius: var(--radius-xl);
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.46);
+}
+
+.confirm-modal h2 {
+  margin: 0 0 10px;
+  color: var(--text-primary);
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.confirm-modal p {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.confirm-modal strong {
+  color: var(--text-primary);
+}
+
+.confirm-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.confirm-modal-actions button {
+  min-width: 96px;
+  height: 40px;
+  padding: 0 18px;
+  border-radius: var(--radius-lg);
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.confirm-modal-actions .cancel-button {
+  border: 1px solid var(--border-purple-soft);
+  color: var(--text-secondary);
+  background-color: transparent;
+}
+
+.confirm-modal-actions .cancel-button:hover {
+  border-color: rgba(255, 255, 255, 0.22);
+  color: var(--text-primary);
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.confirm-modal-actions .danger-button {
+  border: 1px solid rgba(239, 68, 68, 0.45);
+  color: #ffffff;
+  background-color: #dc2626;
+  box-shadow: 0 8px 18px rgba(220, 38, 38, 0.24);
+}
+
+.confirm-modal-actions .danger-button:hover {
+  background-color: #b91c1c;
+  border-color: rgba(248, 113, 113, 0.65);
+  transform: translateY(-1px);
+}
+
+@media (max-width: 900px) {
+  .gerenciamento-almoxarifados-table {
+    table-layout: auto;
+  }
+
+  .gerenciamento-almoxarifados-table th,
+  .gerenciamento-almoxarifados-table td {
+    padding: 16px 14px;
+  }
+}
+
+@media (max-width: 768px) {
+  .gerenciamento-almoxarifados-page {
+    padding: 20px;
+  }
+
+  .gerenciamento-almoxarifados-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .gerenciamento-almoxarifados-actions button {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .gerenciamento-almoxarifados-page {
+    padding: 16px;
+  }
+
+  .gerenciamento-almoxarifados-header h1 {
+    font-size: 24px;
+  }
+
+  .confirm-modal-actions {
+    flex-direction: column;
+  }
+
+  .confirm-modal-actions button {
+    width: 100%;
+  }
+}

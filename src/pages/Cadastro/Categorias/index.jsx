@@ -127,8 +127,17 @@ const Categorias = () => {
           </div>
           <div className="form-actions">
             <button type="submit">{modoEdicao ? "Atualizar" : "Salvar"}</button>
-            <button type="button" onClick={handleClear}>
-              Limpar
+            <button
+              type="button"
+              onClick={() => {
+                if (modoEdicao) {
+                  navigate("/gerenciamento/categorias");
+                } else {
+                  handleClear();
+                }
+              }}
+            >
+              {modoEdicao ? "Voltar" : "Limpar"}
             </button>
           </div>
         </form>

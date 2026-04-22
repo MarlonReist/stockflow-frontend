@@ -58,6 +58,7 @@ const MainLayout = () => {
           <div className="sidebar-submenu">
             <NavLink to="/gerenciamento/clientes">Clientes</NavLink>
             <NavLink to="/gerenciamento/categorias">Categorias</NavLink>
+            <NavLink to="/gerenciamento/almoxarifados">Almoxarifados</NavLink>
           </div>
         )}
 

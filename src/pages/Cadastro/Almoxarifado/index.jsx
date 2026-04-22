@@ -1,6 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./Almoxarifado.css";
-import { cadastrarAlmoxarifado } from "../../../services/almoxarifadoService";
+import {
+  cadastrarAlmoxarifado,
+  buscarAlmoxarifadoPorID,
+  atualizarAlmoxarifado,
+} from "../../../services/almoxarifadoService";
+import { useNavigate, useParams } from "react-router-dom";
 
 const almoxarifadoInicial = {
   nome: "",
@@ -9,6 +14,26 @@ const almoxarifadoInicial = {
 const Almoxarifado = () => {
   const [almoxarifado, setAlmoxarifado] = useState({ ...almoxarifadoInicial });
   const [mensagens, setMensagens] = useState([]);
+  const navigate = useNavigate();
+  const { id } = useParams();
+  const modoEdicao = Boolean(id);
+
+  useEffect(() => {
+    if (!modoEdicao) {
+      return;
+    }
+
+    const carregarAlmoxarifado = async () => {
+      try {
+        const response = await buscarAlmoxarifadoPorID(id);
+        setAlmoxarifado(response.data);
+      } catch (error) {
+        mostrarMensagem("Erro ao carregar almoxarifado", "erro");
+      }
+    };
+
+    carregarAlmoxarifado();
+  }, [id, modoEdicao]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -51,14 +76,26 @@ const Almoxarifado = () => {
     }
 
     try {
-      await cadastrarAlmoxarifado(almoxarifado);
-      mostrarMensagem("Almoxarifado cadastrado com sucesso", "sucesso");
-      handleClear();
-    } catch (error) {
-      const mensagemErro =
-        error.response?.data?.message || "Erro ao cadastrar almoxarifado.";
+      if (modoEdicao) {
+        await atualizarAlmoxarifado(id, almoxarifado);
+        mostrarMensagem("Almoxarifado atualizado com sucesso", "sucesso");
 
+        setTimeout(() => {
+          navigate("/gerenciamento/almoxarifados");
+        }, 1000);
+      } else {
+        await cadastrarAlmoxarifado(almoxarifado);
+        mostrarMensagem("Almoxarifado cadastrado com sucesso", "sucesso");
+        handleClear();
+      }
+    } catch (error) {
+      const mensagemPadrao = modoEdicao
+        ? "Erro ao atualizar almoxarifado."
+        : "Erro ao cadastrar almoxarifado.";
+
+      const mensagemErro = error.response?.data?.message || mensagemPadrao;
       mostrarMensagem(mensagemErro, "erro");
+      return;
     }
   };
 
@@ -69,8 +106,14 @@ const Almoxarifado = () => {
   return (
     <div className="almoxarifado-page">
       <div className="almoxarifado-header">
-        <h1>Cadastro de Almoxarifado</h1>
-        <p>Adicione novos almoxarifados ao sistema</p>
+        <h1>
+          {modoEdicao ? "Editar Almoxarifado" : "Cadastro de Almoxarifado"}
+        </h1>
+        <p>
+          {modoEdicao
+            ? `Atualize os dados de ${almoxarifado.nome || "almoxarifado selecionado"}`
+            : "Adicione novos almoxarifados ao sistema"}
+        </p>
       </div>
       <div className="almoxarifado-card">
         <form className="almoxarifado-form" onSubmit={handleSubmit}>
@@ -85,9 +128,18 @@ const Almoxarifado = () => {
             />
           </div>
           <div className="form-actions">
-            <button type="submit">Salvar</button>
-            <button type="button" onClick={handleClear}>
-              Limpar
+            <button type="submit">{modoEdicao ? "Atualizar" : "Salvar"}</button>
+            <button
+              type="button"
+              onClick={() => {
+                if (modoEdicao) {
+                  navigate("/gerenciamento/almoxarifados");
+                } else {
+                  handleClear();
+                }
+              }}
+            >
+              {modoEdicao ? "Voltar" : "Limpar"}
             </button>
           </div>
         </form>

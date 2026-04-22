@@ -14,6 +14,7 @@ import Usuario from "./pages/Cadastro/Usuario";
 
 import GerenciamentoClientes from "./pages/Gerenciamento/Clientes";
 import GerenciamentoCategorias from "./pages/Gerenciamento/Categorias";
+import GerenciamentoAlmoxarifados from "./pages/Gerenciamento/Almoxarifados";
 
 function App() {
   return (
@@ -29,10 +30,13 @@ function App() {
           <Route path="/colaboradores" element={<Colaborador />} />
           <Route path="/produtos" element={<Produto />} />
           <Route path="/usuarios" element={<Usuario />} />
+          
           <Route path="/gerenciamento/clientes" element={<GerenciamentoClientes />} />
           <Route path="/clientes/editar/:id" element={<Clientes />} />
           <Route path="/gerenciamento/categorias" element={<GerenciamentoCategorias />} />
           <Route path="/categorias/editar/:id" element={<Categorias />} />
+          <Route path="/gerenciamento/almoxarifados" element={<GerenciamentoAlmoxarifados />} />
+          <Route path="/almoxarifados/editar/:id" element={<Almoxarifado />} />
         </Routes>
       </div>
     </div>
