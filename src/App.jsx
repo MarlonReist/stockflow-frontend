@@ -13,6 +13,7 @@ import Produto from "./pages/Cadastro/Produto";
 import Usuario from "./pages/Cadastro/Usuario";
 
 import GerenciamentoClientes from "./pages/Gerenciamento/Clientes";
+import GerenciamentoCategorias from "./pages/Gerenciamento/Categorias";
 
 function App() {
   return (
@@ -30,6 +31,8 @@ function App() {
           <Route path="/usuarios" element={<Usuario />} />
           <Route path="/gerenciamento/clientes" element={<GerenciamentoClientes />} />
           <Route path="/clientes/editar/:id" element={<Clientes />} />
+          <Route path="/gerenciamento/categorias" element={<GerenciamentoCategorias />} />
+          <Route path="/categorias/editar/:id" element={<Categorias />} />
         </Routes>
       </div>
     </div>

@@ -124,7 +124,7 @@ const Clientes = () => {
         <h1>{modoEdicao ? "Editar Cliente" : "Cadastro de Clientes"}</h1>
         <p>
           {modoEdicao
-            ? `Atualize os dados de ${cliente.nome}`
+            ? `Atualize os dados de ${cliente.nome || "cliente selecionado"}`
             : "Adicione novos clientes ao sistema"}
         </p>
       </div>

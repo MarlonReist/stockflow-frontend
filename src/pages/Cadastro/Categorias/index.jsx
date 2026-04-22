@@ -1,6 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./Categoria.css";
-import { cadastrarCategoria } from "../../../services/categoriaService";
+import {
+  cadastrarCategoria,
+  buscarCategoriaPorID,
+  atualizarCategoria,
+} from "../../../services/categoriaService";
+import { useNavigate, useParams } from "react-router-dom";
 
 const categoriaInicial = {
   nome: "",
@@ -9,6 +14,26 @@ const categoriaInicial = {
 const Categorias = () => {
   const [categoria, setCategoria] = useState({ ...categoriaInicial });
   const [mensagens, setMensagens] = useState([]);
+  const navigate = useNavigate();
+  const { id } = useParams();
+  const modoEdicao = Boolean(id);
+
+  useEffect(() => {
+    if (!modoEdicao) {
+      return;
+    }
+
+    const carregarCategoria = async () => {
+      try {
+        const response = await buscarCategoriaPorID(id);
+        setCategoria(response.data);
+      } catch (error) {
+        mostrarMensagem("Erro ao carregar categoria", "erro");
+      }
+    };
+
+    carregarCategoria();
+  }, [id, modoEdicao]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -51,14 +76,26 @@ const Categorias = () => {
     }
 
     try {
-      await cadastrarCategoria(categoria);
-      mostrarMensagem("Categoria cadastrada com sucesso", "sucesso");
-      handleClear();
-    } catch (error) {
-      const mensagemErro =
-        error.response?.data?.message || "Erro ao cadastrar categoria.";
+      if (modoEdicao) {
+        await atualizarCategoria(id, categoria);
+        mostrarMensagem("Categoria atualizada com sucesso", "sucesso");
 
+        setTimeout(() => {
+          navigate("/gerenciamento/categorias");
+        }, 1000);
+      } else {
+        await cadastrarCategoria(categoria);
+        mostrarMensagem("Categoria cadastrada com sucesso", "sucesso");
+        handleClear();
+      }
+    } catch (error) {
+      const mensagemPadrao = modoEdicao
+        ? "Erro ao atualizar categoria."
+        : "Erro ao cadastrar categoria.";
+
+      const mensagemErro = error.response?.data?.message || mensagemPadrao;
       mostrarMensagem(mensagemErro, "erro");
+      return;
     }
   };
 
@@ -69,8 +106,12 @@ const Categorias = () => {
   return (
     <div className="categorias-page">
       <div className="categorias-header">
-        <h1>Cadastro de Categorias</h1>
-        <p>Adicione novas categorias ao sistema</p>
+        <h1>{modoEdicao ? "Editar Categoria" : "Cadastro de Categorias"}</h1>
+        <p>
+          {modoEdicao
+            ? `Atualize os dados de ${categoria.nome || "categoria selecionada"}`
+            : "Adicione novas categorias ao sistema"}
+        </p>
       </div>
       <div className="categorias-card">
         <form className="categorias-form" onSubmit={handleSubmit}>
@@ -85,7 +126,7 @@ const Categorias = () => {
             />
           </div>
           <div className="form-actions">
-            <button type="submit">Salvar</button>
+            <button type="submit">{modoEdicao ? "Atualizar" : "Salvar"}</button>
             <button type="button" onClick={handleClear}>
               Limpar
             </button>

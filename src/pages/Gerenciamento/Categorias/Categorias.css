@@ -1,32 +1,32 @@
-.gerenciamento-clientes-page {
+.gerenciamento-categorias-page {
   width: 100%;
   padding: 24px 32px;
 }
 
-.gerenciamento-clientes-header {
+.gerenciamento-categorias-header {
   width: min(100%, 1280px);
   margin-bottom: 24px;
 }
 
-.gerenciamento-clientes-header h1 {
+.gerenciamento-categorias-header h1 {
   margin: 0 0 8px;
   color: var(--text-primary);
   font-size: 28px;
   font-weight: 700;
 }
 
-.gerenciamento-clientes-header p {
+.gerenciamento-categorias-header p {
   margin: 0;
   color: var(--text-secondary);
   font-size: 15px;
 }
 
-.gerenciamento-clientes-actions,
-.gerenciamento-clientes-card {
+.gerenciamento-categorias-actions,
+.gerenciamento-categorias-card {
   width: min(100%, 1280px);
 }
 
-.gerenciamento-clientes-actions {
+.gerenciamento-categorias-actions {
   margin-bottom: 18px;
   padding: 18px;
   display: flex;
@@ -38,7 +38,7 @@
   box-shadow: 0 10px 15px rgba(0, 0, 0, 0.16);
 }
 
-.gerenciamento-clientes-actions input {
+.gerenciamento-categorias-actions input {
   flex: 1;
   height: 46px;
   min-width: 0;
@@ -50,17 +50,17 @@
   font-size: 14px;
 }
 
-.gerenciamento-clientes-actions input::placeholder {
+.gerenciamento-categorias-actions input::placeholder {
   color: var(--text-muted);
 }
 
-.gerenciamento-clientes-actions input:focus {
+.gerenciamento-categorias-actions input:focus {
   outline: none;
   border-color: var(--primary);
   box-shadow: 0 0 0 3px rgba(147, 51, 234, 0.25);
 }
 
-.gerenciamento-clientes-actions button {
+.gerenciamento-categorias-actions button {
   height: 46px;
   padding: 0 24px;
   border: none;
@@ -77,27 +77,27 @@
     background 0.2s ease;
 }
 
-.gerenciamento-clientes-actions button:hover {
+.gerenciamento-categorias-actions button:hover {
   background: linear-gradient(to right, var(--primary-dark), var(--accent-dark));
   box-shadow: 0 6px 12px rgba(124, 58, 237, 0.45);
   transform: translateY(-1px);
 }
 
-.gerenciamento-clientes-card {
+.gerenciamento-categorias-card {
   background-color: var(--bg-card);
   border: 1px solid var(--border-purple-subtle);
   border-radius: var(--radius-xl);
   box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2);
 }
 
-.gerenciamento-clientes-table {
+.gerenciamento-categorias-table {
   width: 100%;
   border-collapse: collapse;
-  table-layout: fixed;
+  table-layout: auto;
 }
 
-.gerenciamento-clientes-table th,
-.gerenciamento-clientes-table td {
+.gerenciamento-categorias-table th,
+.gerenciamento-categorias-table td {
   padding: 18px 20px;
   text-align: left;
   border-bottom: 1px solid rgba(148, 163, 184, 0.08);
@@ -106,90 +106,57 @@
   vertical-align: middle;
 }
 
-.gerenciamento-clientes-table th {
+.gerenciamento-categorias-table th {
   color: var(--text-primary);
   font-size: 13px;
   font-weight: 700;
 }
 
-.gerenciamento-clientes-table th:nth-child(1),
-.gerenciamento-clientes-table td:nth-child(1) {
+.gerenciamento-categorias-table th:nth-child(1),
+.gerenciamento-categorias-table td:nth-child(1) {
   width: 58px;
 }
 
-.gerenciamento-clientes-table th:nth-child(2),
-.gerenciamento-clientes-table td:nth-child(2) {
-  width: 17%;
+.gerenciamento-categorias-table th:nth-child(2),
+.gerenciamento-categorias-table td:nth-child(2) {
+  width: auto;
+  text-align: left;
 }
 
-.gerenciamento-clientes-table th:nth-child(3),
-.gerenciamento-clientes-table td:nth-child(3),
-.gerenciamento-clientes-table th:nth-child(4),
-.gerenciamento-clientes-table td:nth-child(4) {
-  width: 15%;
-}
-
-.gerenciamento-clientes-table th:nth-child(5),
-.gerenciamento-clientes-table td:nth-child(5) {
-  width: 18%;
-}
-
-.gerenciamento-clientes-table th:nth-child(7),
-.gerenciamento-clientes-table td:nth-child(7) {
+.gerenciamento-categorias-table th:nth-child(3),
+.gerenciamento-categorias-table td:nth-child(3) {
   width: 140px;
   text-align: center;
 }
 
-.gerenciamento-clientes-table td:nth-child(1) {
+.gerenciamento-categorias-table td:nth-child(1) {
   color: #c084fc;
   font-weight: 700;
 }
 
-.gerenciamento-clientes-table td:nth-child(2) {
+.gerenciamento-categorias-table td:nth-child(2) {
   color: var(--text-primary);
   font-weight: 700;
 }
 
-.endereco-cell {
-  max-height: 44px;
-  overflow-y: auto;
-  padding-right: 6px;
-  line-height: 1.45;
-  overflow-wrap: anywhere;
-}
-
-.endereco-cell::-webkit-scrollbar {
-  width: 4px;
-}
-
-.endereco-cell::-webkit-scrollbar-thumb {
-  background-color: rgba(147, 51, 234, 0.45);
-  border-radius: 999px;
-}
-
-.endereco-cell::-webkit-scrollbar-track {
-  background-color: rgba(255, 255, 255, 0.04);
-  border-radius: 999px;
-}
-
-.gerenciamento-clientes-table tr:last-child td {
+.gerenciamento-categorias-table tr:last-child td {
   border-bottom: none;
 }
 
-.gerenciamento-clientes-table tbody tr {
+.gerenciamento-categorias-table tbody tr {
   transition: background-color 0.2s ease;
 }
 
-.gerenciamento-clientes-table tbody tr:hover {
+.gerenciamento-categorias-table tbody tr:hover {
   background-color: rgba(255, 255, 255, 0.03);
 }
 
-.gerenciamento-clientes-table td:last-child {
+.gerenciamento-categorias-table td:last-child {
   white-space: nowrap;
   text-align: center;
 }
 
-.gerenciamento-clientes-table .action-button {
+.gerenciamento-categorias-table .action-button {
   width: 32px;
   height: 32px;
   margin-right: 10px;
@@ -209,31 +176,31 @@
     color 0.2s ease;
 }
 
-.gerenciamento-clientes-table .action-button svg {
+.gerenciamento-categorias-table .action-button svg {
   width: 16px;
   height: 16px;
 }
 
-.gerenciamento-clientes-table .action-button:last-child {
+.gerenciamento-categorias-table .action-button:last-child {
   margin-right: 0;
 }
 
-.gerenciamento-clientes-table .edit-button {
+.gerenciamento-categorias-table .edit-button {
   border-color: rgba(37, 99, 235, 0.35);
   color: #93c5fd;
 }
 
-.gerenciamento-clientes-table .edit-button:hover {
+.gerenciamento-categorias-table .edit-button:hover {
   background-color: rgba(37, 99, 235, 0.16);
   color: #bfdbfe;
 }
 
-.gerenciamento-clientes-table .delete-button {
+.gerenciamento-categorias-table .delete-button {
   border-color: rgba(239, 68, 68, 0.35);
   color: #fca5a5;
 }
 
-.gerenciamento-clientes-table .delete-button:hover {
+.gerenciamento-categorias-table .delete-button:hover {
   background-color: rgba(239, 68, 68, 0.14);
   color: #fecaca;
 }
@@ -379,37 +346,37 @@
 }
 
 @media (max-width: 900px) {
-  .gerenciamento-clientes-table {
+  .gerenciamento-categorias-table {
     table-layout: auto;
   }
 
-  .gerenciamento-clientes-table th,
-  .gerenciamento-clientes-table td {
+  .gerenciamento-categorias-table th,
+  .gerenciamento-categorias-table td {
     padding: 16px 14px;
   }
 }
 
 @media (max-width: 768px) {
-  .gerenciamento-clientes-page {
+  .gerenciamento-categorias-page {
     padding: 20px;
   }
 
-  .gerenciamento-clientes-actions {
+  .gerenciamento-categorias-actions {
     flex-direction: column;
     align-items: stretch;
   }
 
-  .gerenciamento-clientes-actions button {
+  .gerenciamento-categorias-actions button {
     width: 100%;
   }
 }
 
 @media (max-width: 480px) {
-  .gerenciamento-clientes-page {
+  .gerenciamento-categorias-page {
     padding: 16px;
   }
 
-  .gerenciamento-clientes-header h1 {
+  .gerenciamento-categorias-header h1 {
     font-size: 24px;
   }
 

@@ -5,11 +5,23 @@ const api = axios.create({
 })
 
 function cadastrarCategoria(categoria) {
-    return api.post("/categorias", categoria)
+  return api.post("/categorias", categoria);
 }
 
 function listarCategorias() {
-    return api.get("/categorias")
+  return api.get("/categorias");
 }
 
-export {cadastrarCategoria, listarCategorias}
+function deletarCategoria(id) {
+  return api.delete(`/categorias/${id}`);
+}
+
+function buscarCategoriaPorID(id) {
+  return api.get(`/categorias/${id}`);
+}
+
+function atualizarCategoria(id, categoria) {
+  return api.put(`/categorias/${id}`, categoria);
+}
+
+export { cadastrarCategoria, listarCategorias, deletarCategoria, buscarCategoriaPorID, atualizarCategoria};
