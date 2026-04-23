@@ -1,6 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./Fornecedor.css";
-import { cadastrarFornecedor } from "../../../services/fornecedorService";
+import {
+  cadastrarFornecedor,
+  buscarFornecedorPorID,
+  atualizarFornecedor,
+} from "../../../services/fornecedorService";
+import { useNavigate, useParams } from "react-router-dom";
 
 const fornecedorInicial = {
   nome: "",
@@ -10,6 +15,26 @@ const fornecedorInicial = {
 const Fornecedor = () => {
   const [fornecedor, setFornecedor] = useState({ ...fornecedorInicial });
   const [mensagens, setMensagens] = useState([]);
+  const navigate = useNavigate();
+  const { id } = useParams();
+  const modoEdicao = Boolean(id);
+
+  useEffect(() => {
+    if (!modoEdicao) {
+      return;
+    }
+
+    const carregarFornecedor = async () => {
+      try {
+        const response = await buscarFornecedorPorID(id);
+        setFornecedor(response.data);
+      } catch (error) {
+        mostrarMensagem("Erro ao carregar fornecedor", "erro");
+      }
+    };
+
+    carregarFornecedor();
+  }, [id, modoEdicao]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -55,14 +80,26 @@ const Fornecedor = () => {
     }
 
     try {
-      await cadastrarFornecedor(fornecedor);
-      mostrarMensagem("Fornecedor cadastrado com sucesso", "sucesso");
-      handleClear();
-    } catch (error) {
-      const mensagemErro =
-        error.response?.data?.message || "Erro ao cadastrar fornecedor.";
+      if (modoEdicao) {
+        await atualizarFornecedor(id, fornecedor);
+        mostrarMensagem("Fornecedor atualizado com sucesso", "sucesso");
 
+        setTimeout(() => {
+          navigate("/gerenciamento/fornecedores");
+        }, 1000);
+      } else {
+        await cadastrarFornecedor(fornecedor);
+        mostrarMensagem("Fornecedor cadastrado com sucesso", "sucesso");
+        handleClear();
+      }
+    } catch (error) {
+      const mensagemPadrao = modoEdicao
+        ? "Erro ao atualizar fornecedor."
+        : "Erro ao cadastrar fornecedor.";
+
+      const mensagemErro = error.response?.data?.message || mensagemPadrao;
       mostrarMensagem(mensagemErro, "erro");
+      return;
     }
   };
 
@@ -73,8 +110,12 @@ const Fornecedor = () => {
   return (
     <div className="fornecedor-page">
       <div className="fornecedor-header">
-        <h1>Cadastro de Fornecedor</h1>
-        <p>Adicione novos fornecedores ao sistema</p>
+        <h1>{modoEdicao ? "Editar Fornecedor" : "Cadastro de Fornecedores"}</h1>
+        <p>
+          {modoEdicao
+            ? `Atualize os dados de ${fornecedor.nome || "fornecedor selecionado"}`
+            : "Adicione novos fornecedores ao sistema"}
+        </p>
       </div>
       <div className="fornecedor-card">
         <form className="fornecedor-form" onSubmit={handleSubmit}>
@@ -99,9 +140,18 @@ const Fornecedor = () => {
             />
           </div>
           <div className="form-actions">
-            <button type="submit">Salvar</button>
-            <button type="button" onClick={handleClear}>
-              Limpar
+            <button type="submit">{modoEdicao ? "Atualizar" : "Salvar"}</button>
+            <button
+              type="button"
+              onClick={() => {
+                if (modoEdicao) {
+                  navigate("/gerenciamento/fornecedores");
+                } else {
+                  handleClear();
+                }
+              }}
+            >
+              {modoEdicao ? "Voltar" : "Limpar"}
             </button>
           </div>
         </form>

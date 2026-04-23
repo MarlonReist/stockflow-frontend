@@ -8,4 +8,26 @@ function cadastrarFornecedor(fornecedor) {
   return api.post("/fornecedores", fornecedor);
 }
 
-export { cadastrarFornecedor };
+function listarFornecedores() {
+  return api.get("/fornecedores");
+}
+
+function deletarFornecedor(id) {
+  return api.delete(`/fornecedores/${id}`);
+}
+
+function buscarFornecedorPorID(id) {
+  return api.get(`/fornecedores/${id}`);
+}
+
+function atualizarFornecedor(id, fornecedor) {
+  return api.put(`/fornecedores/${id}`, fornecedor);
+}
+
+export {
+  cadastrarFornecedor,
+  listarFornecedores,
+  deletarFornecedor,
+  buscarFornecedorPorID,
+  atualizarFornecedor,
+};

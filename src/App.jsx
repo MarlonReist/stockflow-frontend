@@ -15,6 +15,7 @@ import Usuario from "./pages/Cadastro/Usuario";
 import GerenciamentoClientes from "./pages/Gerenciamento/Clientes";
 import GerenciamentoCategorias from "./pages/Gerenciamento/Categorias";
 import GerenciamentoAlmoxarifados from "./pages/Gerenciamento/Almoxarifados";
+import GerenciamentoFornecedores from "./pages/Gerenciamento/Fornecedores";
 
 function App() {
   return (
@@ -37,6 +38,8 @@ function App() {
           <Route path="/categorias/editar/:id" element={<Categorias />} />
           <Route path="/gerenciamento/almoxarifados" element={<GerenciamentoAlmoxarifados />} />
           <Route path="/almoxarifados/editar/:id" element={<Almoxarifado />} />
+          <Route path="/gerenciamento/fornecedores" element={<GerenciamentoFornecedores />} />
+          <Route path="/fornecedores/editar/:id" element={<Fornecedor />} />
         </Routes>
       </div>
     </div>
