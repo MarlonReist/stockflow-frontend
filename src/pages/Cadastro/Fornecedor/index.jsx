@@ -6,6 +6,7 @@ import {
   atualizarFornecedor,
 } from "../../../services/fornecedorService";
 import { useNavigate, useParams } from "react-router-dom";
+import { IMaskInput } from "react-imask";
 
 const fornecedorInicial = {
   nome: "",
@@ -131,12 +132,12 @@ const Fornecedor = () => {
           </div>
           <div className="form-group">
             <label>CNPJ</label>
-            <input
-              type="text"
+            <IMaskInput
+              mask="00.000.000/0000-00"
               name="cnpj"
               placeholder="00.000.000/0000-00"
               value={fornecedor.cnpj}
-              onChange={handleChange}
+              onAccept={(value) => setFornecedor({ ...fornecedor, cnpj: value })}
             />
           </div>
           <div className="form-actions">

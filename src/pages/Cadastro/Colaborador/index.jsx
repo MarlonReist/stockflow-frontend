@@ -1,6 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./Colaborador.css";
-import { cadastrarColaborador } from "../../../services/colaboradorService";
+import {
+  cadastrarColaborador,
+  buscarColaboradorPorId,
+  atualizarColaborador,
+} from "../../../services/colaboradorService";
+import { useNavigate, useParams } from "react-router-dom";
+import { IMaskInput } from "react-imask";
 
 const colaboradorInicial = {
   nome: "",
@@ -12,6 +18,26 @@ const colaboradorInicial = {
 const Colaborador = () => {
   const [colaborador, setColaborador] = useState({ ...colaboradorInicial });
   const [mensagens, setMensagens] = useState([]);
+  const navigate = useNavigate();
+  const { id } = useParams();
+  const modoEdicao = Boolean(id);
+
+  useEffect(() => {
+    if (!modoEdicao) {
+      return;
+    }
+
+    const carregarColaborador = async () => {
+      try {
+        const response = await buscarColaboradorPorId(id);
+        setColaborador(response.data);
+      } catch (error) {
+        mostrarMensagem("Erro ao carregar colaborador", "erro");
+      }
+    };
+
+    carregarColaborador();
+  }, [id, modoEdicao]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -63,14 +89,26 @@ const Colaborador = () => {
     }
 
     try {
-      await cadastrarColaborador(colaborador);
-      mostrarMensagem("Colaborador cadastrado com sucesso", "sucesso");
-      handleClear();
-    } catch (error) {
-      const mensagemErro =
-        error.response?.data?.message || "Erro ao cadastrar colaborador.";
+      if (modoEdicao) {
+        await atualizarColaborador(id, colaborador);
+        mostrarMensagem("Colaborador atualizado com sucesso", "sucesso");
 
+        setTimeout(() => {
+          navigate("/gerenciamento/colaboradores");
+        }, 1000);
+      } else {
+        await cadastrarColaborador(colaborador);
+        mostrarMensagem("Colaborador cadastrado com sucesso", "sucesso");
+        handleClear();
+      }
+    } catch (error) {
+      const mensagemPadrao = modoEdicao
+        ? "Erro ao atualizar colaborador."
+        : "Erro ao cadastrar colaborador.";
+
+      const mensagemErro = error.response?.data?.message || mensagemPadrao;
       mostrarMensagem(mensagemErro, "erro");
+      return;
     }
   };
 
@@ -81,8 +119,12 @@ const Colaborador = () => {
   return (
     <div className="colaborador-page">
       <div className="colaborador-header">
-        <h1>Cadastro de Colaborador</h1>
-        <p>Adicione novos colaboradores ao sistema</p>
+        <h1>{modoEdicao ? "Editar Colaborador" : "Cadastro de Colaborador"}</h1>
+        <p>
+          {modoEdicao
+            ? `Atualize os dados de ${colaborador.nome || "colaborador selecionado"}`
+            : "Adicione novos colaboradores ao sistema"}
+        </p>
       </div>
       <div className="colaborador-card">
         <form className="colaborador-form" onSubmit={handleSubmit}>
@@ -99,12 +141,12 @@ const Colaborador = () => {
           <div className="form-row">
             <div className="form-group">
               <label>CPF</label>
-              <input
-                type="text"
+              <IMaskInput
+                mask="000.000.000-00"
                 name="cpf"
                 placeholder="000.000.000-00"
                 value={colaborador.cpf}
-                onChange={handleChange}
+                onAccept={(value) => setColaborador({ ...colaborador, cpf: value })}
               />
             </div>
             <div className="form-group">
@@ -120,18 +162,29 @@ const Colaborador = () => {
           </div>
           <div className="form-group">
             <label>Telefone</label>
-            <input
-              type="text"
+            <IMaskInput
+              mask="(00) 00000-0000"
               name="telefone"
               placeholder="(00) 00000-0000"
               value={colaborador.telefone}
-              onChange={handleChange}
+              onAccept={(value) =>
+                setColaborador({ ...colaborador, telefone: value })
+              }
             />
           </div>
           <div className="form-actions">
-            <button type="submit">Salvar</button>
-            <button type="button" onClick={handleClear}>
-              Limpar
+            <button type="submit">{modoEdicao ? "Atualizar" : "Salvar"}</button>
+            <button
+              type="button"
+              onClick={() => {
+                if (modoEdicao) {
+                  navigate("/gerenciamento/colaboradores");
+                } else {
+                  handleClear();
+                }
+              }}
+            >
+              {modoEdicao ? "Voltar" : "Limpar"}
             </button>
           </div>
         </form>

@@ -60,6 +60,8 @@ const MainLayout = () => {
             <NavLink to="/gerenciamento/categorias">Categorias</NavLink>
             <NavLink to="/gerenciamento/almoxarifados">Almoxarifados</NavLink>
             <NavLink to="/gerenciamento/fornecedores">Fornecedores</NavLink>
+            <NavLink to="/gerenciamento/colaboradores">Colaboradores</NavLink>
+            <NavLink to="/gerenciamento/produtos">Produtos</NavLink>
           </div>
         )}
 

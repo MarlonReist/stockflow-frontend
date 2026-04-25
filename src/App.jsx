@@ -16,6 +16,8 @@ import GerenciamentoClientes from "./pages/Gerenciamento/Clientes";
 import GerenciamentoCategorias from "./pages/Gerenciamento/Categorias";
 import GerenciamentoAlmoxarifados from "./pages/Gerenciamento/Almoxarifados";
 import GerenciamentoFornecedores from "./pages/Gerenciamento/Fornecedores";
+import GerenciamentoColaboradores from "./pages/Gerenciamento/Colaboradores";
+import GerenciamentoProdutos from "./pages/Gerenciamento/Produtos";
 
 function App() {
   return (
@@ -40,6 +42,10 @@ function App() {
           <Route path="/almoxarifados/editar/:id" element={<Almoxarifado />} />
           <Route path="/gerenciamento/fornecedores" element={<GerenciamentoFornecedores />} />
           <Route path="/fornecedores/editar/:id" element={<Fornecedor />} />
+          <Route path="/gerenciamento/colaboradores" element={<GerenciamentoColaboradores />} />
+          <Route path="/colaboradores/editar/:id" element={<Colaborador />} />
+          <Route path="/gerenciamento/produtos" element={<GerenciamentoProdutos />} />
+          <Route path="/produtos/editar/:id" element={<Produto />} />
         </Routes>
       </div>
     </div>

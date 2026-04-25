@@ -1,7 +1,13 @@
 import React, { useState, useEffect } from "react";
 import "./Produto.css";
-import { cadastrarProduto } from "../../../services/produtoService";
+import {
+  cadastrarProduto,
+  buscarProdutoPorID,
+  atualizarProduto,
+} from "../../../services/produtoService";
 import { listarCategorias } from "../../../services/categoriaService";
+import { IMaskInput } from "react-imask";
+import { useNavigate, useParams } from "react-router-dom";
 
 const produtoInicial = {
   nome: "",
@@ -14,6 +20,31 @@ const Produto = () => {
   const [produto, setProduto] = useState({ ...produtoInicial });
   const [categorias, setCategorias] = useState([]);
   const [mensagens, setMensagens] = useState([]);
+  const navigate = useNavigate();
+  const { id } = useParams();
+  const modoEdicao = Boolean(id);
+
+  useEffect(() => {
+    if (!modoEdicao) {
+      return;
+    }
+
+    const carregarProduto = async () => {
+      try {
+        const response = await buscarProdutoPorID(id);
+        setProduto({
+          nome: response.data.nome,
+          preco: String(response.data.preco.toFixed(2).replace(".", ",")),
+          categoriaId: String(response.data.categoriaId),
+          unidadeMedida: response.data.unidadeMedida,
+        });
+      } catch (error) {
+        mostrarMensagem("Erro ao carregar produto", "erro");
+      }
+    };
+
+    carregarProduto();
+  }, [id, modoEdicao]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -68,6 +99,11 @@ const Produto = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    const produtoParaEnviar = {
+      ...produto,
+      preco: Number(produto.preco.replace(/\./g, "").replace(",", ".")),
+    };
+
     const erros = validarProduto();
     if (erros.length > 0) {
       erros.forEach((erro) => {
@@ -77,15 +113,25 @@ const Produto = () => {
     }
 
     try {
-      await cadastrarProduto(produto);
-      mostrarMensagem("Produto cadastrado com sucesso", "sucesso");
-      handleClear();
+      if (modoEdicao) {
+        await atualizarProduto(id, produtoParaEnviar);
+        mostrarMensagem("Produto atualizado com sucesso", "sucesso");
+
+        setTimeout(() => {
+          navigate("/gerenciamento/produtos");
+        }, 1000);
+      } else {
+        await cadastrarProduto(produtoParaEnviar);
+        mostrarMensagem("Produto cadastrado com sucesso", "sucesso");
+        handleClear();
+      }
     } catch (error) {
-      const mensagemErro =
-        error.response?.data?.message || "Erro ao cadastrar produto.";
+      const mensagemPadrao = modoEdicao
+        ? "Erro ao atualizar produto."
+        : "Erro ao cadastrar produto.";
 
+      const mensagemErro = error.response?.data?.message || mensagemPadrao;
       mostrarMensagem(mensagemErro, "erro");
-
       return;
     }
   };
@@ -97,8 +143,12 @@ const Produto = () => {
   return (
     <div className="produto-page">
       <div className="produto-header">
-        <h1>Cadastro de Produtos</h1>
-        <p>Adicione novos produtos ao sistema</p>
+        <h1>{modoEdicao ? "Editar Produto" : "Cadastro de Produto"}</h1>
+        <p>
+          {modoEdicao
+            ? `Atualize os dados de ${produto.nome || "produto selecionado"}`
+            : "Adicione novos produtos ao sistema"}
+        </p>
       </div>
       <div className="produto-card">
         <form className="produto-form" onSubmit={handleSubmit}>
@@ -115,14 +165,16 @@ const Produto = () => {
           <div className="form-row">
             <div className="form-group">
               <label>Preço</label>
-              <input
-                type="number"
-                step="0.01"
-                min="0"
-                name="preco"
+              <IMaskInput
+                mask={Number}
+                scale={2}
+                radix=","
+                thousandsSeparator="."
                 placeholder="Digite o preço"
+                padFractionalZeros={true}
+                normalizeZeros={true}
                 value={produto.preco}
-                onChange={handleChange}
+                onAccept={(value) => setProduto({ ...produto, preco: value })}
               />
             </div>
             <div className="form-group">
@@ -154,9 +206,18 @@ const Produto = () => {
             </select>
           </div>
           <div className="form-actions">
-            <button type="submit">Salvar</button>
-            <button type="button" onClick={handleClear}>
-              Limpar
+            <button type="submit">{modoEdicao ? "Atualizar" : "Salvar"}</button>
+            <button
+              type="button"
+              onClick={() => {
+                if (modoEdicao) {
+                  navigate("/gerenciamento/produtos");
+                } else {
+                  handleClear();
+                }
+              }}
+            >
+              {modoEdicao ? "Voltar" : "Limpar"}
             </button>
           </div>
         </form>

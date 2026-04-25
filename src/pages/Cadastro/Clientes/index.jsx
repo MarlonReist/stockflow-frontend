@@ -6,6 +6,8 @@ import {
   atualizarCliente,
 } from "../../../services/clientesService";
 import { useNavigate, useParams } from "react-router-dom";
+import { IMaskInput } from "react-imask";
+
 
 const clienteInicial = {
   nome: "",
@@ -143,22 +145,22 @@ const Clientes = () => {
           <div className="form-row">
             <div className="form-group">
               <label>CPF</label>
-              <input
-                type="text"
+              <IMaskInput
+                mask="000.000.000-00"
                 name="cpf"
                 placeholder="000.000.000-00"
                 value={cliente.cpf}
-                onChange={handleChange}
+                onAccept={(value) => setCliente({ ...cliente, cpf: value})}
               />
             </div>
             <div className="form-group">
               <label>Telefone</label>
-              <input
-                type="text"
+              <IMaskInput
+                mask="(00) 00000-0000"
                 name="telefone"
                 placeholder="(00) 00000-0000"
                 value={cliente.telefone}
-                onChange={handleChange}
+                onAccept={(value) => setCliente({ ...cliente, telefone: value})}
               />
             </div>
           </div>
