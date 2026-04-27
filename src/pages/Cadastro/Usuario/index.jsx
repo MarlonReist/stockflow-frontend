@@ -1,7 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./Usuario.css";
-import { cadastrarUsuario } from "../../../services/usuarioService";
+import {
+  cadastrarUsuario,
+  buscarUsuarioPorId,
+  atualizarUsuario,
+} from "../../../services/usuarioService";
 import { FiEye, FiEyeOff } from "react-icons/fi";
+import { useNavigate, useParams } from "react-router-dom";
 
 const usuarioInicial = {
   login: "",
@@ -13,6 +18,26 @@ const Usuario = () => {
   const [usuario, setUsuario] = useState({ ...usuarioInicial });
   const [mensagens, setMensagens] = useState([]);
   const [mostrarSenha, setMostrarSenha] = useState(false);
+  const navigate = useNavigate();
+  const { id } = useParams();
+  const modoEdicao = Boolean(id);
+
+  useEffect(() => {
+    if (!modoEdicao) {
+      return;
+    }
+
+    const carregarUsuario = async () => {
+      try {
+        const response = await buscarUsuarioPorId(id);
+        setUsuario({ ...usuarioInicial, ...response.data });
+      } catch (error) {
+        mostrarMensagem("Erro ao carregar usuário", "erro");
+      }
+    };
+
+    carregarUsuario();
+  }, [id, modoEdicao]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -40,7 +65,7 @@ const Usuario = () => {
     if (!usuario.login.trim()) {
       erros.push("Login é obrigatório");
     }
-    if (!usuario.senha.trim()) {
+    if (!modoEdicao && !usuario.senha.trim()) {
       erros.push("Senha é obrigatório");
     }
     if (!usuario.perfil.trim()) {
@@ -61,15 +86,31 @@ const Usuario = () => {
     }
 
     try {
-      await cadastrarUsuario(usuario);
-      mostrarMensagem("Usuário cadastrado com sucesso", "sucesso");
-      handleClear();
+      if (modoEdicao) {
+        const usuarioParaAtualizar = { ...usuario };
+
+        if (!usuarioParaAtualizar.senha || !usuarioParaAtualizar.senha.trim()) {
+          delete usuarioParaAtualizar.senha;
+        }
+
+        await atualizarUsuario(id, usuarioParaAtualizar);
+        mostrarMensagem("Usuário atualizado com sucesso", "sucesso");
+
+        setTimeout(() => {
+          navigate("/gerenciamento/usuarios");
+        }, 1000);
+      } else {
+        await cadastrarUsuario(usuario);
+        mostrarMensagem("Usuário cadastrado com sucesso", "sucesso");
+        handleClear();
+      }
     } catch (error) {
-      const mensagemErro =
-        error.response?.data?.message || "Erro ao cadastrar usuário.";
+      const mensagemPadrao = modoEdicao
+        ? "Erro ao atualizar usuário."
+        : "Erro ao cadastrar usuário.";
 
+      const mensagemErro = error.response?.data?.message || mensagemPadrao;
       mostrarMensagem(mensagemErro, "erro");
-
       return;
     }
   };
@@ -81,8 +122,12 @@ const Usuario = () => {
   return (
     <div className="usuario-page">
       <div className="usuario-header">
-        <h1>Cadastro de Usuários</h1>
-        <p>Adicione novos usuários ao sistema</p>
+        <h1>{modoEdicao ? "Editar Usuário" : "Cadastro de Usuários"}</h1>
+        <p>
+          {modoEdicao
+            ? `Atualize os dados de ${usuario.login || "usuário selecionado"}`
+            : "Adicione novos usuários ao sistema"}
+        </p>
       </div>
       <div className="usuario-card">
         <form className="usuario-form" onSubmit={handleSubmit}>
@@ -135,9 +180,18 @@ const Usuario = () => {
             </label>
           </div>
           <div className="form-actions">
-            <button type="submit">Salvar</button>
-            <button type="button" onClick={handleClear}>
-              Limpar
+            <button type="submit">{modoEdicao ? "Atualizar" : "Salvar"}</button>
+            <button
+              type="button"
+              onClick={() => {
+                if (modoEdicao) {
+                  navigate("/gerenciamento/usuarios");
+                } else {
+                  handleClear();
+                }
+              }}
+            >
+              {modoEdicao ? "Voltar" : "Limpar"}
             </button>
           </div>
         </form>

@@ -38,7 +38,7 @@ const MainLayout = () => {
             <NavLink to="/almoxarifados">Almoxarifado</NavLink>
             <NavLink to="/colaboradores">Colaborador</NavLink>
             <NavLink to="/fornecedores">Fornecedor</NavLink>
-            <NavLink to="/usuarios">Usuario</NavLink>
+            <NavLink to="/usuarios">Usuário</NavLink>
           </div>
         )}
 
@@ -57,11 +57,12 @@ const MainLayout = () => {
         {gerenciamentoAberto && (
           <div className="sidebar-submenu">
             <NavLink to="/gerenciamento/clientes">Clientes</NavLink>
+            <NavLink to="/gerenciamento/produtos">Produtos</NavLink>
             <NavLink to="/gerenciamento/categorias">Categorias</NavLink>
             <NavLink to="/gerenciamento/almoxarifados">Almoxarifados</NavLink>
-            <NavLink to="/gerenciamento/fornecedores">Fornecedores</NavLink>
             <NavLink to="/gerenciamento/colaboradores">Colaboradores</NavLink>
-            <NavLink to="/gerenciamento/produtos">Produtos</NavLink>
+            <NavLink to="/gerenciamento/fornecedores">Fornecedores</NavLink>
+            <NavLink to="/gerenciamento/usuarios">Usuários</NavLink>
           </div>
         )}
 
