@@ -1,10 +1,17 @@
 import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
-import { FiChevronDown, FiGrid, FiSettings, FiUserPlus } from "react-icons/fi";
+import {
+  FiChevronDown,
+  FiDownload,
+  FiGrid,
+  FiSettings,
+  FiUserPlus,
+} from "react-icons/fi";
 
 const MainLayout = () => {
   const [cadastroAberto, setCadastroAberto] = useState(false);
   const [gerenciamentoAberto, setGerenciamentoAberto] = useState(false);
+  const [entradaAberto, setEntradaAberto] = useState(false);
 
   return (
     <div className="sidebar">
@@ -66,9 +73,24 @@ const MainLayout = () => {
           </div>
         )}
 
-        <a href="#" className="sidebar-link">
-          Entrada
-        </a>
+        <button
+          type="button"
+          className={`sidebar-toggle ${entradaAberto ? "open" : ""}`}
+          onClick={() => setEntradaAberto(!entradaAberto)}
+        >
+          <span className="sidebar-item-content">
+            <FiDownload />
+            <span>Entrada</span>
+          </span>
+          <FiChevronDown className="sidebar-chevron" />
+        </button>
+
+        {entradaAberto && (
+          <div className="sidebar-submenu">
+            <NavLink to="/entrada/cadastro">Cadastro de Entrada</NavLink>
+            <NavLink to="/entrada/itens">Itens da entrada</NavLink>
+          </div>
+        )}
         <a href="#" className="sidebar-link">
           Saida
         </a>

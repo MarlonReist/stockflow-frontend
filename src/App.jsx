@@ -20,6 +20,9 @@ import GerenciamentoColaboradores from "./pages/Gerenciamento/Colaboradores";
 import GerenciamentoProdutos from "./pages/Gerenciamento/Produtos";
 import GerenciamentoUsuarios from "./pages/Gerenciamento/Usuarios";
 
+import CadastroEntrada from "./pages/Entrada/Cadastro";
+
+
 function App() {
   return (
     <div className="app-container">
@@ -49,6 +52,9 @@ function App() {
           <Route path="/produtos/editar/:id" element={<Produto />} />
           <Route path="/gerenciamento/usuarios" element={<GerenciamentoUsuarios />} />
           <Route path="/usuarios/editar/:id" element={<Usuario />} />
+
+          <Route path="/entrada/cadastro" element={<CadastroEntrada />} />
+
         </Routes>
       </div>
     </div>

@@ -1,24 +1,24 @@
-.produto-page {
+.cadastro-page {
   padding: 24px;
 }
 
-.produto-header {
+.cadastro-header {
   margin-bottom: 24px;
 }
 
-.produto-header h1 {
+.cadastro-header h1 {
   margin: 0 0 8px;
   color: var(--text-primary);
   font-size: 28px;
   font-weight: 700;
 }
 
-.produto-header p {
+.cadastro-header p {
   margin: 0;
   color: var(--text-secondary);
   font-size: 15px;
 }
-.produto-card {
+.cadastro-card {
   background-color: var(--bg-card);
   padding: 32px;
   border-radius: 16px;
@@ -27,7 +27,7 @@
   box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2);
 }
 
-.produto-form {
+.cadastro-form {
   display: flex;
   flex-direction: column;
   gap: 24px;
@@ -45,7 +45,7 @@
   font-weight: 600;
 }
 
-.produto-form input {
+.cadastro-form input {
   width: 100%;
   height: 46px;
   padding: 0 12px;
@@ -56,7 +56,7 @@
   box-sizing: border-box;
 }
 
-.produto-form select {
+.cadastro-form select {
   width: 100%;
   height: 46px;
   padding: 0 44px 0 14px;
@@ -86,38 +86,38 @@
   background-repeat: no-repeat;
 }
 
-.produto-form select:hover {
+.cadastro-form select:hover {
   border-color: rgba(167, 139, 250, 0.45);
   background-color: rgba(255, 255, 255, 0.02);
 }
 
-.produto-form select option {
+.cadastro-form select option {
   background-color: var(--bg-input);
   color: var(--text-primary);
 }
 
-.produto-form select:focus {
+.cadastro-form select:focus {
   outline: none;
   border-color: var(--primary);
   box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.3);
 }
 
-.produto-form input::placeholder {
+.cadastro-form input::placeholder {
   color: var(--text-muted);
 }
 
-.produto-form input:focus {
+.cadastro-form input:focus {
   outline: none;
   border-color: var(--primary);
   box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.3);
 }
 
-.produto-form input[type="number"] {
+.cadastro-form input[type="number"] {
   -moz-appearance: textfield;
 }
 
-.produto-form input[type="number"]::-webkit-outer-spin-button,
-.produto-form input[type="number"]::-webkit-inner-spin-button {
+.cadastro-form input[type="number"]::-webkit-outer-spin-button,
+.cadastro-form input[type="number"]::-webkit-inner-spin-button {
   margin: 0;
   -webkit-appearance: none;
 }
@@ -224,11 +224,11 @@
 }
 
 @media (max-width: 768px) {
-  .produto-page {
+  .cadastro-page {
     padding: 20px;
   }
 
-  .produto-card {
+  .cadastro-card {
     padding: 24px;
   }
 
@@ -239,11 +239,11 @@
 }
 
 @media (max-width: 480px) {
-  .produto-page {
+  .cadastro-page {
     padding: 16px;
   }
 
-  .produto-card {
+  .cadastro-card {
     padding: 20px;
   }
 
