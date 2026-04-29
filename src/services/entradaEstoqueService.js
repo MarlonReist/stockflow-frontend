@@ -1,11 +1,11 @@
-import axios from "axios"
+import axios from "axios";
 
 const api = axios.create({
-    baseURL: "http://localhost:8080",
-})
+  baseURL: "http://localhost:8080",
+});
 
 function cadastrarEntrada(entrada) {
-    return api.post("/entrada_estoque", entrada)
+  return api.post("/entrada_estoque", entrada);
 }
 
 function listarEntradas() {
@@ -24,4 +24,20 @@ function atualizarEntrada(id, entrada) {
   return api.put(`/entrada_estoque/${id}`, entrada);
 }
 
-export {cadastrarEntrada, listarEntradas, deletarEntrada, buscarEntradaPorId, atualizarEntrada}
+function finalizarEntrada(id, entrada) {
+  return api.patch(`/entrada_estoque/${id}/finalizar`);
+}
+
+function cancelarEntrada(id, entrada) {
+  return api.patch(`/entrada_estoque/${id}/cancelar`);
+}
+
+export {
+  cadastrarEntrada,
+  listarEntradas,
+  deletarEntrada,
+  buscarEntradaPorId,
+  atualizarEntrada,
+  finalizarEntrada,
+  cancelarEntrada,
+};

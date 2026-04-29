@@ -2,12 +2,10 @@ import React, { useState, useEffect } from "react";
 import "./Cadastro.css";
 import {
   cadastrarEntrada,
-  buscarEntradaPorId,
-  atualizarEntrada,
 } from "../../../services/entradaEstoqueService";
 import { listarFornecedores } from "../../../services/fornecedorService";
 import { listarAlmoxarifados } from "../../../services/almoxarifadoService";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const entradaInicial = {
   fornecedorId: "",
@@ -20,8 +18,6 @@ const CadastroEntrada = () => {
   const [almoxarifados, setAlmoxarifados] = useState([]);
   const [mensagens, setMensagens] = useState([]);
   const navigate = useNavigate();
-  const { id } = useParams();
-  const modoEdicao = Boolean(id);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -42,23 +38,6 @@ const CadastroEntrada = () => {
       );
     }, 3000);
   };
-
-  useEffect(() => {
-    if (!modoEdicao) {
-      return;
-    }
-
-    const carregarCadastro = async () => {
-      try {
-        const response = await buscarEntradaPorId(id);
-        setEntrada(response.data);
-      } catch (error) {
-        mostrarMensagem("Erro ao carregar entrada", "erro");
-      }
-    };
-
-    carregarCadastro();
-  }, [id, modoEdicao]);
 
   useEffect(() => {
     const buscarFornecedores = async () => {
@@ -109,23 +88,11 @@ const CadastroEntrada = () => {
     }
 
     try {
-      if (modoEdicao) {
-        await atualizarEntrada(id, entrada);
-        mostrarMensagem("Entrada atualizada com sucesso", "sucesso");
-
-        setTimeout(() => {
-          navigate("/entrada/itens");
-        }, 1000);
-      } else {
-        await cadastrarEntrada(entrada);
-        mostrarMensagem("Entrada cadastrada com sucesso", "sucesso");
-        handleClear();
-      }
+      await cadastrarEntrada(entrada);
+      mostrarMensagem("Entrada cadastrada com sucesso", "sucesso");
+      handleClear();
     } catch (error) {
-      const mensagemPadrao = modoEdicao
-        ? "Erro ao atualizar entrada."
-        : "Erro ao cadastrar entrada.";
-
+      const mensagemPadrao = "Erro ao cadastrar entrada.";
       const mensagemErro = error.response?.data?.message || mensagemPadrao;
       mostrarMensagem(mensagemErro, "erro");
       return;
@@ -139,12 +106,8 @@ const CadastroEntrada = () => {
   return (
     <div className="cadastro-page">
       <div className="cadastro-header">
-        <h1>{modoEdicao ? "Editar Entrada" : "Cadastro de Entrada"}</h1>
-        <p>
-          {modoEdicao
-            ? `Atualize os dados da entrada selecionada`
-            : "Registre novas entradas de produtos no estoque"}
-        </p>
+        <h1>Cadastro de Entrada</h1>
+        <p>Registre novas entradas de produtos no estoque</p>
       </div>
       <div className="cadastro-card">
         <form className="cadastro-form" onSubmit={handleSubmit}>
@@ -179,18 +142,14 @@ const CadastroEntrada = () => {
             </select>
           </div>
           <div className="form-actions">
-            <button type="submit">{modoEdicao ? "Atualizar" : "Salvar"}</button>
+            <button type="submit">Salvar</button>
             <button
               type="button"
               onClick={() => {
-                if (modoEdicao) {
-                  navigate("/entrada/itens");
-                } else {
-                  handleClear();
-                }
+                handleClear();
               }}
             >
-              {modoEdicao ? "Voltar" : "Limpar"}
+              Limpar
             </button>
           </div>
         </form>

@@ -21,6 +21,8 @@ import GerenciamentoProdutos from "./pages/Gerenciamento/Produtos";
 import GerenciamentoUsuarios from "./pages/Gerenciamento/Usuarios";
 
 import CadastroEntrada from "./pages/Entrada/Cadastro";
+import ItensEntrada from "./pages/Entrada/Itens";
+import ItensDetalhe from "./pages/Entrada/ItensDetalhe";
 
 
 function App() {
@@ -54,6 +56,10 @@ function App() {
           <Route path="/usuarios/editar/:id" element={<Usuario />} />
 
           <Route path="/entrada/cadastro" element={<CadastroEntrada />} />
+          <Route path="/entrada/itens" element={<ItensEntrada />} />
+          <Route path="/entrada/itens/:id" element={<ItensDetalhe />} />
+
+
 
         </Routes>
       </div>
