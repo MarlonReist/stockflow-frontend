@@ -5,6 +5,7 @@ import {
   FiDownload,
   FiGrid,
   FiSettings,
+  FiUpload,
   FiUserPlus,
 } from "react-icons/fi";
 
@@ -12,6 +13,7 @@ const MainLayout = () => {
   const [cadastroAberto, setCadastroAberto] = useState(false);
   const [gerenciamentoAberto, setGerenciamentoAberto] = useState(false);
   const [entradaAberto, setEntradaAberto] = useState(false);
+  const [saidaAberto, setSaidaAberto] = useState(false);
 
   return (
     <div className="sidebar">
@@ -91,9 +93,26 @@ const MainLayout = () => {
             <NavLink to="/entrada/itens">Itens da entrada</NavLink>
           </div>
         )}
-        <a href="#" className="sidebar-link">
-          Saida
-        </a>
+
+        <button
+          type="button"
+          className={`sidebar-toggle ${saidaAberto ? "open" : ""}`}
+          onClick={() => setSaidaAberto(!saidaAberto)}
+        >
+          <span className="sidebar-item-content">
+            <FiUpload />
+            <span>Saída</span>
+          </span>
+          <FiChevronDown className="sidebar-chevron" />
+        </button>
+
+        {saidaAberto && (
+          <div className="sidebar-submenu">
+            <NavLink to="/saida/cadastro">Cadastro de Saída</NavLink>
+            <NavLink to="/saida/itens">Itens da saída</NavLink>
+          </div>
+        )}
+
         <a href="#" className="sidebar-link">
           Ordem de Servico
         </a>

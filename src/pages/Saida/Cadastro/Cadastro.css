@@ -1,26 +1,24 @@
-.produto-page {
+.saida-page {
   padding: 24px;
 }
 
-.produto-page .produto-header {
+.saida-header {
   margin-bottom: 24px;
-  display: block;
 }
 
-.produto-page .produto-header h1 {
+.saida-header h1 {
   margin: 0 0 8px;
   color: var(--text-primary);
   font-size: 28px;
   font-weight: 700;
 }
 
-.produto-page .produto-header p {
+.saida-header p {
   margin: 0;
   color: var(--text-secondary);
   font-size: 15px;
-  line-height: 1.5;
 }
-.produto-card {
+.saida-card {
   background-color: var(--bg-card);
   padding: 32px;
   border-radius: 16px;
@@ -29,7 +27,7 @@
   box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2);
 }
 
-.produto-form {
+.saida-form {
   display: flex;
   flex-direction: column;
   gap: 24px;
@@ -47,7 +45,7 @@
   font-weight: 600;
 }
 
-.produto-form input {
+.saida-form input {
   width: 100%;
   height: 46px;
   padding: 0 12px;
@@ -58,7 +56,7 @@
   box-sizing: border-box;
 }
 
-.produto-form select {
+.saida-form select {
   width: 100%;
   height: 46px;
   padding: 0 44px 0 14px;
@@ -88,38 +86,38 @@
   background-repeat: no-repeat;
 }
 
-.produto-form select:hover {
+.saida-form select:hover {
   border-color: rgba(167, 139, 250, 0.45);
   background-color: rgba(255, 255, 255, 0.02);
 }
 
-.produto-form select option {
+.saida-form select option {
   background-color: var(--bg-input);
   color: var(--text-primary);
 }
 
-.produto-form select:focus {
+.saida-form select:focus {
   outline: none;
   border-color: var(--primary);
   box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.3);
 }
 
-.produto-form input::placeholder {
+.saida-form input::placeholder {
   color: var(--text-muted);
 }
 
-.produto-form input:focus {
+.saida-form input:focus {
   outline: none;
   border-color: var(--primary);
   box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.3);
 }
 
-.produto-form input[type="number"] {
+.saida-form input[type="number"] {
   -moz-appearance: textfield;
 }
 
-.produto-form input[type="number"]::-webkit-outer-spin-button,
-.produto-form input[type="number"]::-webkit-inner-spin-button {
+.saida-form input[type="number"]::-webkit-outer-spin-button,
+.saida-form input[type="number"]::-webkit-inner-spin-button {
   margin: 0;
   -webkit-appearance: none;
 }
@@ -226,11 +224,11 @@
 }
 
 @media (max-width: 768px) {
-  .produto-page {
+  .saida-page {
     padding: 20px;
   }
 
-  .produto-card {
+  .saida-card {
     padding: 24px;
   }
 
@@ -241,11 +239,11 @@
 }
 
 @media (max-width: 480px) {
-  .produto-page {
+  .saida-page {
     padding: 16px;
   }
 
-  .produto-card {
+  .saida-card {
     padding: 20px;
   }
 
@@ -269,5 +267,4 @@
     left: 16px;
     align-items: stretch;
   }
-
 }

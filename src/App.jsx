@@ -24,6 +24,8 @@ import CadastroEntrada from "./pages/Entrada/Cadastro";
 import ItensEntrada from "./pages/Entrada/Itens";
 import ItensDetalhe from "./pages/Entrada/ItensDetalhe";
 
+import CadastroSaida from "./pages/Saida/Cadastro";
+
 
 function App() {
   return (
@@ -58,6 +60,8 @@ function App() {
           <Route path="/entrada/cadastro" element={<CadastroEntrada />} />
           <Route path="/entrada/itens" element={<ItensEntrada />} />
           <Route path="/entrada/itens/:id" element={<ItensDetalhe />} />
+
+          <Route path="/saida/cadastro" element={<CadastroSaida />} />
 
 
 

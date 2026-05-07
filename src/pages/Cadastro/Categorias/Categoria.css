@@ -15,8 +15,11 @@
 
 .categorias-header p {
   margin: 0;
+  max-width: 720px;
   color: var(--text-secondary);
   font-size: 15px;
+  line-height: 1.5;
+  overflow-wrap: break-word;
 }
 .categorias-card {
   background-color: var(--bg-card);

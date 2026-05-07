@@ -146,7 +146,7 @@ const Produto = () => {
         <h1>{modoEdicao ? "Editar Produto" : "Cadastro de Produto"}</h1>
         <p>
           {modoEdicao
-            ? `Atualize os dados de ${produto.nome || "produto selecionado"}`
+            ? "Atualize os dados do produto selecionado"
             : "Adicione novos produtos ao sistema"}
         </p>
       </div>

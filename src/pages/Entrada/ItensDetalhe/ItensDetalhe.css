@@ -8,8 +8,15 @@
   margin-bottom: 24px;
 }
 
+.entrada-itens-header-top {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 8px;
+}
+
 .entrada-itens-header h1 {
-  margin: 0 0 8px;
+  margin: 0;
   color: var(--text-primary);
   font-size: 28px;
   font-weight: 700;
@@ -19,6 +26,40 @@
   margin: 0;
   color: var(--text-secondary);
   font-size: 15px;
+}
+
+.back-button {
+  width: 42px;
+  height: 42px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border-purple-soft);
+  border-radius: 12px;
+  background-color: rgba(255, 255, 255, 0.03);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition:
+    transform 0.2s ease,
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.back-button:hover {
+  color: var(--text-primary);
+  background-color: rgba(255, 255, 255, 0.07);
+  border-color: rgba(167, 139, 250, 0.45);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.16);
+  transform: translateY(-1px);
+}
+
+.back-button svg {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
 }
 
 .entrada-itens-actions,

@@ -7,9 +7,10 @@ import {
   FiChevronRight,
   FiChevronsRight,
   FiSearch,
+  FiArrowLeft,
 } from "react-icons/fi";
 import { IMaskInput } from "react-imask";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { listarProdutos } from "../../../services/produtoService";
 import {
   cadastrarEntradaItem,
@@ -44,6 +45,7 @@ const ItensDetalhe = () => {
   const [produtos, setProdutos] = useState([]);
   const [entradaItens, setEntradaItens] = useState([]);
   const { id } = useParams();
+  const navigate = useNavigate();
 
   const entradaItensFiltrados = entradaItens;
 
@@ -337,7 +339,18 @@ const ItensDetalhe = () => {
   return (
     <div className="entrada-itens-page">
       <div className="entrada-itens-header">
-        <h1>Itens da Entrada</h1>
+        <div className="entrada-itens-header-top">
+          <button
+            type="button"
+            className="back-button"
+            onClick={() => navigate("/entrada/itens")}
+            aria-label="Voltar para entradas"
+            title="Voltar"
+          >
+            <FiArrowLeft />
+          </button>
+          <h1>Itens da Entrada</h1>
+        </div>
         <p>Gerencie os itens vinculados a esta entrada</p>
       </div>
       <div className="entrada-itens-actions">
@@ -357,7 +370,7 @@ const ItensDetalhe = () => {
         <button
           type="button"
           className="edit-item-button"
-          onClick={handleEditarItem}
+          onClick={() => handleEditarItem()}
         >
           Editar
         </button>
@@ -442,7 +455,7 @@ const ItensDetalhe = () => {
                   <td>{item.produtoNome}</td>
                   <td>{item.quantidade}</td>
                   <td>{formatarUnidadeMedida(item.unidadeMedida)}</td>
-                  <td>{formatarPrecoParaInput(item.valorUnitario)}</td>
+                  <td>{formatarMoeda(item.valorUnitario)}</td>
                   <td>{formatarMoeda(item.valorTotal)}</td>
                 </tr>
               ))}
