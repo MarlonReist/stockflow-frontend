@@ -45,17 +45,6 @@
   font-weight: 600;
 }
 
-.saida-form input {
-  width: 100%;
-  height: 46px;
-  padding: 0 12px;
-  background-color: var(--bg-input);
-  border: 1px solid var(--border-purple-soft);
-  border-radius: 12px;
-  color: var(--text-primary);
-  box-sizing: border-box;
-}
-
 .saida-form select {
   width: 100%;
   height: 46px;
@@ -100,35 +89,6 @@
   outline: none;
   border-color: var(--primary);
   box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.3);
-}
-
-.saida-form input::placeholder {
-  color: var(--text-muted);
-}
-
-.saida-form input:focus {
-  outline: none;
-  border-color: var(--primary);
-  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.3);
-}
-
-.saida-form input[type="number"] {
-  -moz-appearance: textfield;
-}
-
-.saida-form input[type="number"]::-webkit-outer-spin-button,
-.saida-form input[type="number"]::-webkit-inner-spin-button {
-  margin: 0;
-  -webkit-appearance: none;
-}
-
-.form-row {
-  display: flex;
-  gap: 24px;
-}
-
-.form-row .form-group {
-  flex: 1;
 }
 
 .form-actions {
@@ -230,11 +190,6 @@
 
   .saida-card {
     padding: 24px;
-  }
-
-  .form-row {
-    flex-direction: column;
-    gap: 24px;
   }
 }
 

@@ -1,0 +1,550 @@
+.estoque-view {
+  width: 100%;
+  padding: 24px 32px;
+}
+
+.estoque-view-header,
+.estoque-view-actions,
+.estoque-view-card,
+.estoque-view-selected {
+  width: min(100%, 1380px);
+}
+
+.estoque-view-header {
+  margin-bottom: 24px;
+}
+
+.estoque-view-header h1 {
+  margin: 0 0 8px;
+  color: var(--text-primary);
+  font-size: 28px;
+  font-weight: 700;
+}
+
+.estoque-view-header p {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 15px;
+}
+
+.estoque-view-actions {
+  margin-bottom: 18px;
+  padding: 18px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-purple-subtle);
+  border-radius: var(--radius-xl);
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.16);
+}
+
+.estoque-view-actions input {
+  flex: 1;
+  height: 46px;
+  padding: 0 14px;
+  border: 1px solid var(--border-purple-soft);
+  border-radius: var(--radius-lg);
+  background-color: var(--bg-input);
+  color: var(--text-primary);
+  font-size: 14px;
+  font-family: inherit;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background-color 0.2s ease;
+}
+
+.estoque-view-actions input:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(147, 51, 234, 0.22);
+}
+
+.estoque-view-actions .select {
+  height: 46px;
+  padding: 0 22px;
+  border: 1px solid rgba(59, 130, 246, 0.35);
+  border-radius: var(--radius-lg);
+  background-color: rgba(37, 99, 235, 0.12);
+  color: #dbeafe;
+  font-size: 14px;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  transition:
+    transform 0.2s ease,
+    border-color 0.2s ease,
+    background-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.estoque-view-actions .select:hover {
+  transform: translateY(-1px);
+  color: #eff6ff;
+  border-color: rgba(96, 165, 250, 0.55);
+  background-color: rgba(37, 99, 235, 0.2);
+}
+
+.pagination-controls {
+  margin-left: auto;
+  min-height: 54px;
+  padding: 0 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid var(--border-purple-subtle);
+  border-radius: var(--radius-lg);
+  background-color: rgba(255, 255, 255, 0.04);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
+}
+
+.estoque-view-actions .pagination-controls button {
+  width: 36px;
+  height: 36px;
+  min-width: 36px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text-secondary);
+  box-shadow: none;
+  font-size: 14px;
+  cursor: pointer;
+  transition:
+    color 0.2s ease,
+    border-color 0.2s ease,
+    background-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.estoque-view-actions .pagination-controls button:hover {
+  color: var(--text-primary);
+  border-color: rgba(167, 139, 250, 0.35);
+  background-color: rgba(255, 255, 255, 0.06);
+  transform: none;
+}
+
+.estoque-view-actions .pagination-controls button:disabled {
+  cursor: not-allowed;
+  opacity: 0.42;
+  color: rgba(148, 163, 184, 0.7);
+  border-color: transparent;
+  background-color: transparent;
+}
+
+.estoque-view-actions .pagination-controls button:disabled:hover {
+  color: rgba(148, 163, 184, 0.7);
+  border-color: transparent;
+  background-color: transparent;
+}
+
+.estoque-view-actions .pagination-controls button svg {
+  width: 17px;
+  height: 17px;
+  flex-shrink: 0;
+}
+
+.total-itens {
+  margin-left: 6px;
+  padding-left: 12px;
+  border-left: 1px solid rgba(148, 163, 184, 0.18);
+  color: var(--text-primary);
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.estoque-view-card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-purple-subtle);
+  border-radius: var(--radius-xl);
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+}
+
+.estoque-view-table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.estoque-view-table {
+  width: 100%;
+  min-width: 420px;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.estoque-view-table th,
+.estoque-view-table td {
+  padding: 16px 14px;
+  text-align: left;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.08);
+  color: var(--text-secondary);
+  font-size: 14px;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+.estoque-view-table th {
+  color: var(--text-primary);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.estoque-view-table thead tr {
+  background-color: rgba(255, 255, 255, 0.015);
+}
+
+.estoque-view-table tbody tr {
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.estoque-view-table tbody tr:hover {
+  background-color: rgba(255, 255, 255, 0.03);
+}
+
+.estoque-view-table tbody tr.selected-row {
+  background-color: rgba(124, 58, 237, 0.24);
+  box-shadow:
+    inset 4px 0 0 #a855f7,
+    inset 0 1px 0 rgba(168, 85, 247, 0.18),
+    inset 0 -1px 0 rgba(168, 85, 247, 0.18);
+}
+
+.estoque-view-table tbody tr.selected-row:hover {
+  background-color: rgba(124, 58, 237, 0.28);
+}
+
+.estoque-view-table tbody tr.selected-row td {
+  color: #f5f3ff;
+  font-weight: 600;
+}
+
+.estoque-view-table tr:last-child td {
+  border-bottom: none;
+}
+
+.estoque-view-table th:nth-child(1),
+.estoque-view-table td:nth-child(1) {
+  width: 90px;
+}
+
+.estoque-view-table th:nth-child(2),
+.estoque-view-table td:nth-child(2) {
+  width: auto;
+}
+
+.estoque-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background-color: rgba(3, 7, 18, 0.62);
+  backdrop-filter: blur(7px);
+  -webkit-backdrop-filter: blur(7px);
+}
+
+.estoque-modal-box {
+  width: min(100%, 1180px);
+  height: min(760px, calc(100vh - 48px));
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-purple-subtle);
+  border-radius: var(--radius-xl);
+  box-shadow: 0 28px 80px rgba(0, 0, 0, 0.42);
+}
+
+.estoque-modal-header {
+  padding: 22px 24px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+}
+
+.estoque-modal-header h2 {
+  margin: 0;
+  color: var(--text-primary);
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.close-modal-btn {
+  width: 38px;
+  height: 38px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border-purple-soft);
+  border-radius: 10px;
+  background-color: rgba(255, 255, 255, 0.03);
+  color: var(--text-secondary);
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.close-modal-btn:hover {
+  background-color: rgba(255, 255, 255, 0.07);
+  border-color: rgba(167, 139, 250, 0.45);
+  color: var(--text-primary);
+  transform: translateY(-1px);
+}
+
+.estoque-view-products-actions {
+  width: auto;
+  margin: 0;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.08);
+}
+
+.saldo-checkbox {
+  height: 32px;
+  padding: 0 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid var(--border-purple-soft);
+  border-radius: 8px;
+  background-color: rgba(255, 255, 255, 0.03);
+  color: var(--text-primary);
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+  user-select: none;
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.saldo-checkbox-inline {
+  flex-shrink: 0;
+}
+
+.saldo-checkbox:hover {
+  border-color: rgba(167, 139, 250, 0.45);
+  background-color: rgba(255, 255, 255, 0.06);
+}
+
+.saldo-checkbox input {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 14px;
+  height: 14px;
+  margin: 0;
+  display: inline-grid;
+  place-items: center;
+  border: 1px solid rgba(167, 139, 250, 0.5);
+  border-radius: 4px;
+  background-color: rgba(15, 23, 42, 0.82);
+  cursor: pointer;
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
+}
+
+.saldo-checkbox input::after {
+  content: "";
+  width: 7px;
+  height: 3px;
+  border-left: 1.5px solid #ffffff;
+  border-bottom: 1.5px solid #ffffff;
+  transform: rotate(-45deg) scale(0);
+  transform-origin: center;
+  transition: transform 0.15s ease;
+}
+
+.saldo-checkbox input:hover {
+  border-color: rgba(192, 132, 252, 0.8);
+}
+
+.saldo-checkbox input:checked {
+  border-color: rgba(168, 85, 247, 0.85);
+  background-color: #7c3aed;
+  box-shadow: 0 0 0 4px rgba(124, 58, 237, 0.18);
+}
+
+.saldo-checkbox input:checked::after {
+  transform: rotate(-45deg) scale(1);
+}
+
+.saldo-checkbox input:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 4px rgba(124, 58, 237, 0.24);
+}
+
+.estoque-products-table {
+  min-width: 760px;
+}
+
+.estoque-products-table th:nth-child(1),
+.estoque-products-table td:nth-child(1) {
+  width: 120px;
+}
+
+.estoque-products-table th:nth-child(2),
+.estoque-products-table td:nth-child(2) {
+  width: auto;
+}
+
+.estoque-products-table th:nth-child(3),
+.estoque-products-table td:nth-child(3),
+.estoque-products-table th:nth-child(4),
+.estoque-products-table td:nth-child(4) {
+  width: 140px;
+}
+
+.toast-container {
+  position: fixed;
+  top: 24px;
+  right: 24px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 12px;
+  isolation: isolate;
+  pointer-events: none;
+}
+
+.form-message {
+  position: relative;
+  z-index: 1;
+  min-width: 280px;
+  max-width: 360px;
+  padding: 16px 18px;
+  border: 1px solid transparent;
+  border-radius: 16px;
+  background: var(--bg-card);
+  color: var(--text-primary);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.35);
+  font-size: 14px;
+  font-weight: 600;
+  white-space: pre-line;
+  filter: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  transform: translateZ(0);
+}
+
+.form-message::before {
+  content: "";
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  margin-right: 10px;
+  border-radius: 999px;
+  vertical-align: middle;
+}
+
+.form-message-sucesso {
+  border-color: rgba(34, 197, 94, 0.45);
+}
+
+.form-message-sucesso::before {
+  background: #22c55e;
+  box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.12);
+}
+
+.form-message-erro {
+  border-color: rgba(239, 68, 68, 0.45);
+}
+
+.form-message-erro::before {
+  background: #ef4444;
+  box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.12);
+}
+
+@media (max-width: 768px) {
+  .estoque-view {
+    padding: 20px;
+  }
+
+  .estoque-view-actions {
+    flex-wrap: wrap;
+  }
+
+  .estoque-view-actions input {
+    flex: 1 1 100%;
+  }
+
+  .pagination-controls {
+    margin-left: 0;
+  }
+
+  .estoque-overlay {
+    padding: 20px;
+  }
+
+}
+
+@media (max-width: 480px) {
+  .estoque-view {
+    padding: 16px;
+  }
+
+  .estoque-view-header h1 {
+    font-size: 24px;
+  }
+
+  .estoque-view-actions {
+    padding: 16px;
+  }
+
+  .pagination-controls {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .estoque-overlay {
+    padding: 12px;
+  }
+
+  .estoque-modal-box {
+    height: calc(100vh - 24px);
+  }
+
+  .estoque-modal-header {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .estoque-modal-header h2 {
+    font-size: 20px;
+  }
+
+  .toast-container {
+    top: 16px;
+    right: 16px;
+    left: 16px;
+    align-items: stretch;
+  }
+
+  .form-message {
+    min-width: 0;
+    max-width: 100%;
+  }
+}

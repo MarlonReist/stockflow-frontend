@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
 import {
+  FiBox,
   FiChevronDown,
   FiDownload,
   FiGrid,
@@ -14,6 +15,7 @@ const MainLayout = () => {
   const [gerenciamentoAberto, setGerenciamentoAberto] = useState(false);
   const [entradaAberto, setEntradaAberto] = useState(false);
   const [saidaAberto, setSaidaAberto] = useState(false);
+  const [estoqueAberto, setEstoqueAberto] = useState(false);
 
   return (
     <div className="sidebar">
@@ -116,9 +118,26 @@ const MainLayout = () => {
         <a href="#" className="sidebar-link">
           Ordem de Servico
         </a>
-        <a href="#" className="sidebar-link">
-          Estoque
-        </a>
+
+        <button
+          type="button"
+          className={`sidebar-toggle ${estoqueAberto ? "open" : ""}`}
+          onClick={() => setEstoqueAberto(!estoqueAberto)}
+        >
+          <span className="sidebar-item-content">
+            <FiBox />
+            <span>Estoque</span>
+          </span>
+          <FiChevronDown className="sidebar-chevron" />
+        </button>
+
+        {estoqueAberto && (
+          <div className="sidebar-submenu">
+            <NavLink to="/estoque/visualizar">Visualizar Estoque</NavLink>
+            <NavLink to="/estoque/transferencia">Transferência entre Almoxarifados</NavLink>
+          </div>
+        )}
+
         <a href="#" className="sidebar-link">
           Relatorios
         </a>

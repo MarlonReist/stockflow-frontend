@@ -14,11 +14,11 @@ import { useNavigate, useParams } from "react-router-dom";
 import { listarProdutos } from "../../../services/produtoService";
 import { formatarUnidadeMedida } from "../../../utils/unidadeMedida";
 import {
-  cadastrarEntradaItem,
-  listarEntradaItens,
-  deletarEntradaItem,
-  atualizarEntradaItem,
-} from "../../../services/entradaItemService";
+  cadastrarSaidaItem,
+  listarSaidaItens,
+  deletarSaidaItem,
+  atualizarSaidaItem,
+} from "../../../services/saidaItemService";
 
 const movimentacaoInicial = {
   idMov: "",
@@ -39,30 +39,30 @@ const ItensDetalhe = () => {
   const [seletorProdutoAberto, setSeletorProdutoAberto] = useState(false);
   const [produtoSelecionado, setProdutoSelecionado] = useState(null);
   const [buscaProduto, setBuscaProduto] = useState("");
-  const [paginaEntradaItensAtual, setPaginaEntradaItensAtual] = useState(1);
+  const [paginaSaidaItensAtuais, setPaginaSaidaItensAtual] = useState(1);
   const [paginaProdutoAtual, setPaginaProdutoAtual] = useState(1);
-  const itensPorPaginaEntrada = 10;
+  const itensPorPaginaSaida = 10;
   const itensPorPaginaProduto = 10;
   const [produtos, setProdutos] = useState([]);
-  const [entradaItens, setEntradaItens] = useState([]);
+  const [saidaItens, setSaidaItens] = useState([]);
   const { id } = useParams();
   const navigate = useNavigate();
 
-  const entradaItensFiltrados = entradaItens;
+  const saidaItensFiltrados = saidaItens;
 
   useEffect(() => {
-    carregarEntradaItens();
+    carregarSaidaItens();
   }, [id]);
 
-  const carregarEntradaItens = async () => {
+  const carregarSaidaItens = async () => {
     try {
-      const response = await listarEntradaItens();
-      const itensDaEntrada = response.data.filter((item) => {
-        return item.entradaEstoqueId === Number(id);
+      const response = await listarSaidaItens();
+      const itensDaSaida = response.data.filter((item) => {
+        return item.saidaEstoqueId === Number(id);
       });
-      setEntradaItens(itensDaEntrada);
+      setSaidaItens(itensDaSaida);
     } catch (error) {
-      mostrarMensagem("Erro ao listar Entrada Itens", "erro");
+      mostrarMensagem("Erro ao listar Saída Itens", "erro");
     }
   };
 
@@ -126,7 +126,7 @@ const ItensDetalhe = () => {
     }
 
     const payload = {
-      entradaEstoqueId: Number(id),
+      saidaEstoqueId: Number(id),
       produtoId: Number(movimentacao.idProduto),
       quantidade: Number(movimentacao.quantidade),
       valorUnitario: Number(
@@ -137,9 +137,9 @@ const ItensDetalhe = () => {
     try {
       let response;
       if (movimentacao.idMov) {
-        response = await atualizarEntradaItem(movimentacao.idMov, payload);
+        response = await atualizarSaidaItem(movimentacao.idMov, payload);
       } else {
-        response = await cadastrarEntradaItem(payload);
+        response = await cadastrarSaidaItem(payload);
       }
 
       const itemSalvo = response.data;
@@ -152,7 +152,7 @@ const ItensDetalhe = () => {
       }));
       setMovimentacaoSalva(true);
       mostrarMensagem("Item salvo com sucesso", "sucesso");
-      carregarEntradaItens();
+      carregarSaidaItens();
     } catch (error) {
       mostrarMensagem(error.response?.data?.message, "erro");
     }
@@ -182,10 +182,10 @@ const ItensDetalhe = () => {
 
   const handleDelete = async (id) => {
     try {
-      await deletarEntradaItem(id);
+      await deletarSaidaItem(id);
 
-      setEntradaItens((entradaItensAtuais) =>
-        entradaItensAtuais.filter((entradaItem) => entradaItem.id !== id),
+      setSaidaItens((saidaItensAtuais) =>
+        saidaItensAtuais.filter((saidaItem) => saidaItem.id !== id),
       );
 
       mostrarMensagem("Item excluido com sucesso", "sucesso");
@@ -217,13 +217,13 @@ const ItensDetalhe = () => {
     );
   });
 
-  const indiceInicial = (paginaEntradaItensAtual - 1) * itensPorPaginaEntrada;
+  const indiceInicial = (paginaSaidaItensAtuais - 1) * itensPorPaginaSaida;
   const indiceInicialProduto = (paginaProdutoAtual - 1) * itensPorPaginaProduto;
 
-  const indiceFinal = indiceInicial + itensPorPaginaEntrada;
+  const indiceFinal = indiceInicial + itensPorPaginaSaida;
   const indiceFinalProduto = indiceInicialProduto + itensPorPaginaProduto;
 
-  const entradaItensPaginados = entradaItensFiltrados.slice(
+  const saidaItensPaginados = saidaItensFiltrados.slice(
     indiceInicial,
     indiceFinal,
   );
@@ -232,37 +232,37 @@ const ItensDetalhe = () => {
     indiceFinalProduto,
   );
 
-  const totalPaginasEntradaItens = Math.ceil(
-    entradaItensFiltrados.length / itensPorPaginaEntrada,
+  const totalPaginasSaidasItens = Math.ceil(
+    saidaItensFiltrados.length / itensPorPaginaSaida,
   );
   const totalPaginasProduto = Math.ceil(
     produtosFiltrados.length / itensPorPaginaProduto,
   );
 
-  const inicioExibidoEntrada =
-    entradaItensFiltrados.length > 0 ? indiceInicial + 1 : 0;
+  const inicioExibidoSaida =
+    saidaItensFiltrados.length > 0 ? indiceInicial + 1 : 0;
   const inicioExibidoProduto =
     produtosFiltrados.length > 0 ? indiceInicialProduto + 1 : 0;
 
-  const fimExibidoEntradaItens = Math.min(
+  const fimExibidoSaidaItens = Math.min(
     indiceFinal,
-    entradaItensFiltrados.length,
+    saidaItensFiltrados.length,
   );
   const fimExibidoProduto = Math.min(
     indiceFinalProduto,
     produtosFiltrados.length,
   );
 
-  const handlePrimeiraPaginaEntradaItens = () => {
-    setPaginaEntradaItensAtual(1);
+  const handlePrimeiraPaginaSaidaItens = () => {
+    setPaginaSaidaItensAtual(1);
   };
   const handlePrimeiraPaginaProduto = () => {
     setPaginaProdutoAtual(1);
   };
 
-  const handlePaginaAnteriorEntradaItens = () => {
-    if (paginaEntradaItensAtual > 1) {
-      setPaginaEntradaItensAtual(paginaEntradaItensAtual - 1);
+  const handlePaginaAnteriorSaidaItens = () => {
+    if (paginaSaidaItensAtuais > 1) {
+      setPaginaSaidaItensAtual(paginaSaidaItensAtuais - 1);
     }
   };
   const handlePaginaAnteriorProduto = () => {
@@ -271,10 +271,10 @@ const ItensDetalhe = () => {
     }
   };
 
-  const handleRecarregarEntradaItens = () => {
+  const handleRecarregarSaidaItens = () => {
     setItemSelecionado(null);
-    setPaginaEntradaItensAtual(1);
-    carregarEntradaItens();
+    setPaginaSaidaItensAtual(1);
+    carregarSaidaItens();
   };
   const handleRecarregarProduto = () => {
     setBuscaProduto("");
@@ -282,17 +282,17 @@ const ItensDetalhe = () => {
     setPaginaProdutoAtual(1);
   };
 
-  const handleProximaPaginaEntradaItens = () => {
-    if (paginaEntradaItensAtual < totalPaginasEntradaItens)
-      setPaginaEntradaItensAtual(paginaEntradaItensAtual + 1);
+  const handleProximaPaginaSaidaItens = () => {
+    if (paginaSaidaItensAtuais < totalPaginasSaidasItens)
+      setPaginaSaidaItensAtual(paginaSaidaItensAtuais + 1);
   };
   const handleProximaPaginaProduto = () => {
     if (paginaProdutoAtual < totalPaginasProduto)
       setPaginaProdutoAtual(paginaProdutoAtual + 1);
   };
 
-  const handleUltimaPaginaEntradaItens = () => {
-    setPaginaEntradaItensAtual(totalPaginasEntradaItens);
+  const handleUltimaPaginaSaidaItens = () => {
+    setPaginaSaidaItensAtual(totalPaginasSaidasItens);
   };
   const handleUltimaPaginaProduto = () => {
     setPaginaProdutoAtual(totalPaginasProduto);
@@ -330,23 +330,23 @@ const ItensDetalhe = () => {
   };
 
   return (
-    <div className="entrada-itens-page">
-      <div className="entrada-itens-header">
-        <div className="entrada-itens-header-top">
+    <div className="saida-itens-page">
+      <div className="saida-itens-header">
+        <div className="saida-itens-header-top">
           <button
             type="button"
             className="back-button"
-            onClick={() => navigate("/entrada/itens")}
-            aria-label="Voltar para entradas"
+            onClick={() => navigate("/saida/itens")}
+            aria-label="Voltar para saída"
             title="Voltar"
           >
             <FiArrowLeft />
           </button>
-          <h1>Itens da Entrada</h1>
+          <h1>Itens da Saída</h1>
         </div>
-        <p>Gerencie os itens vinculados a esta entrada</p>
+        <p>Gerencie os itens vinculados a esta saída</p>
       </div>
-      <div className="entrada-itens-actions">
+      <div className="saida-itens-actions">
         <button
           type="button"
           className="new-item-button"
@@ -377,49 +377,49 @@ const ItensDetalhe = () => {
         <div className="pagination-controls">
           <button
             className="first"
-            onClick={handlePrimeiraPaginaEntradaItens}
-            disabled={paginaEntradaItensAtual === 1}
+            onClick={handlePrimeiraPaginaSaidaItens}
+            disabled={paginaSaidaItensAtuais === 1}
           >
             <FiChevronsLeft />
           </button>
           <button
             className="previous"
-            onClick={handlePaginaAnteriorEntradaItens}
-            disabled={paginaEntradaItensAtual === 1}
+            onClick={handlePaginaAnteriorSaidaItens}
+            disabled={paginaSaidaItensAtuais === 1}
           >
             <FiChevronLeft />
           </button>
-          <button className="refresh" onClick={handleRecarregarEntradaItens}>
+          <button className="refresh" onClick={handleRecarregarSaidaItens}>
             <FiRefreshCw />
           </button>
           <button
             className="next"
-            onClick={handleProximaPaginaEntradaItens}
+            onClick={handleProximaPaginaSaidaItens}
             disabled={
-              totalPaginasEntradaItens === 0 ||
-              paginaEntradaItensAtual === totalPaginasEntradaItens
+              totalPaginasSaidasItens === 0 ||
+              paginaSaidaItensAtuais === totalPaginasSaidasItens
             }
           >
             <FiChevronRight />
           </button>
           <button
             className="last"
-            onClick={handleUltimaPaginaEntradaItens}
+            onClick={handleUltimaPaginaSaidaItens}
             disabled={
-              totalPaginasEntradaItens === 0 ||
-              paginaEntradaItensAtual === totalPaginasEntradaItens
+              totalPaginasSaidasItens === 0 ||
+              paginaSaidaItensAtuais === totalPaginasSaidasItens
             }
           >
             <FiChevronsRight />
           </button>
           <span className="total-itens">
-            {`${inicioExibidoEntrada} - ${fimExibidoEntradaItens} / ${entradaItensFiltrados.length}`}
+            {`${inicioExibidoSaida} - ${fimExibidoSaidaItens} / ${saidaItensFiltrados.length}`}
           </span>
         </div>
       </div>
-      <div className="entrada-itens-card">
-        <div className="entrada-itens-table-wrapper">
-          <table className="entrada-itens-table">
+      <div className="saida-itens-card">
+        <div className="saida-itens-table-wrapper">
+          <table className="saida-itens-table">
             <thead>
               <tr>
                 <th>ID Mov.</th>
@@ -432,7 +432,7 @@ const ItensDetalhe = () => {
               </tr>
             </thead>
             <tbody>
-              {entradaItensPaginados.map((item) => (
+              {saidaItensPaginados.map((item) => (
                 <tr
                   key={item.id}
                   className={

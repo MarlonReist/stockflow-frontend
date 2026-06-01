@@ -4,23 +4,29 @@
 
 .produto-page .produto-header {
   margin-bottom: 24px;
-  display: block;
+  padding: 0 !important;
+  display: block !important;
+  border: 0 !important;
+  box-shadow: none !important;
 }
 
 .produto-page .produto-header h1 {
-  margin: 0 0 8px;
+  margin: 0 0 8px !important;
   color: var(--text-primary);
-  font-size: 28px;
+  font-size: 28px !important;
   font-weight: 700;
 }
 
 .produto-page .produto-header p {
-  margin: 0;
+  margin: 0 !important;
+  max-width: 720px;
   color: var(--text-secondary);
   font-size: 15px;
   line-height: 1.5;
+  overflow-wrap: break-word;
 }
-.produto-card {
+
+.produto-page .produto-card {
   background-color: var(--bg-card);
   padding: 32px;
   border-radius: 16px;
@@ -29,19 +35,19 @@
   box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2);
 }
 
-.produto-form {
+.produto-page .produto-form {
   display: flex;
   flex-direction: column;
   gap: 24px;
 }
 
-.form-group {
+.produto-page .form-group {
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
 
-.form-group label {
+.produto-page .form-group label {
   color: #d1d5db;
   font-size: 14px;
   font-weight: 600;
@@ -124,22 +130,22 @@
   -webkit-appearance: none;
 }
 
-.form-row {
+.produto-page .form-row {
   display: flex;
   gap: 24px;
 }
 
-.form-row .form-group {
+.produto-page .form-row .form-group {
   flex: 1;
 }
 
-.form-actions {
+.produto-page .form-actions {
   display: flex;
   gap: 16px;
   padding-top: 12px;
 }
 
-.form-actions button {
+.produto-page .form-actions button {
   padding: 10px 32px;
   border: none;
   border-radius: 12px;
@@ -147,13 +153,13 @@
   cursor: pointer;
 }
 
-.form-actions button[type="submit"] {
+.produto-page .form-actions button[type="submit"] {
   background: linear-gradient(to right, var(--primary), var(--accent));
   box-shadow: 0 4px 6px rgba(124, 58, 237, 0.4);
   color: white;
 }
 
-.form-actions button[type="submit"]:hover {
+.produto-page .form-actions button[type="submit"]:hover {
   background: linear-gradient(
     to right,
     var(--primary-dark),
@@ -161,18 +167,18 @@
   );
 }
 
-.form-actions button[type="button"] {
+.produto-page .form-actions button[type="button"] {
   border: 1px solid var(--border-purple-soft);
   color: #d1d5db;
   background: transparent;
 }
 
-.form-actions button[type="button"]:hover {
+.produto-page .form-actions button[type="button"]:hover {
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(88, 28, 135, 0.5);
 }
 
-.toast-container {
+.produto-page .toast-container {
   position: fixed;
   right: 24px;
   top: 24px;
@@ -183,7 +189,7 @@
   align-items: flex-end;
 }
 
-.form-message {
+.produto-page .form-message {
   min-width: 280px;
   max-width: 360px;
   padding: 16px 18px;
@@ -197,7 +203,7 @@
   white-space: pre-line;
 }
 
-.form-message::before {
+.produto-page .form-message::before {
   content: "";
   display: inline-block;
   width: 8px;
@@ -207,20 +213,20 @@
   vertical-align: middle;
 }
 
-.form-message-sucesso {
+.produto-page .form-message-sucesso {
   border-color: rgba(34, 197, 94, 0.45);
 }
 
-.form-message-sucesso::before {
+.produto-page .form-message-sucesso::before {
   background: #22c55e;
   box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.12);
 }
 
-.form-message-erro {
+.produto-page .form-message-erro {
   border-color: rgba(239, 68, 68, 0.45);
 }
 
-.form-message-erro::before {
+.produto-page .form-message-erro::before {
   background: #ef4444;
   box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.12);
 }
@@ -230,11 +236,11 @@
     padding: 20px;
   }
 
-  .produto-card {
+  .produto-page .produto-card {
     padding: 24px;
   }
 
-  .form-row {
+  .produto-page .form-row {
     flex-direction: column;
     gap: 24px;
   }
@@ -245,29 +251,28 @@
     padding: 16px;
   }
 
-  .produto-card {
+  .produto-page .produto-card {
     padding: 20px;
   }
 
-  .form-actions {
+  .produto-page .form-actions {
     flex-direction: column;
   }
 
-  .form-actions button {
+  .produto-page .form-actions button {
     width: 100%;
   }
 
-  .form-message {
+  .produto-page .form-message {
     min-width: 0;
     max-width: none;
     width: 100%;
   }
 
-  .toast-container {
+  .produto-page .toast-container {
     right: 16px;
     top: 16px;
     left: 16px;
     align-items: stretch;
   }
-
 }

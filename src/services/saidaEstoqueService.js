@@ -21,7 +21,7 @@ function buscarSaidaPorId(id) {
 }
 
 function atualizarSaida(id, saida) {
-  return api.put(`/saida_estoque/${id}`, entrada);
+  return api.put(`/saida_estoque/${id}`, saida);
 }
 
 function finalizarSaida(id, saida) {
