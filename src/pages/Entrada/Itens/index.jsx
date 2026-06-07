@@ -1,5 +1,18 @@
 import React, { useState, useEffect } from "react";
-import { FiBox, FiTrash2, FiCheckCircle, FiSlash, FiX } from "react-icons/fi";
+import {
+  FiBox,
+  FiTrash2,
+  FiCheckCircle,
+  FiSlash,
+  FiX,
+  FiChevronUp,
+  FiChevronDown,
+  FiChevronsLeft,
+  FiChevronLeft,
+  FiRefreshCw,
+  FiChevronRight,
+  FiChevronsRight,
+} from "react-icons/fi";
 import "./Itens.css";
 import {
   listarEntradas,
@@ -16,7 +29,13 @@ const ItensEntrada = () => {
   const [buscaData, setBuscaData] = useState("");
   const [entradaSelecionada, setEntradaSelecionada] = useState(null);
   const [acaoConfirmacao, setAcaoConfirmacao] = useState("");
+  const [paginaAtual, setPaginaAtual] = useState(1);
+  const [ordenacao, setOrdenacao] = useState({
+    coluna: "id",
+    direcao: "asc",
+  });
 
+  const itensPorPagina = 10;
   const navigate = useNavigate();
 
   const mostrarMensagem = (texto, tipo) => {
@@ -76,7 +95,7 @@ const ItensEntrada = () => {
             : entradaAtual,
         ),
       );
-      mostrarMensagem(`Entrada Finalizada com sucesso`, "sucesso");
+      mostrarMensagem("Entrada finalizada com sucesso", "sucesso");
       setEntradaSelecionada(null);
       setAcaoConfirmacao("");
     } catch (error) {
@@ -98,7 +117,7 @@ const ItensEntrada = () => {
             : entradaAtual,
         ),
       );
-      mostrarMensagem(`Entrada cancelada com sucesso`, "sucesso");
+      mostrarMensagem("Entrada cancelada com sucesso", "sucesso");
       setEntradaSelecionada(null);
       setAcaoConfirmacao("");
     } catch (error) {
@@ -121,6 +140,83 @@ const ItensEntrada = () => {
     return matchBusca && matchData;
   });
 
+  const handleOrdenar = (coluna) => {
+    setOrdenacao((ordenacaoAtual) => {
+      if (ordenacaoAtual.coluna === coluna) {
+        return {
+          coluna,
+          direcao: ordenacaoAtual.direcao === "asc" ? "desc" : "asc",
+        };
+      }
+
+      return {
+        coluna,
+        direcao: "asc",
+      };
+    });
+  };
+
+  const entradasOrdenadas = [...entradasFiltradas].sort((a, b) => {
+    let valorA = a[ordenacao.coluna];
+    let valorB = b[ordenacao.coluna];
+
+    if (ordenacao.coluna === "id") {
+      valorA = Number(valorA);
+      valorB = Number(valorB);
+    } else if (ordenacao.coluna === "dataEntrada") {
+      valorA = String(valorA);
+      valorB = String(valorB);
+    } else {
+      valorA = String(valorA).toLowerCase();
+      valorB = String(valorB).toLowerCase();
+    }
+
+    if (valorA < valorB) {
+      return ordenacao.direcao === "asc" ? -1 : 1;
+    }
+
+    if (valorA > valorB) {
+      return ordenacao.direcao === "asc" ? 1 : -1;
+    }
+
+    return 0;
+  });
+
+  const indiceInicial = (paginaAtual - 1) * itensPorPagina;
+  const indiceFinal = indiceInicial + itensPorPagina;
+
+  const entradasPaginadas = entradasOrdenadas.slice(indiceInicial, indiceFinal);
+
+  const totalPaginas = Math.ceil(entradasOrdenadas.length / itensPorPagina);
+  const inicioExibido = entradasOrdenadas.length > 0 ? indiceInicial + 1 : 0;
+  const fimExibido = Math.min(indiceFinal, entradasOrdenadas.length);
+
+  const handlePrimeiraPagina = () => {
+    setPaginaAtual(1);
+  };
+
+  const handlePaginaAnterior = () => {
+    if (paginaAtual > 1) {
+      setPaginaAtual(paginaAtual - 1);
+    }
+  };
+
+  const handleRecarregar = () => {
+    setBusca("");
+    setBuscaData("");
+    setPaginaAtual(1);
+  };
+
+  const handleProximaPagina = () => {
+    if (paginaAtual < totalPaginas) {
+      setPaginaAtual(paginaAtual + 1);
+    }
+  };
+
+  const handleUltimaPagina = () => {
+    setPaginaAtual(totalPaginas);
+  };
+
   return (
     <div className="gerenciamento-itens-page">
       <div className="gerenciamento-itens-header">
@@ -132,19 +228,28 @@ const ItensEntrada = () => {
           type="text"
           placeholder="Buscar por ID ou Fornecedor..."
           value={busca}
-          onChange={(e) => setBusca(e.target.value)}
+          onChange={(e) => {
+            setBusca(e.target.value);
+            setPaginaAtual(1);
+          }}
         />
         <div className="date-filter-group">
           <input
             type="date"
             placeholder="Buscar por data"
             value={buscaData}
-            onChange={(e) => setBuscaData(e.target.value)}
+            onChange={(e) => {
+              setBuscaData(e.target.value);
+              setPaginaAtual(1);
+            }}
           />
           <button
             type="button"
             className="clear-date-button"
-            onClick={() => setBuscaData("")}
+            onClick={() => {
+              setBuscaData("");
+              setPaginaAtual(1);
+            }}
           >
             <FiX />
           </button>
@@ -152,21 +257,107 @@ const ItensEntrada = () => {
         <button type="button" onClick={() => navigate("/entrada/cadastro")}>
           + Nova Entrada
         </button>
+        <div className="pagination-controls">
+          <button
+            className="first"
+            onClick={handlePrimeiraPagina}
+            disabled={paginaAtual === 1}
+          >
+            <FiChevronsLeft />
+          </button>
+          <button
+            className="previous"
+            onClick={handlePaginaAnterior}
+            disabled={paginaAtual === 1}
+          >
+            <FiChevronLeft />
+          </button>
+          <button className="refresh" onClick={handleRecarregar}>
+            <FiRefreshCw />
+          </button>
+          <button
+            className="next"
+            onClick={handleProximaPagina}
+            disabled={totalPaginas === 0 || paginaAtual === totalPaginas}
+          >
+            <FiChevronRight />
+          </button>
+          <button
+            className="last"
+            onClick={handleUltimaPagina}
+            disabled={totalPaginas === 0 || paginaAtual === totalPaginas}
+          >
+            <FiChevronsRight />
+          </button>
+          <span className="total-itens">
+            {`${inicioExibido} - ${fimExibido} / ${entradasOrdenadas.length}`}
+          </span>
+        </div>
       </div>
       <div className="gerenciamento-itens-card">
         <table className="gerenciamento-itens-table">
           <thead>
             <tr>
-              <th>ID</th>
-              <th>Fornecedor</th>
-              <th>Almoxarifado</th>
-              <th>Data</th>
-              <th>Status</th>
+              <th onClick={() => handleOrdenar("id")}>
+                <span className="sortable-header">
+                  ID
+                  {ordenacao.coluna === "id" &&
+                    (ordenacao.direcao === "asc" ? (
+                      <FiChevronUp />
+                    ) : (
+                      <FiChevronDown />
+                    ))}
+                </span>
+              </th>
+              <th onClick={() => handleOrdenar("fornecedorNome")}>
+                <span className="sortable-header">
+                  Fornecedor
+                  {ordenacao.coluna === "fornecedorNome" &&
+                    (ordenacao.direcao === "asc" ? (
+                      <FiChevronUp />
+                    ) : (
+                      <FiChevronDown />
+                    ))}
+                </span>
+              </th>
+              <th onClick={() => handleOrdenar("almoxarifadoNome")}>
+                <span className="sortable-header">
+                  Almoxarifado
+                  {ordenacao.coluna === "almoxarifadoNome" &&
+                    (ordenacao.direcao === "asc" ? (
+                      <FiChevronUp />
+                    ) : (
+                      <FiChevronDown />
+                    ))}
+                </span>
+              </th>
+              <th onClick={() => handleOrdenar("dataEntrada")}>
+                <span className="sortable-header">
+                  Data
+                  {ordenacao.coluna === "dataEntrada" &&
+                    (ordenacao.direcao === "asc" ? (
+                      <FiChevronUp />
+                    ) : (
+                      <FiChevronDown />
+                    ))}
+                </span>
+              </th>
+              <th onClick={() => handleOrdenar("status")}>
+                <span className="sortable-header">
+                  Status
+                  {ordenacao.coluna === "status" &&
+                    (ordenacao.direcao === "asc" ? (
+                      <FiChevronUp />
+                    ) : (
+                      <FiChevronDown />
+                    ))}
+                </span>
+              </th>
               <th>Ações</th>
             </tr>
           </thead>
           <tbody>
-            {entradasFiltradas.map((entrada) => (
+            {entradasPaginadas.map((entrada) => (
               <tr key={entrada.id}>
                 <td>{entrada.id}</td>
                 <td>{entrada.fornecedorNome}</td>

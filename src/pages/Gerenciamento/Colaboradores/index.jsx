@@ -1,5 +1,15 @@
 import React, { useState, useEffect } from "react";
-import { FiEdit2, FiTrash2 } from "react-icons/fi";
+import {
+  FiEdit2,
+  FiTrash2,
+  FiChevronUp,
+  FiChevronDown,
+  FiChevronsLeft,
+  FiChevronLeft,
+  FiRefreshCw,
+  FiChevronRight,
+  FiChevronsRight,
+} from "react-icons/fi";
 import "./Colaboradores.css";
 import {
   listarColaboradores,
@@ -12,7 +22,13 @@ const GerenciamentoColaboradores = () => {
   const [mensagens, setMensagens] = useState([]);
   const [busca, setBusca] = useState("");
   const [colaboradorSelecionado, setColaboradorSelecionado] = useState(null);
+  const [paginaAtual, setPaginaAtual] = useState(1);
+  const [ordenacao, setOrdenacao] = useState({
+    coluna: "id",
+    direcao: "asc",
+  });
 
+  const itensPorPagina = 10;
   const navigate = useNavigate();
 
   const mostrarMensagem = (texto, tipo) => {
@@ -70,6 +86,88 @@ const GerenciamentoColaboradores = () => {
     );
   });
 
+  const handleOrdenar = (coluna) => {
+    setOrdenacao((ordenacaoAtual) => {
+      if (ordenacaoAtual.coluna === coluna) {
+        return {
+          coluna,
+          direcao: ordenacaoAtual.direcao === "asc" ? "desc" : "asc",
+        };
+      }
+
+      return {
+        coluna,
+        direcao: "asc",
+      };
+    });
+  };
+
+  const colaboradoresOrdenados = [...colaboradoresFiltrados].sort((a, b) => {
+    let valorA = a[ordenacao.coluna];
+    let valorB = b[ordenacao.coluna];
+
+    if (ordenacao.coluna === "id") {
+      valorA = Number(valorA);
+      valorB = Number(valorB);
+    } else if (ordenacao.coluna === "cpf" || ordenacao.coluna === "telefone") {
+      valorA = String(valorA).replace(/\D/g, "");
+      valorB = String(valorB).replace(/\D/g, "");
+    } else {
+      valorA = String(valorA).toLowerCase();
+      valorB = String(valorB).toLowerCase();
+    }
+
+    if (valorA < valorB) {
+      return ordenacao.direcao === "asc" ? -1 : 1;
+    }
+
+    if (valorA > valorB) {
+      return ordenacao.direcao === "asc" ? 1 : -1;
+    }
+
+    return 0;
+  });
+
+  const indiceInicial = (paginaAtual - 1) * itensPorPagina;
+  const indiceFinal = indiceInicial + itensPorPagina;
+
+  const colaboradoresPaginados = colaboradoresOrdenados.slice(
+    indiceInicial,
+    indiceFinal,
+  );
+
+  const totalPaginas = Math.ceil(
+    colaboradoresOrdenados.length / itensPorPagina,
+  );
+  const inicioExibido =
+    colaboradoresOrdenados.length > 0 ? indiceInicial + 1 : 0;
+  const fimExibido = Math.min(indiceFinal, colaboradoresOrdenados.length);
+
+  const handlePrimeiraPagina = () => {
+    setPaginaAtual(1);
+  };
+
+  const handlePaginaAnterior = () => {
+    if (paginaAtual > 1) {
+      setPaginaAtual(paginaAtual - 1);
+    }
+  };
+
+  const handleRecarregar = () => {
+    setBusca("");
+    setPaginaAtual(1);
+  };
+
+  const handleProximaPagina = () => {
+    if (paginaAtual < totalPaginas) {
+      setPaginaAtual(paginaAtual + 1);
+    }
+  };
+
+  const handleUltimaPagina = () => {
+    setPaginaAtual(totalPaginas);
+  };
+
   return (
     <div className="gerenciamento-colaboradores-page">
       <div className="gerenciamento-colaboradores-header">
@@ -81,26 +179,115 @@ const GerenciamentoColaboradores = () => {
           type="text"
           placeholder="Buscar por ID ou Nome..."
           value={busca}
-          onChange={(e) => setBusca(e.target.value)}
+          onChange={(e) => {
+            setBusca(e.target.value);
+            setPaginaAtual(1);
+          }}
         />
         <button type="button" onClick={() => navigate("/colaboradores")}>
           + Novo Colaborador
         </button>
+        <div className="pagination-controls">
+          <button
+            className="first"
+            onClick={handlePrimeiraPagina}
+            disabled={paginaAtual === 1}
+          >
+            <FiChevronsLeft />
+          </button>
+          <button
+            className="previous"
+            onClick={handlePaginaAnterior}
+            disabled={paginaAtual === 1}
+          >
+            <FiChevronLeft />
+          </button>
+          <button className="refresh" onClick={handleRecarregar}>
+            <FiRefreshCw />
+          </button>
+          <button
+            className="next"
+            onClick={handleProximaPagina}
+            disabled={totalPaginas === 0 || paginaAtual === totalPaginas}
+          >
+            <FiChevronRight />
+          </button>
+          <button
+            className="last"
+            onClick={handleUltimaPagina}
+            disabled={totalPaginas === 0 || paginaAtual === totalPaginas}
+          >
+            <FiChevronsRight />
+          </button>
+          <span className="total-itens">
+            {`${inicioExibido} - ${fimExibido} / ${colaboradoresOrdenados.length}`}
+          </span>
+        </div>
       </div>
       <div className="gerenciamento-colaboradores-card">
         <table className="gerenciamento-colaboradores-table">
           <thead>
             <tr>
-              <th>ID</th>
-              <th>Nome</th>
-              <th>CPF</th>
-              <th>Cargo</th>
-              <th>Telefone</th>
+              <th onClick={() => handleOrdenar("id")}>
+                <span className="sortable-header">
+                  ID
+                  {ordenacao.coluna === "id" &&
+                    (ordenacao.direcao === "asc" ? (
+                      <FiChevronUp />
+                    ) : (
+                      <FiChevronDown />
+                    ))}
+                </span>
+              </th>
+              <th onClick={() => handleOrdenar("nome")}>
+                <span className="sortable-header">
+                  Nome
+                  {ordenacao.coluna === "nome" &&
+                    (ordenacao.direcao === "asc" ? (
+                      <FiChevronUp />
+                    ) : (
+                      <FiChevronDown />
+                    ))}
+                </span>
+              </th>
+              <th onClick={() => handleOrdenar("cpf")}>
+                <span className="sortable-header">
+                  CPF
+                  {ordenacao.coluna === "cpf" &&
+                    (ordenacao.direcao === "asc" ? (
+                      <FiChevronUp />
+                    ) : (
+                      <FiChevronDown />
+                    ))}
+                </span>
+              </th>
+              <th onClick={() => handleOrdenar("cargo")}>
+                <span className="sortable-header">
+                  Cargo
+                  {ordenacao.coluna === "cargo" &&
+                    (ordenacao.direcao === "asc" ? (
+                      <FiChevronUp />
+                    ) : (
+                      <FiChevronDown />
+                    ))}
+                </span>
+              </th>
+              <th onClick={() => handleOrdenar("telefone")}>
+                <span className="sortable-header">
+                  Telefone
+                  {ordenacao.coluna === "telefone" &&
+                    (ordenacao.direcao === "asc" ? (
+                      <FiChevronUp />
+                    ) : (
+                      <FiChevronDown />
+                    ))}
+                </span>
+              </th>
               <th>Ações</th>
             </tr>
           </thead>
           <tbody>
-            {colaboradoresFiltrados.map((colaborador) => (
+            {colaboradoresPaginados.map((colaborador) => (
               <tr key={colaborador.id}>
                 <td>{colaborador.id}</td>
                 <td>{colaborador.nome}</td>

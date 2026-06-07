@@ -168,9 +168,26 @@
   font-weight: 700;
 }
 
+.gerenciamento-itens-table th[onClick] {
+  cursor: pointer;
+  user-select: none;
+}
+
+.sortable-header {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.sortable-header svg {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+}
+
 .gerenciamento-itens-table th:nth-child(1),
 .gerenciamento-itens-table td:nth-child(1) {
-  width: 58px;
+  width: 78px;
 }
 
 .gerenciamento-itens-table th:nth-child(2),
@@ -191,7 +208,7 @@
 
 .gerenciamento-itens-table th:nth-child(5),
 .gerenciamento-itens-table td:nth-child(5) {
-  width: 140px;
+  width: 180px;
   text-align: center;
 }
 
@@ -253,6 +270,59 @@
 .gerenciamento-itens-table td:last-child {
   white-space: nowrap;
   text-align: center;
+}
+
+.gerenciamento-itens-actions .pagination-controls {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.gerenciamento-itens-actions .pagination-controls button {
+  width: 38px;
+  min-width: 38px;
+  height: 38px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border-purple-soft);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--text-secondary);
+  box-shadow: none;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.gerenciamento-itens-actions .pagination-controls button:hover:not(:disabled) {
+  background: rgba(167, 139, 250, 0.14);
+  border-color: rgba(167, 139, 250, 0.45);
+  color: var(--text-primary);
+  transform: translateY(-1px);
+  box-shadow: none;
+}
+
+.gerenciamento-itens-actions .pagination-controls button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.gerenciamento-itens-actions .pagination-controls button svg {
+  width: 16px;
+  height: 16px;
+}
+
+.total-itens {
+  margin-left: 4px;
+  color: var(--text-secondary);
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
 }
 
 .gerenciamento-itens-table .action-button {
@@ -501,6 +571,12 @@
   .gerenciamento-itens-actions button {
     width: 100%;
   }
+
+  .gerenciamento-itens-actions .pagination-controls {
+    margin-left: 0;
+    width: 100%;
+    justify-content: flex-end;
+  }
 }
 
 @media (max-width: 480px) {
@@ -518,5 +594,14 @@
 
   .confirm-modal-actions button {
     width: 100%;
+  }
+
+  .gerenciamento-itens-actions .pagination-controls {
+    justify-content: center;
+  }
+
+  .total-itens {
+    width: 100%;
+    text-align: center;
   }
 }

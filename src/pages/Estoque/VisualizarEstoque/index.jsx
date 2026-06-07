@@ -6,6 +6,8 @@ import {
   FiRefreshCw,
   FiChevronRight,
   FiChevronsRight,
+  FiChevronUp,
+  FiChevronDown,
 } from "react-icons/fi";
 import { listarAlmoxarifados } from "../../../services/almoxarifadoService";
 import { listarAlmoxarifadosEstoque } from "../../../services/almoxarifadoEstoqueService";
@@ -18,11 +20,19 @@ const VisualizarEstoque = () => {
   const [almoxarifados, setAlmoxarifados] = useState([]);
   const [almoxarifadoSelecionado, setAlmoxarifadoSelecionado] = useState(null);
   const [paginaAtual, setPaginaAtual] = useState(1);
+  const [ordenacao, setOrdenacao] = useState({
+    coluna: "id",
+    direcao: "asc",
+  });
   const itensPorPagina = 10;
   const [almoxarifadosEstoque, setAlmoxarifadosEstoque] = useState([]);
   const [produtos, setProdutos] = useState([]);
   const [buscaProduto, setBuscaProduto] = useState("");
   const [paginaProdutoAtual, setPaginaProdutoAtual] = useState(1);
+  const [ordenacaoProduto, setOrdenacaoProduto] = useState({
+    coluna: "produtoId",
+    direcao: "asc",
+  });
   const itensPorPaginaProduto = 10;
   const [estoqueAberto, setEstoqueAberto] = useState(false);
   const [somenteComSaldo, setSomenteComSaldo] = useState(false);
@@ -90,20 +100,56 @@ const VisualizarEstoque = () => {
     );
   });
 
+  const handleOrdenar = (coluna) => {
+    setOrdenacao((ordenacaoAtual) => {
+      if (ordenacaoAtual.coluna === coluna) {
+        return {
+          coluna,
+          direcao: ordenacaoAtual.direcao === "asc" ? "desc" : "asc",
+        };
+      }
+
+      return {
+        coluna,
+        direcao: "asc",
+      };
+    });
+  };
+
+  const almoxarifadosOrdenados = [...almoxarifadosFiltrados].sort((a, b) => {
+    let valorA = a[ordenacao.coluna];
+    let valorB = b[ordenacao.coluna];
+
+    if (ordenacao.coluna === "id") {
+      valorA = Number(valorA);
+      valorB = Number(valorB);
+    } else {
+      valorA = String(valorA ?? "").toLowerCase();
+      valorB = String(valorB ?? "").toLowerCase();
+    }
+
+    if (valorA < valorB) {
+      return ordenacao.direcao === "asc" ? -1 : 1;
+    }
+
+    if (valorA > valorB) {
+      return ordenacao.direcao === "asc" ? 1 : -1;
+    }
+
+    return 0;
+  });
+
   const indiceInicial = (paginaAtual - 1) * itensPorPagina;
   const indiceFinal = indiceInicial + itensPorPagina;
 
-  const almoxarifadosPaginados = almoxarifadosFiltrados.slice(
+  const almoxarifadosPaginados = almoxarifadosOrdenados.slice(
     indiceInicial,
     indiceFinal,
   );
 
-  const totalPaginas = Math.ceil(
-    almoxarifadosFiltrados.length / itensPorPagina,
-  );
-  const inicioExibido =
-    almoxarifadosFiltrados.length > 0 ? indiceInicial + 1 : 0;
-  const fimExibido = Math.min(indiceFinal, almoxarifadosFiltrados.length);
+  const totalPaginas = Math.ceil(almoxarifadosOrdenados.length / itensPorPagina);
+  const inicioExibido = almoxarifadosOrdenados.length > 0 ? indiceInicial + 1 : 0;
+  const fimExibido = Math.min(indiceFinal, almoxarifadosOrdenados.length);
 
   const handlePrimeiraPagina = () => {
     setPaginaAtual(1);
@@ -173,26 +219,71 @@ const VisualizarEstoque = () => {
     );
   });
 
+  const handleOrdenarProduto = (coluna) => {
+    setOrdenacaoProduto((ordenacaoAtual) => {
+      if (ordenacaoAtual.coluna === coluna) {
+        return {
+          coluna,
+          direcao: ordenacaoAtual.direcao === "asc" ? "desc" : "asc",
+        };
+      }
+
+      return {
+        coluna,
+        direcao: "asc",
+      };
+    });
+  };
+
   const produtosExibidos = somenteComSaldo
   ? produtosFiltrados.filter((item) => (item.saldo ?? item.quantidade ?? 0) > 0)
   : produtosFiltrados;
 
+  const produtosOrdenados = [...produtosExibidos].sort((a, b) => {
+    let valorA;
+    let valorB;
+
+    if (ordenacaoProduto.coluna === "id" || ordenacaoProduto.coluna === "produtoId") {
+      valorA = Number(a.produtoId || a.id);
+      valorB = Number(b.produtoId || b.id);
+    } else if (ordenacaoProduto.coluna === "saldo") {
+      valorA = Number(a.saldo ?? a.quantidade ?? 0);
+      valorB = Number(b.saldo ?? b.quantidade ?? 0);
+    } else if (ordenacaoProduto.coluna === "unidadeFormatada") {
+      valorA = String(a.unidadeFormatada ?? "").toLowerCase();
+      valorB = String(b.unidadeFormatada ?? "").toLowerCase();
+    } else {
+      valorA = String(a.produtoNome || a.nome || "").toLowerCase();
+      valorB = String(b.produtoNome || b.nome || "").toLowerCase();
+    }
+
+    if (valorA < valorB) {
+      return ordenacaoProduto.direcao === "asc" ? -1 : 1;
+    }
+
+    if (valorA > valorB) {
+      return ordenacaoProduto.direcao === "asc" ? 1 : -1;
+    }
+
+    return 0;
+  });
+
   const indiceInicialProduto = (paginaProdutoAtual - 1) * itensPorPaginaProduto;
   const indiceFinalProduto = indiceInicialProduto + itensPorPaginaProduto;
 
-  const produtosPaginados = produtosExibidos.slice(
+  const produtosPaginados = produtosOrdenados.slice(
     indiceInicialProduto,
     indiceFinalProduto,
   );
 
   const totalPaginasProduto = Math.ceil(
-    produtosExibidos.length / itensPorPaginaProduto,
+    produtosOrdenados.length / itensPorPaginaProduto,
   );
   const inicioExibidoProduto =
-    produtosExibidos.length > 0 ? indiceInicialProduto + 1 : 0;
+    produtosOrdenados.length > 0 ? indiceInicialProduto + 1 : 0;
   const fimExibidoProduto = Math.min(
     indiceFinalProduto,
-    produtosExibidos.length,
+    produtosOrdenados.length,
   );
 
   const handlePrimeiraPaginaProduto = () => {
@@ -276,7 +367,7 @@ const VisualizarEstoque = () => {
             <FiChevronsRight />
           </button>
           <span className="total-itens">
-            {`${inicioExibido} - ${fimExibido} / ${almoxarifadosFiltrados.length}`}
+            {`${inicioExibido} - ${fimExibido} / ${almoxarifadosOrdenados.length}`}
           </span>
         </div>
       </div>
@@ -286,8 +377,28 @@ const VisualizarEstoque = () => {
           <table className="estoque-view-table">
             <thead>
               <tr>
-                <th>ID</th>
-                <th>Nome</th>
+                <th onClick={() => handleOrdenar("id")}>
+                  <span className="sortable-header">
+                    ID
+                    {ordenacao.coluna === "id" &&
+                      (ordenacao.direcao === "asc" ? (
+                        <FiChevronUp />
+                      ) : (
+                        <FiChevronDown />
+                      ))}
+                  </span>
+                </th>
+                <th onClick={() => handleOrdenar("nome")}>
+                  <span className="sortable-header">
+                    Nome
+                    {ordenacao.coluna === "nome" &&
+                      (ordenacao.direcao === "asc" ? (
+                        <FiChevronUp />
+                      ) : (
+                        <FiChevronDown />
+                      ))}
+                  </span>
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -337,18 +448,21 @@ const VisualizarEstoque = () => {
                   setPaginaProdutoAtual(1);
                 }}
               />
-              <label className="saldo-checkbox saldo-checkbox-inline">
-                <input
-                  type="checkbox"
-                  checked={!somenteComSaldo}
-                  onChange={(e) => {
-                    setSomenteComSaldo(!e.target.checked);
-                    setPaginaProdutoAtual(1);
-                  }}
-                />
-                <span>Exibir saldo zero</span>
-              </label>
               <div className="pagination-controls">
+                <label className="saldo-toggle saldo-toggle-inline">
+                  <input
+                    type="checkbox"
+                    checked={!somenteComSaldo}
+                    onChange={(e) => {
+                      setSomenteComSaldo(!e.target.checked);
+                      setPaginaProdutoAtual(1);
+                    }}
+                  />
+                  <span className="saldo-toggle-track">
+                    <span className="saldo-toggle-thumb" />
+                  </span>
+                  <span className="saldo-toggle-label">Exibir saldo zero</span>
+                </label>
                 <button
                   className="first"
                   onClick={handlePrimeiraPaginaProduto}
@@ -387,7 +501,7 @@ const VisualizarEstoque = () => {
                   <FiChevronsRight />
                 </button>
                 <span className="total-itens">
-                  {`${inicioExibidoProduto} - ${fimExibidoProduto} / ${produtosExibidos.length}`}
+                  {`${inicioExibidoProduto} - ${fimExibidoProduto} / ${produtosOrdenados.length}`}
                 </span>
               </div>
             </div>
@@ -396,10 +510,50 @@ const VisualizarEstoque = () => {
               <table className="estoque-view-table estoque-products-table">
                 <thead>
                   <tr>
-                    <th>ID Produto</th>
-                    <th>Produto</th>
-                    <th>Unidade</th>
-                    <th>Saldo</th>
+                    <th onClick={() => handleOrdenarProduto("produtoId")}>
+                      <span className="sortable-header">
+                        ID Produto
+                        {ordenacaoProduto.coluna === "produtoId" &&
+                          (ordenacaoProduto.direcao === "asc" ? (
+                            <FiChevronUp />
+                          ) : (
+                            <FiChevronDown />
+                          ))}
+                      </span>
+                    </th>
+                    <th onClick={() => handleOrdenarProduto("produtoNome")}>
+                      <span className="sortable-header">
+                        Produto
+                        {ordenacaoProduto.coluna === "produtoNome" &&
+                          (ordenacaoProduto.direcao === "asc" ? (
+                            <FiChevronUp />
+                          ) : (
+                            <FiChevronDown />
+                          ))}
+                      </span>
+                    </th>
+                    <th onClick={() => handleOrdenarProduto("unidadeFormatada")}>
+                      <span className="sortable-header">
+                        Unidade
+                        {ordenacaoProduto.coluna === "unidadeFormatada" &&
+                          (ordenacaoProduto.direcao === "asc" ? (
+                            <FiChevronUp />
+                          ) : (
+                            <FiChevronDown />
+                          ))}
+                      </span>
+                    </th>
+                    <th onClick={() => handleOrdenarProduto("saldo")}>
+                      <span className="sortable-header">
+                        Saldo
+                        {ordenacaoProduto.coluna === "saldo" &&
+                          (ordenacaoProduto.direcao === "asc" ? (
+                            <FiChevronUp />
+                          ) : (
+                            <FiChevronDown />
+                          ))}
+                      </span>
+                    </th>
                   </tr>
                 </thead>
                 <tbody>

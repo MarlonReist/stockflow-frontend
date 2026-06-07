@@ -1,5 +1,15 @@
 import React, { useState, useEffect } from "react";
-import { FiEdit2, FiTrash2 } from "react-icons/fi";
+import {
+  FiEdit2,
+  FiTrash2,
+  FiChevronUp,
+  FiChevronDown,
+  FiChevronsLeft,
+  FiChevronLeft,
+  FiRefreshCw,
+  FiChevronRight,
+  FiChevronsRight,
+} from "react-icons/fi";
 import "./Categorias.css";
 import {
   listarCategorias,
@@ -12,7 +22,13 @@ const GerenciamentoCategorias = () => {
   const [mensagens, setMensagens] = useState([]);
   const [busca, setBusca] = useState("");
   const [categoriaSelecionada, setCategoriaSelecionada] = useState(null);
+  const [paginaAtual, setPaginaAtual] = useState(1);
+  const [ordenacao, setOrdenacao] = useState({
+    coluna: "id",
+    direcao: "asc",
+  });
 
+  const itensPorPagina = 10;
   const navigate = useNavigate();
 
   const mostrarMensagem = (texto, tipo) => {
@@ -47,7 +63,7 @@ const GerenciamentoCategorias = () => {
       await deletarCategoria(id);
 
       setCategorias((categoriasAtuais) =>
-        categoriasAtuais.filter((categorias) => categorias.id !== id),
+        categoriasAtuais.filter((categoria) => categoria.id !== id),
       );
 
       mostrarMensagem("Categoria excluida com sucesso", "sucesso");
@@ -70,6 +86,82 @@ const GerenciamentoCategorias = () => {
     );
   });
 
+  const handleOrdenar = (coluna) => {
+    setOrdenacao((ordenacaoAtual) => {
+      if (ordenacaoAtual.coluna === coluna) {
+        return {
+          coluna,
+          direcao: ordenacaoAtual.direcao === "asc" ? "desc" : "asc",
+        };
+      }
+
+      return {
+        coluna,
+        direcao: "asc",
+      };
+    });
+  };
+
+  const categoriasOrdenadas = [...categoriasFiltradas].sort((a, b) => {
+    let valorA = a[ordenacao.coluna];
+    let valorB = b[ordenacao.coluna];
+
+    if (ordenacao.coluna === "id") {
+      valorA = Number(valorA);
+      valorB = Number(valorB);
+    } else {
+      valorA = String(valorA).toLowerCase();
+      valorB = String(valorB).toLowerCase();
+    }
+
+    if (valorA < valorB) {
+      return ordenacao.direcao === "asc" ? -1 : 1;
+    }
+
+    if (valorA > valorB) {
+      return ordenacao.direcao === "asc" ? 1 : -1;
+    }
+
+    return 0;
+  });
+
+  const indiceInicial = (paginaAtual - 1) * itensPorPagina;
+  const indiceFinal = indiceInicial + itensPorPagina;
+
+  const categoriasPaginadas = categoriasOrdenadas.slice(
+    indiceInicial,
+    indiceFinal,
+  );
+
+  const totalPaginas = Math.ceil(categoriasOrdenadas.length / itensPorPagina);
+  const inicioExibido = categoriasOrdenadas.length > 0 ? indiceInicial + 1 : 0;
+  const fimExibido = Math.min(indiceFinal, categoriasOrdenadas.length);
+
+  const handlePrimeiraPagina = () => {
+    setPaginaAtual(1);
+  };
+
+  const handlePaginaAnterior = () => {
+    if (paginaAtual > 1) {
+      setPaginaAtual(paginaAtual - 1);
+    }
+  };
+
+  const handleRecarregar = () => {
+    setBusca("");
+    setPaginaAtual(1);
+  };
+
+  const handleProximaPagina = () => {
+    if (paginaAtual < totalPaginas) {
+      setPaginaAtual(paginaAtual + 1);
+    }
+  };
+
+  const handleUltimaPagina = () => {
+    setPaginaAtual(totalPaginas);
+  };
+
   return (
     <div className="gerenciamento-categorias-page">
       <div className="gerenciamento-categorias-header">
@@ -81,23 +173,82 @@ const GerenciamentoCategorias = () => {
           type="text"
           placeholder="Buscar por ID ou Nome..."
           value={busca}
-          onChange={(e) => setBusca(e.target.value)}
+          onChange={(e) => {
+            setBusca(e.target.value);
+            setPaginaAtual(1);
+          }}
         />
         <button type="button" onClick={() => navigate("/categorias")}>
           + Nova Categoria
         </button>
+        <div className="pagination-controls">
+          <button
+            className="first"
+            onClick={handlePrimeiraPagina}
+            disabled={paginaAtual === 1}
+          >
+            <FiChevronsLeft />
+          </button>
+          <button
+            className="previous"
+            onClick={handlePaginaAnterior}
+            disabled={paginaAtual === 1}
+          >
+            <FiChevronLeft />
+          </button>
+          <button className="refresh" onClick={handleRecarregar}>
+            <FiRefreshCw />
+          </button>
+          <button
+            className="next"
+            onClick={handleProximaPagina}
+            disabled={totalPaginas === 0 || paginaAtual === totalPaginas}
+          >
+            <FiChevronRight />
+          </button>
+          <button
+            className="last"
+            onClick={handleUltimaPagina}
+            disabled={totalPaginas === 0 || paginaAtual === totalPaginas}
+          >
+            <FiChevronsRight />
+          </button>
+          <span className="total-itens">
+            {`${inicioExibido} - ${fimExibido} / ${categoriasOrdenadas.length}`}
+          </span>
+        </div>
       </div>
       <div className="gerenciamento-categorias-card">
         <table className="gerenciamento-categorias-table">
           <thead>
             <tr>
-              <th>ID</th>
-              <th>Nome</th>
+              <th onClick={() => handleOrdenar("id")}>
+                <span className="sortable-header">
+                  ID
+                  {ordenacao.coluna === "id" &&
+                    (ordenacao.direcao === "asc" ? (
+                      <FiChevronUp />
+                    ) : (
+                      <FiChevronDown />
+                    ))}
+                </span>
+              </th>
+              <th onClick={() => handleOrdenar("nome")}>
+                <span className="sortable-header">
+                  Nome
+                  {ordenacao.coluna === "nome" &&
+                    (ordenacao.direcao === "asc" ? (
+                      <FiChevronUp />
+                    ) : (
+                      <FiChevronDown />
+                    ))}
+                </span>
+              </th>
               <th>Ações</th>
             </tr>
           </thead>
           <tbody>
-            {categoriasFiltradas.map((categoria) => (
+            {categoriasPaginadas.map((categoria) => (
               <tr key={categoria.id}>
                 <td>{categoria.id}</td>
                 <td>{categoria.nome}</td>

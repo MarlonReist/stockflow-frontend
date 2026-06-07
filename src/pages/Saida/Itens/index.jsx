@@ -1,5 +1,18 @@
 import React, { useState, useEffect } from "react";
-import { FiBox, FiTrash2, FiCheckCircle, FiSlash, FiX } from "react-icons/fi";
+import {
+  FiBox,
+  FiTrash2,
+  FiCheckCircle,
+  FiSlash,
+  FiX,
+  FiChevronUp,
+  FiChevronDown,
+  FiChevronsLeft,
+  FiChevronLeft,
+  FiRefreshCw,
+  FiChevronRight,
+  FiChevronsRight,
+} from "react-icons/fi";
 import "./Itens.css";
 import {
   listarSaidas,
@@ -16,7 +29,13 @@ const ItensSaida = () => {
   const [buscaData, setBuscaData] = useState("");
   const [saidaSelecionada, setSaidaSelecionada] = useState(null);
   const [acaoConfirmacao, setAcaoConfirmacao] = useState("");
+  const [paginaAtual, setPaginaAtual] = useState(1);
+  const [ordenacao, setOrdenacao] = useState({
+    coluna: "id",
+    direcao: "asc",
+  });
 
+  const itensPorPagina = 10;
   const navigate = useNavigate();
 
   const mostrarMensagem = (texto, tipo) => {
@@ -53,7 +72,7 @@ const ItensSaida = () => {
         saidasAtuais.filter((saida) => saida.id !== id),
       );
 
-      mostrarMensagem("Saída excluida com sucesso", "sucesso");
+      mostrarMensagem("Saída excluída com sucesso", "sucesso");
       setSaidaSelecionada(null);
       setAcaoConfirmacao("");
     } catch (error) {
@@ -76,7 +95,7 @@ const ItensSaida = () => {
             : saidaAtual,
         ),
       );
-      mostrarMensagem(`Saída Finalizada com sucesso`, "sucesso");
+      mostrarMensagem("Saída finalizada com sucesso", "sucesso");
       setSaidaSelecionada(null);
       setAcaoConfirmacao("");
     } catch (error) {
@@ -98,7 +117,7 @@ const ItensSaida = () => {
             : saidaAtual,
         ),
       );
-      mostrarMensagem(`Saída cancelada com sucesso`, "sucesso");
+      mostrarMensagem("Saída cancelada com sucesso", "sucesso");
       setSaidaSelecionada(null);
       setAcaoConfirmacao("");
     } catch (error) {
@@ -121,6 +140,82 @@ const ItensSaida = () => {
     return matchBusca && matchData;
   });
 
+  const handleOrdenar = (coluna) => {
+    setOrdenacao((ordenacaoAtual) => {
+      if (ordenacaoAtual.coluna === coluna) {
+        return {
+          coluna,
+          direcao: ordenacaoAtual.direcao === "asc" ? "desc" : "asc",
+        };
+      }
+
+      return {
+        coluna,
+        direcao: "asc",
+      };
+    });
+  };
+
+  const saidasOrdenadas = [...saidasFiltradas].sort((a, b) => {
+    let valorA = a[ordenacao.coluna];
+    let valorB = b[ordenacao.coluna];
+
+    if (ordenacao.coluna === "id") {
+      valorA = Number(valorA);
+      valorB = Number(valorB);
+    } else if (ordenacao.coluna === "dataSaida") {
+      valorA = String(valorA);
+      valorB = String(valorB);
+    } else {
+      valorA = String(valorA ?? "").toLowerCase();
+      valorB = String(valorB ?? "").toLowerCase();
+    }
+
+    if (valorA < valorB) {
+      return ordenacao.direcao === "asc" ? -1 : 1;
+    }
+
+    if (valorA > valorB) {
+      return ordenacao.direcao === "asc" ? 1 : -1;
+    }
+
+    return 0;
+  });
+
+  const indiceInicial = (paginaAtual - 1) * itensPorPagina;
+  const indiceFinal = indiceInicial + itensPorPagina;
+
+  const saidasPaginadas = saidasOrdenadas.slice(indiceInicial, indiceFinal);
+  const totalPaginas = Math.ceil(saidasOrdenadas.length / itensPorPagina);
+  const inicioExibido = saidasOrdenadas.length > 0 ? indiceInicial + 1 : 0;
+  const fimExibido = Math.min(indiceFinal, saidasOrdenadas.length);
+
+  const handlePrimeiraPagina = () => {
+    setPaginaAtual(1);
+  };
+
+  const handlePaginaAnterior = () => {
+    if (paginaAtual > 1) {
+      setPaginaAtual(paginaAtual - 1);
+    }
+  };
+
+  const handleRecarregar = () => {
+    setBusca("");
+    setBuscaData("");
+    setPaginaAtual(1);
+  };
+
+  const handleProximaPagina = () => {
+    if (paginaAtual < totalPaginas) {
+      setPaginaAtual(paginaAtual + 1);
+    }
+  };
+
+  const handleUltimaPagina = () => {
+    setPaginaAtual(totalPaginas);
+  };
+
   return (
     <div className="gerenciamento-itens-page">
       <div className="gerenciamento-itens-header">
@@ -132,19 +227,28 @@ const ItensSaida = () => {
           type="text"
           placeholder="Buscar por ID ou Almoxarifado..."
           value={busca}
-          onChange={(e) => setBusca(e.target.value)}
+          onChange={(e) => {
+            setBusca(e.target.value);
+            setPaginaAtual(1);
+          }}
         />
         <div className="date-filter-group">
           <input
             type="date"
             placeholder="Buscar por data"
             value={buscaData}
-            onChange={(e) => setBuscaData(e.target.value)}
+            onChange={(e) => {
+              setBuscaData(e.target.value);
+              setPaginaAtual(1);
+            }}
           />
           <button
             type="button"
             className="clear-date-button"
-            onClick={() => setBuscaData("")}
+            onClick={() => {
+              setBuscaData("");
+              setPaginaAtual(1);
+            }}
           >
             <FiX />
           </button>
@@ -152,20 +256,96 @@ const ItensSaida = () => {
         <button type="button" onClick={() => navigate("/saida/cadastro")}>
           + Nova Saída
         </button>
+        <div className="pagination-controls">
+          <button
+            className="first"
+            onClick={handlePrimeiraPagina}
+            disabled={paginaAtual === 1}
+          >
+            <FiChevronsLeft />
+          </button>
+          <button
+            className="previous"
+            onClick={handlePaginaAnterior}
+            disabled={paginaAtual === 1}
+          >
+            <FiChevronLeft />
+          </button>
+          <button className="refresh" onClick={handleRecarregar}>
+            <FiRefreshCw />
+          </button>
+          <button
+            className="next"
+            onClick={handleProximaPagina}
+            disabled={totalPaginas === 0 || paginaAtual === totalPaginas}
+          >
+            <FiChevronRight />
+          </button>
+          <button
+            className="last"
+            onClick={handleUltimaPagina}
+            disabled={totalPaginas === 0 || paginaAtual === totalPaginas}
+          >
+            <FiChevronsRight />
+          </button>
+          <span className="total-itens">
+            {`${inicioExibido} - ${fimExibido} / ${saidasOrdenadas.length}`}
+          </span>
+        </div>
       </div>
       <div className="gerenciamento-itens-card">
         <table className="gerenciamento-itens-table">
           <thead>
             <tr>
-              <th>ID</th>
-              <th>Almoxarifado</th>
-              <th>Data</th>
-              <th>Status</th>
+              <th onClick={() => handleOrdenar("id")}>
+                <span className="sortable-header">
+                  ID
+                  {ordenacao.coluna === "id" &&
+                    (ordenacao.direcao === "asc" ? (
+                      <FiChevronUp />
+                    ) : (
+                      <FiChevronDown />
+                    ))}
+                </span>
+              </th>
+              <th onClick={() => handleOrdenar("almoxarifadoNome")}>
+                <span className="sortable-header">
+                  Almoxarifado
+                  {ordenacao.coluna === "almoxarifadoNome" &&
+                    (ordenacao.direcao === "asc" ? (
+                      <FiChevronUp />
+                    ) : (
+                      <FiChevronDown />
+                    ))}
+                </span>
+              </th>
+              <th onClick={() => handleOrdenar("dataSaida")}>
+                <span className="sortable-header">
+                  Data
+                  {ordenacao.coluna === "dataSaida" &&
+                    (ordenacao.direcao === "asc" ? (
+                      <FiChevronUp />
+                    ) : (
+                      <FiChevronDown />
+                    ))}
+                </span>
+              </th>
+              <th onClick={() => handleOrdenar("status")}>
+                <span className="sortable-header">
+                  Status
+                  {ordenacao.coluna === "status" &&
+                    (ordenacao.direcao === "asc" ? (
+                      <FiChevronUp />
+                    ) : (
+                      <FiChevronDown />
+                    ))}
+                </span>
+              </th>
               <th>Ações</th>
             </tr>
           </thead>
           <tbody>
-            {saidasFiltradas.map((saida) => (
+            {saidasPaginadas.map((saida) => (
               <tr key={saida.id}>
                 <td>{saida.id}</td>
                 <td>{saida.almoxarifadoNome}</td>
@@ -186,8 +366,8 @@ const ItensSaida = () => {
                     type="button"
                     className="action-button edit-button"
                     onClick={() => navigate(`/saida/itens/${saida.id}`)}
-                    title="Gerenciar itens da saida"
-                    aria-label="Gerenciar itens da saida"
+                    title="Gerenciar itens da saída"
+                    aria-label="Gerenciar itens da saída"
                   >
                     <FiBox />
                   </button>
@@ -198,8 +378,8 @@ const ItensSaida = () => {
                       setSaidaSelecionada(saida);
                       setAcaoConfirmacao("finalizar");
                     }}
-                    title="Finalizar Saida"
-                    aria-label="Finalizar Saida"
+                    title="Finalizar saída"
+                    aria-label="Finalizar saída"
                   >
                     <FiCheckCircle />
                   </button>
@@ -210,8 +390,8 @@ const ItensSaida = () => {
                       setSaidaSelecionada(saida);
                       setAcaoConfirmacao("cancelar");
                     }}
-                    title="Cancelar Saida"
-                    aria-label="Cancelar Saida"
+                    title="Cancelar saída"
+                    aria-label="Cancelar saída"
                   >
                     <FiSlash />
                   </button>
@@ -223,8 +403,8 @@ const ItensSaida = () => {
                       setSaidaSelecionada(saida);
                       setAcaoConfirmacao("excluir");
                     }}
-                    title="Excluir saida"
-                    aria-label="Excluir saida"
+                    title="Excluir saída"
+                    aria-label="Excluir saída"
                   >
                     <FiTrash2 />
                   </button>

@@ -6,6 +6,8 @@ import {
   FiRefreshCw,
   FiChevronRight,
   FiChevronsRight,
+  FiChevronUp,
+  FiChevronDown,
   FiSearch,
   FiArrowLeft,
 } from "react-icons/fi";
@@ -41,6 +43,14 @@ const ItensDetalhe = () => {
   const [buscaProduto, setBuscaProduto] = useState("");
   const [paginaSaidaItensAtuais, setPaginaSaidaItensAtual] = useState(1);
   const [paginaProdutoAtual, setPaginaProdutoAtual] = useState(1);
+  const [ordenacao, setOrdenacao] = useState({
+    coluna: "id",
+    direcao: "asc",
+  });
+  const [ordenacaoProduto, setOrdenacaoProduto] = useState({
+    coluna: "id",
+    direcao: "asc",
+  });
   const itensPorPaginaSaida = 10;
   const itensPorPaginaProduto = 10;
   const [produtos, setProdutos] = useState([]);
@@ -49,6 +59,22 @@ const ItensDetalhe = () => {
   const navigate = useNavigate();
 
   const saidaItensFiltrados = saidaItens;
+
+  const handleOrdenar = (coluna) => {
+    setOrdenacao((ordenacaoAtual) => {
+      if (ordenacaoAtual.coluna === coluna) {
+        return {
+          coluna,
+          direcao: ordenacaoAtual.direcao === "asc" ? "desc" : "asc",
+        };
+      }
+
+      return {
+        coluna,
+        direcao: "asc",
+      };
+    });
+  };
 
   useEffect(() => {
     carregarSaidaItens();
@@ -217,40 +243,108 @@ const ItensDetalhe = () => {
     );
   });
 
+  const handleOrdenarProduto = (coluna) => {
+    setOrdenacaoProduto((ordenacaoAtual) => {
+      if (ordenacaoAtual.coluna === coluna) {
+        return {
+          coluna,
+          direcao: ordenacaoAtual.direcao === "asc" ? "desc" : "asc",
+        };
+      }
+
+      return {
+        coluna,
+        direcao: "asc",
+      };
+    });
+  };
+
+  const saidaItensOrdenados = [...saidaItensFiltrados].sort((a, b) => {
+    let valorA = a[ordenacao.coluna];
+    let valorB = b[ordenacao.coluna];
+
+    if (
+      ordenacao.coluna === "id" ||
+      ordenacao.coluna === "produtoId" ||
+      ordenacao.coluna === "quantidade" ||
+      ordenacao.coluna === "valorUnitario" ||
+      ordenacao.coluna === "valorTotal"
+    ) {
+      valorA = Number(valorA);
+      valorB = Number(valorB);
+    } else {
+      valorA = String(valorA ?? "").toLowerCase();
+      valorB = String(valorB ?? "").toLowerCase();
+    }
+
+    if (valorA < valorB) {
+      return ordenacao.direcao === "asc" ? -1 : 1;
+    }
+
+    if (valorA > valorB) {
+      return ordenacao.direcao === "asc" ? 1 : -1;
+    }
+
+    return 0;
+  });
+
+  const produtosOrdenados = [...produtosFiltrados].sort((a, b) => {
+    let valorA = a[ordenacaoProduto.coluna];
+    let valorB = b[ordenacaoProduto.coluna];
+
+    if (ordenacaoProduto.coluna === "id" || ordenacaoProduto.coluna === "preco") {
+      valorA = Number(valorA);
+      valorB = Number(valorB);
+    } else {
+      valorA = String(valorA ?? "").toLowerCase();
+      valorB = String(valorB ?? "").toLowerCase();
+    }
+
+    if (valorA < valorB) {
+      return ordenacaoProduto.direcao === "asc" ? -1 : 1;
+    }
+
+    if (valorA > valorB) {
+      return ordenacaoProduto.direcao === "asc" ? 1 : -1;
+    }
+
+    return 0;
+  });
+
   const indiceInicial = (paginaSaidaItensAtuais - 1) * itensPorPaginaSaida;
   const indiceInicialProduto = (paginaProdutoAtual - 1) * itensPorPaginaProduto;
 
   const indiceFinal = indiceInicial + itensPorPaginaSaida;
   const indiceFinalProduto = indiceInicialProduto + itensPorPaginaProduto;
 
-  const saidaItensPaginados = saidaItensFiltrados.slice(
+  const saidaItensPaginados = saidaItensOrdenados.slice(
     indiceInicial,
     indiceFinal,
   );
-  const produtosPaginados = produtosFiltrados.slice(
+  const produtosPaginados = produtosOrdenados.slice(
     indiceInicialProduto,
     indiceFinalProduto,
   );
 
   const totalPaginasSaidasItens = Math.ceil(
-    saidaItensFiltrados.length / itensPorPaginaSaida,
+    saidaItensOrdenados.length / itensPorPaginaSaida,
   );
   const totalPaginasProduto = Math.ceil(
-    produtosFiltrados.length / itensPorPaginaProduto,
+    produtosOrdenados.length / itensPorPaginaProduto,
   );
 
   const inicioExibidoSaida =
-    saidaItensFiltrados.length > 0 ? indiceInicial + 1 : 0;
+    saidaItensOrdenados.length > 0 ? indiceInicial + 1 : 0;
   const inicioExibidoProduto =
-    produtosFiltrados.length > 0 ? indiceInicialProduto + 1 : 0;
+    produtosOrdenados.length > 0 ? indiceInicialProduto + 1 : 0;
 
   const fimExibidoSaidaItens = Math.min(
     indiceFinal,
-    saidaItensFiltrados.length,
+    saidaItensOrdenados.length,
   );
   const fimExibidoProduto = Math.min(
     indiceFinalProduto,
-    produtosFiltrados.length,
+    produtosOrdenados.length,
   );
 
   const handlePrimeiraPaginaSaidaItens = () => {
@@ -303,7 +397,7 @@ const ItensDetalhe = () => {
       ...movimentacaoAtual,
       idProduto: produto.id,
       produtoNome: produto.nome,
-      unidade: produto.unidadeMedida || "",
+      unidade: formatarUnidadeMedida(produto.unidadeMedida),
       valorUnitario: formatarPrecoParaInput(produto.preco),
     }));
 
@@ -322,7 +416,9 @@ const ItensDetalhe = () => {
       ...movimentacaoAtual,
       idProduto: valorDigitado,
       produtoNome: produtoEncontrado ? produtoEncontrado.nome : "",
-      unidade: produtoEncontrado ? produtoEncontrado.unidadeMedida || "" : "",
+      unidade: produtoEncontrado
+        ? formatarUnidadeMedida(produtoEncontrado.unidadeMedida)
+        : "",
       valorUnitario: produtoEncontrado
         ? formatarPrecoParaInput(produtoEncontrado.preco)
         : "",
@@ -413,7 +509,7 @@ const ItensDetalhe = () => {
             <FiChevronsRight />
           </button>
           <span className="total-itens">
-            {`${inicioExibidoSaida} - ${fimExibidoSaidaItens} / ${saidaItensFiltrados.length}`}
+            {`${inicioExibidoSaida} - ${fimExibidoSaidaItens} / ${saidaItensOrdenados.length}`}
           </span>
         </div>
       </div>
@@ -422,13 +518,83 @@ const ItensDetalhe = () => {
           <table className="saida-itens-table">
             <thead>
               <tr>
-                <th>ID Mov.</th>
-                <th>ID Produto</th>
-                <th>Produto</th>
-                <th>Quantidade</th>
-                <th>Unidade</th>
-                <th>Valor Unit.</th>
-                <th>Valor Total</th>
+                <th onClick={() => handleOrdenar("id")}>
+                  <span className="sortable-header">
+                    ID Mov.
+                    {ordenacao.coluna === "id" &&
+                      (ordenacao.direcao === "asc" ? (
+                        <FiChevronUp />
+                      ) : (
+                        <FiChevronDown />
+                      ))}
+                  </span>
+                </th>
+                <th onClick={() => handleOrdenar("produtoId")}>
+                  <span className="sortable-header">
+                    ID Produto
+                    {ordenacao.coluna === "produtoId" &&
+                      (ordenacao.direcao === "asc" ? (
+                        <FiChevronUp />
+                      ) : (
+                        <FiChevronDown />
+                      ))}
+                  </span>
+                </th>
+                <th onClick={() => handleOrdenar("produtoNome")}>
+                  <span className="sortable-header">
+                    Produto
+                    {ordenacao.coluna === "produtoNome" &&
+                      (ordenacao.direcao === "asc" ? (
+                        <FiChevronUp />
+                      ) : (
+                        <FiChevronDown />
+                      ))}
+                  </span>
+                </th>
+                <th onClick={() => handleOrdenar("quantidade")}>
+                  <span className="sortable-header">
+                    Quantidade
+                    {ordenacao.coluna === "quantidade" &&
+                      (ordenacao.direcao === "asc" ? (
+                        <FiChevronUp />
+                      ) : (
+                        <FiChevronDown />
+                      ))}
+                  </span>
+                </th>
+                <th onClick={() => handleOrdenar("unidadeMedida")}>
+                  <span className="sortable-header">
+                    Unidade
+                    {ordenacao.coluna === "unidadeMedida" &&
+                      (ordenacao.direcao === "asc" ? (
+                        <FiChevronUp />
+                      ) : (
+                        <FiChevronDown />
+                      ))}
+                  </span>
+                </th>
+                <th onClick={() => handleOrdenar("valorUnitario")}>
+                  <span className="sortable-header">
+                    Valor Unit.
+                    {ordenacao.coluna === "valorUnitario" &&
+                      (ordenacao.direcao === "asc" ? (
+                        <FiChevronUp />
+                      ) : (
+                        <FiChevronDown />
+                      ))}
+                  </span>
+                </th>
+                <th onClick={() => handleOrdenar("valorTotal")}>
+                  <span className="sortable-header">
+                    Valor Total
+                    {ordenacao.coluna === "valorTotal" &&
+                      (ordenacao.direcao === "asc" ? (
+                        <FiChevronUp />
+                      ) : (
+                        <FiChevronDown />
+                      ))}
+                  </span>
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -644,7 +810,7 @@ const ItensDetalhe = () => {
                   <FiChevronsRight />
                 </button>
                 <span className="total-itens">
-                  {`${inicioExibidoProduto} - ${fimExibidoProduto} / ${produtosFiltrados.length}`}
+                  {`${inicioExibidoProduto} - ${fimExibidoProduto} / ${produtosOrdenados.length}`}
                 </span>
               </div>
             </div>
@@ -652,10 +818,50 @@ const ItensDetalhe = () => {
               <table className="produto-table">
                 <thead>
                   <tr>
-                    <th>ID</th>
-                    <th>Nome</th>
-                    <th>Preco</th>
-                    <th>Categoria</th>
+                    <th onClick={() => handleOrdenarProduto("id")}>
+                      <span className="sortable-header">
+                        ID
+                        {ordenacaoProduto.coluna === "id" &&
+                          (ordenacaoProduto.direcao === "asc" ? (
+                            <FiChevronUp />
+                          ) : (
+                            <FiChevronDown />
+                          ))}
+                      </span>
+                    </th>
+                    <th onClick={() => handleOrdenarProduto("nome")}>
+                      <span className="sortable-header">
+                        Nome
+                        {ordenacaoProduto.coluna === "nome" &&
+                          (ordenacaoProduto.direcao === "asc" ? (
+                            <FiChevronUp />
+                          ) : (
+                            <FiChevronDown />
+                          ))}
+                      </span>
+                    </th>
+                    <th onClick={() => handleOrdenarProduto("preco")}>
+                      <span className="sortable-header">
+                        Preço
+                        {ordenacaoProduto.coluna === "preco" &&
+                          (ordenacaoProduto.direcao === "asc" ? (
+                            <FiChevronUp />
+                          ) : (
+                            <FiChevronDown />
+                          ))}
+                      </span>
+                    </th>
+                    <th onClick={() => handleOrdenarProduto("categoriaNome")}>
+                      <span className="sortable-header">
+                        Categoria
+                        {ordenacaoProduto.coluna === "categoriaNome" &&
+                          (ordenacaoProduto.direcao === "asc" ? (
+                            <FiChevronUp />
+                          ) : (
+                            <FiChevronDown />
+                          ))}
+                      </span>
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
@@ -676,8 +882,8 @@ const ItensDetalhe = () => {
                     >
                       <td>{produto.id}</td>
                       <td>{produto.nome}</td>
-                      <td>{produto.preco}</td>
-                      <td>{produto.categoria}</td>
+                      <td>{formatarMoeda(produto.preco)}</td>
+                      <td>{produto.categoriaNome}</td>
                     </tr>
                   ))}
                 </tbody>
