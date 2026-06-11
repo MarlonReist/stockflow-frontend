@@ -29,6 +29,7 @@ import ItensSaida from "./pages/Saida/Itens";
 import ItensDetalheSaida from "./pages/Saida/ItensDetalhe";
 
 import VisualizarEstoque from "./pages/Estoque/VisualizarEstoque";
+import Transferencia from "./pages/Estoque/Transferencia";
 
 
 
@@ -71,6 +72,7 @@ function App() {
           <Route path="/saida/itens/:id" element={<ItensDetalheSaida />} />
 
           <Route path="/estoque/visualizar" element={<VisualizarEstoque />} />
+          <Route path="/estoque/transferencia" element={<Transferencia />} />
 
 
 
