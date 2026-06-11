@@ -141,9 +141,9 @@ const Usuario = () => {
               onChange={handleChange}
             />
           </div>
-          <div className="form-group">
-            <label>Senha</label>
-            <div className="password-field">
+          {!modoEdicao && (
+            <div className="form-group">
+              <label>Senha</label>
               <input
                 type={mostrarSenha ? "text" : "password"}
                 name="senha"
@@ -159,7 +159,7 @@ const Usuario = () => {
                 {mostrarSenha ? <FiEyeOff /> : <FiEye />}
               </button>
             </div>
-          </div>
+          )}
           <div className="form-group">
             <label>Perfil</label>
             <select

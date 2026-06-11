@@ -55,7 +55,7 @@ const GerenciamentoUsuarios = () => {
         const response = await listarUsuarios();
         setUsuarios(response.data);
       } catch (error) {
-        mostrarMensagem("Erro ao carregar usuÃ¡rios", "erro");
+        mostrarMensagem("Erro ao carregar usuários", "erro");
       }
     };
     buscarUsuarios();
@@ -69,11 +69,11 @@ const GerenciamentoUsuarios = () => {
         usuariosAtuais.filter((usuario) => usuario.id !== id),
       );
 
-      mostrarMensagem("UsuÃ¡rio excluido com sucesso", "sucesso");
+      mostrarMensagem("Usuário excluido com sucesso", "sucesso");
       setUsuarioSelecionado(null);
     } catch (error) {
       const mensagemErro =
-        error.response?.data?.message || "Erro ao excluir usuÃ¡rios.";
+        error.response?.data?.message || "Erro ao excluir usuário.";
 
       mostrarMensagem(mensagemErro, "erro");
       setUsuarioSelecionado(null);
@@ -97,10 +97,10 @@ const GerenciamentoUsuarios = () => {
       );
 
       const acao = usuario.ativo ? "desativado" : "ativado";
-      mostrarMensagem(`UsuÃ¡rio ${acao} com sucesso`, "sucesso");
+      mostrarMensagem(`Usuário ${acao} com sucesso`, "sucesso");
     } catch (error) {
       const mensagemErro =
-        error.response?.data?.message || "Erro ao alterar status do usuÃ¡rio.";
+        error.response?.data?.message || "Erro ao alterar status do usuário.";
 
       mostrarMensagem(mensagemErro, "erro");
     }
@@ -194,8 +194,8 @@ const GerenciamentoUsuarios = () => {
   return (
     <div className="gerenciamento-usuarios-page">
       <div className="gerenciamento-usuarios-header">
-        <h1>Gerenciamento de UsuÃ¡rios</h1>
-        <p>Visualize, edite ou remova usuÃ¡rios cadastrados</p>
+        <h1>Gerenciamento de Usuários</h1>
+        <p>Visualize, edite ou remova usuários cadastrados</p>
       </div>
       <div className="gerenciamento-usuarios-actions">
         <input
@@ -208,7 +208,7 @@ const GerenciamentoUsuarios = () => {
           }}
         />
         <button type="button" onClick={() => navigate("/usuarios")}>
-          + Novo UsuÃ¡rio
+          + Novo Usuário
         </button>
         <div className="pagination-controls">
           <button
@@ -320,8 +320,8 @@ const GerenciamentoUsuarios = () => {
                     type="button"
                     className="action-button edit-button"
                     onClick={() => navigate(`/usuarios/editar/${usuario.id}`)}
-                    title="Editar usuÃ¡rio"
-                    aria-label="Editar usuÃ¡rio"
+                    title="Editar usuário"
+                    aria-label="Editar usuário"
                   >
                     <FiEdit2 />
                   </button>
@@ -329,8 +329,8 @@ const GerenciamentoUsuarios = () => {
                     type="button"
                     className="action-button delete-button"
                     onClick={() => setUsuarioSelecionado(usuario)}
-                    title="Excluir usuÃ¡rio"
-                    aria-label="Excluir usuÃ¡rio"
+                    title="Excluir usuário"
+                    aria-label="Excluir usuário"
                   >
                     <FiTrash2 />
                   </button>
@@ -342,8 +342,8 @@ const GerenciamentoUsuarios = () => {
                         : "power-button-activate"
                     }`}
                     onClick={() => handleToggleStatus(usuario)}
-                    title={usuario.ativo ? "Desativar usuÃ¡rio" : "Ativar usuÃ¡rio"}
-                    aria-label={usuario.ativo ? "Desativar usuÃ¡rio" : "Ativar usuÃ¡rio"}
+                    title={usuario.ativo ? "Desativar usuário" : "Ativar usuário"}
+                    aria-label={usuario.ativo ? "Desativar usuário" : "Ativar usuário"}
                   >
                     <FiPower />
                   </button>
@@ -356,7 +356,7 @@ const GerenciamentoUsuarios = () => {
       {usuarioSelecionado && (
         <div className="modal-overlay">
           <div className="confirm-modal">
-            <h2>Excluir usuÃ¡rio</h2>
+            <h2>Excluir usuário</h2>
             <p>
               Tem certeza que deseja excluir{" "}
               <strong>{usuarioSelecionado.login}</strong>?
