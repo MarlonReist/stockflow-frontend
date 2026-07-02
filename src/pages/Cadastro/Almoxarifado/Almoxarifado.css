@@ -2,18 +2,23 @@
   padding: 24px;
 }
 
-.almoxarifado-header {
+.almoxarifado-page .almoxarifado-header {
   margin-bottom: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: 8px;
 }
 
-.almoxarifado-header h1 {
+.almoxarifado-page .almoxarifado-header h1 {
   margin: 0 0 8px;
   color: var(--text-primary);
   font-size: 28px;
   font-weight: 700;
 }
 
-.almoxarifado-header p {
+.almoxarifado-page .almoxarifado-header p {
   margin: 0;
   color: var(--text-secondary);
   font-size: 15px;

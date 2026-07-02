@@ -3,6 +3,7 @@ import { NavLink } from "react-router-dom";
 import {
   FiBox,
   FiChevronDown,
+  FiClipboard,
   FiDownload,
   FiGrid,
   FiSettings,
@@ -103,7 +104,7 @@ const MainLayout = () => {
         >
           <span className="sidebar-item-content">
             <FiUpload />
-            <span>Saída</span>
+            <span>Saí­da</span>
           </span>
           <FiChevronDown className="sidebar-chevron" />
         </button>
@@ -111,13 +112,9 @@ const MainLayout = () => {
         {saidaAberto && (
           <div className="sidebar-submenu">
             <NavLink to="/saida/cadastro">Cadastro de Saída</NavLink>
-            <NavLink to="/saida/itens">Itens da saída</NavLink>
+            <NavLink to="/saida/itens">Itens da saí­da</NavLink>
           </div>
         )}
-
-        <a href="#" className="sidebar-link">
-          Ordem de Servico
-        </a>
 
         <button
           type="button"
@@ -134,9 +131,16 @@ const MainLayout = () => {
         {estoqueAberto && (
           <div className="sidebar-submenu">
             <NavLink to="/estoque/visualizar">Visualizar Estoque</NavLink>
-            <NavLink to="/estoque/transferencia">Transferência entre Almoxarifados</NavLink>
+            <NavLink to="/estoque/transferencia">
+              Transferência entre Almoxarifados
+            </NavLink>
           </div>
         )}
+
+        <NavLink to="/os" className="sidebar-link">
+          <FiClipboard />
+          <span>Ordem de Servico</span>
+        </NavLink>
 
         <a href="#" className="sidebar-link">
           Relatorios

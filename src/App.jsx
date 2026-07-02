@@ -31,6 +31,9 @@ import ItensDetalheSaida from "./pages/Saida/ItensDetalhe";
 import VisualizarEstoque from "./pages/Estoque/VisualizarEstoque";
 import Transferencia from "./pages/Estoque/Transferencia";
 
+import OrdemServico from "./pages/OrdemServico";
+import CadastroOrdemServico from "./pages/OrdemServico/Cadastro";
+
 
 
 function App() {
@@ -74,8 +77,9 @@ function App() {
           <Route path="/estoque/visualizar" element={<VisualizarEstoque />} />
           <Route path="/estoque/transferencia" element={<Transferencia />} />
 
-
-
+          <Route path="/os" element={<OrdemServico />} />
+          <Route path="/os/cadastro" element={<CadastroOrdemServico />} />
+          <Route path="/os/editar/:id" element={<CadastroOrdemServico />} />
         </Routes>
       </div>
     </div>
