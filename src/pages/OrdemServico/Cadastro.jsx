@@ -9,6 +9,7 @@ import {
   FiChevronsRight,
   FiRefreshCw,
   FiSearch,
+  FiPrinter,
 } from "react-icons/fi";
 import { useNavigate, useParams } from "react-router-dom";
 import { listarClientes } from "../../services/clientesService";
@@ -17,8 +18,11 @@ import {
   cadastrarOrdemServico,
   buscarOrdemServicoPorId,
   atualizarDescricaoOrdemServico,
+  gerarPdfOrdemServico,
+  gerarPdfProdutosOrdemServico,
 } from "../../services/ordemServicoService";
 import "./CadastroOS.css";
+import AnexosOSTab from "./components/AnexosOSTab";
 import ProdutosOSTab from "./components/ProdutosOSTab";
 
 const ordemInicial = {
@@ -349,6 +353,81 @@ const CadastroOrdemServico = () => {
     setBuscaColaborador("");
   };
 
+  const handleImprimirOS = async () => {
+    if (!ordem.id) {
+      mostrarMensagem("Salve a ordem de serviço antes de imprimir.", "erro");
+      return;
+    }
+
+    try {
+      const response = await gerarPdfOrdemServico(ordem.id);
+
+      const pdfBlob = new Blob([response.data], {
+        type: "application/pdf",
+      });
+
+      const pdfUrl = URL.createObjectURL(pdfBlob);
+      const janelaPdf = window.open(pdfUrl, "_blank");
+
+      if (!janelaPdf) {
+        mostrarMensagem("Permita pop-ups para imprimir a OS.", "erro");
+        return;
+      }
+
+      janelaPdf.onload = () => {
+        janelaPdf.print();
+      };
+
+      setTimeout(() => {
+        URL.revokeObjectURL(pdfUrl);
+      }, 10000);
+    } catch (error) {
+      mostrarMensagem("Erro ao gerar PDF da ordem de serviço.", "erro");
+    }
+  };
+
+  const handleImprimirProdutosOS = async () => {
+    if (!ordem.id) {
+      mostrarMensagem(
+        "Salve a ordem de serviço antes de imprimir os produtos.",
+        "erro",
+      );
+      return;
+    }
+
+    try {
+      const response = await gerarPdfProdutosOrdemServico(ordem.id);
+
+      const pdfBlob = new Blob([response.data], {
+        type: "application/pdf",
+      });
+
+      const pdfUrl = URL.createObjectURL(pdfBlob);
+      const janelaPdf = window.open(pdfUrl, "_blank");
+
+      if (!janelaPdf) {
+        mostrarMensagem(
+          "Permita pop-ups para imprimir os produtos da OS.",
+          "erro",
+        );
+        return;
+      }
+
+      janelaPdf.onload = () => {
+        janelaPdf.print();
+      };
+
+      setTimeout(() => {
+        URL.revokeObjectURL(pdfUrl);
+      }, 10000);
+    } catch (error) {
+      mostrarMensagem(
+        "Erro ao gerar PDF de produtos da ordem de serviço.",
+        "erro",
+      );
+    }
+  };
+
   const handleClear = () => {
     if (modoEdicao) {
       setOrdem((ordemAtual) => ({
@@ -488,23 +567,57 @@ const CadastroOrdemServico = () => {
       </div>
 
       <div className="cadastro-os-card">
-        <div className="cadastro-os-tabs">
-          <button
-            type="button"
-            className={abaAtiva === "principal" ? "active-tab" : ""}
-            onClick={() => setAbaAtiva("principal")}
-          >
-            Principal
-          </button>
+        <div className="cadastro-os-card-header">
+          <div className="cadastro-os-tabs">
+            <button
+              type="button"
+              className={abaAtiva === "principal" ? "active-tab" : ""}
+              onClick={() => setAbaAtiva("principal")}
+            >
+              Principal
+            </button>
 
-          <button
-            type="button"
-            className={abaAtiva === "produtos" ? "active-tab" : ""}
-            onClick={() => setAbaAtiva("produtos")}
-            disabled={!ordem.id}
-          >
-            Produtos
-          </button>
+            <button
+              type="button"
+              className={abaAtiva === "produtos" ? "active-tab" : ""}
+              onClick={() => setAbaAtiva("produtos")}
+              disabled={!ordem.id}
+            >
+              Produtos
+            </button>
+
+            <button
+              type="button"
+              className={abaAtiva === "anexos" ? "active-tab" : ""}
+              onClick={() => setAbaAtiva("anexos")}
+              disabled={!ordem.id}
+            >
+              Anexos
+            </button>
+          </div>
+
+          {abaAtiva === "principal" && (
+            <button
+              type="button"
+              className="print-order-button"
+              onClick={handleImprimirOS}
+              disabled={!ordem.id}
+            >
+              <FiPrinter />
+              Imprimir OS
+            </button>
+          )}
+          {abaAtiva === "produtos" && (
+            <button
+              type="button"
+              className="print-order-button"
+              onClick={handleImprimirProdutosOS}
+              disabled={!ordem.id}
+            >
+              <FiPrinter />
+              Imprimir Produtos
+            </button>
+          )}
         </div>
         {abaAtiva === "principal" && (
           <form className="cadastro-os-form" onSubmit={handleSubmit}>
@@ -631,6 +744,9 @@ const CadastroOrdemServico = () => {
             ordemEncerrada={ordemEncerrada}
             mostrarMensagem={mostrarMensagem}
           />
+        )}
+        {abaAtiva === "anexos" && (
+          <AnexosOSTab ordemId={ordem.id} mostrarMensagem={mostrarMensagem} />
         )}
       </div>
 

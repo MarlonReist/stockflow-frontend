@@ -32,6 +32,18 @@ function cancelarOrdemServico(id) {
   return api.patch(`/os/${id}/cancelar`);
 }
 
+function gerarPdfOrdemServico(id) {
+  return api.get(`/os/${id}/pdf`, {
+    responseType: "blob",
+  });
+}
+
+function gerarPdfProdutosOrdemServico(id) {
+  return api.get(`/os/${id}/produtos/pdf`, {
+    responseType: "blob",
+  });
+}
+
 export {
   cadastrarOrdemServico,
   listarOrdensServico,
@@ -40,4 +52,6 @@ export {
   atualizarDescricaoOrdemServico,
   finalizarOrdemServico,
   cancelarOrdemServico,
+  gerarPdfOrdemServico,
+  gerarPdfProdutosOrdemServico,
 };

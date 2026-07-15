@@ -293,14 +293,13 @@
 }
 
 .os-table .action-button {
-  width: 34px;
-  height: 34px;
-  margin: 0 3px;
+  width: 32px;
+  height: 32px;
+  margin-right: 10px;
   padding: 0;
-  border: 1px solid rgba(148, 163, 184, 0.14);
+  border: 1px solid transparent;
   border-radius: 8px;
-  background: rgba(255, 255, 255, 0.035);
-  color: var(--text-secondary);
+  background-color: transparent;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -313,6 +312,10 @@
     transform 0.2s ease;
 }
 
+.os-table .action-button:last-child {
+  margin-right: 0;
+}
+
 .os-table .action-button svg {
   width: 16px;
   height: 16px;
@@ -322,28 +325,51 @@
   transform: translateY(-1px);
 }
 
+.os-table .action-button[aria-label="Visualizar ordem"] {
+  color: #c4b5fd;
+  border-color: rgba(167, 139, 250, 0.4);
+  background-color: rgba(124, 58, 237, 0.08);
+}
+
 .os-table .action-button[aria-label="Visualizar ordem"]:hover {
-  color: #bfdbfe;
-  border-color: rgba(96, 165, 250, 0.45);
-  background-color: rgba(37, 99, 235, 0.16);
+  color: #ddd6fe;
+  border-color: rgba(196, 181, 253, 0.7);
+  background-color: rgba(124, 58, 237, 0.18);
+}
+
+.os-table .action-button[aria-label="Editar ordem"] {
+  color: #93c5fd;
+  border-color: rgba(37, 99, 235, 0.35);
+  background-color: transparent;
 }
 
 .os-table .action-button[aria-label="Editar ordem"]:hover {
-  color: var(--text-primary);
-  border-color: rgba(167, 139, 250, 0.5);
-  background-color: rgba(124, 58, 237, 0.18);
+  color: #bfdbfe;
+  background-color: rgba(37, 99, 235, 0.16);
+}
+
+.os-table .action-button[aria-label="Finalizar ordem"] {
+  color: #22c55e;
+  border-color: rgba(34, 197, 94, 0.4);
+  background-color: rgba(34, 197, 94, 0.08);
 }
 
 .os-table .action-button[aria-label="Finalizar ordem"]:hover {
   color: #bbf7d0;
-  border-color: rgba(34, 197, 94, 0.45);
-  background-color: rgba(34, 197, 94, 0.14);
+  border-color: rgba(74, 222, 128, 0.7);
+  background-color: rgba(34, 197, 94, 0.18);
+}
+
+.os-table .action-button[aria-label="Cancelar ordem"] {
+  color: #f59e0b;
+  border-color: rgba(249, 115, 22, 0.4);
+  background-color: rgba(249, 115, 22, 0.08);
 }
 
 .os-table .action-button[aria-label="Cancelar ordem"]:hover {
-  color: #fecaca;
-  border-color: rgba(239, 68, 68, 0.45);
-  background-color: rgba(239, 68, 68, 0.14);
+  color: #fde68a;
+  border-color: rgba(251, 146, 60, 0.72);
+  background-color: rgba(249, 115, 22, 0.18);
 }
 
 .os-actions .pagination-controls {
