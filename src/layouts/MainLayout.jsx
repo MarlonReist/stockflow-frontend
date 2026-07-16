@@ -5,6 +5,7 @@ import {
   FiChevronDown,
   FiClipboard,
   FiDownload,
+  FiFileText,
   FiGrid,
   FiSettings,
   FiUpload,
@@ -104,7 +105,7 @@ const MainLayout = () => {
         >
           <span className="sidebar-item-content">
             <FiUpload />
-            <span>Saí­da</span>
+            <span>Saída</span>
           </span>
           <FiChevronDown className="sidebar-chevron" />
         </button>
@@ -112,7 +113,7 @@ const MainLayout = () => {
         {saidaAberto && (
           <div className="sidebar-submenu">
             <NavLink to="/saida/cadastro">Cadastro de Saída</NavLink>
-            <NavLink to="/saida/itens">Itens da saí­da</NavLink>
+            <NavLink to="/saida/itens">Itens da saída</NavLink>
           </div>
         )}
 
@@ -139,12 +140,13 @@ const MainLayout = () => {
 
         <NavLink to="/os" className="sidebar-link">
           <FiClipboard />
-          <span>Ordem de Servico</span>
+          <span>Ordem de Serviço</span>
         </NavLink>
 
-        <a href="#" className="sidebar-link">
-          Relatorios
-        </a>
+        <NavLink to="/relatorios" className="sidebar-link">
+          <FiFileText />
+          <span>Relatórios</span>
+        </NavLink>
       </nav>
     </div>
   );

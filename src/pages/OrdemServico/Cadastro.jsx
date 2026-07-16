@@ -130,7 +130,7 @@ const CadastroOrdemServico = () => {
 
         setOrdemSalva(false);
       } catch (error) {
-        mostrarMensagem("Erro ao carregar ordem de servico.", "erro");
+        mostrarMensagem("Erro ao carregar ordem de serviço.", "erro");
       }
     };
 
@@ -506,7 +506,7 @@ const CadastroOrdemServico = () => {
           descricao: response.data.descricao ?? ordem.descricao.trim(),
         }));
 
-        mostrarMensagem("Ordem de servico atualizada com sucesso.", "sucesso");
+        mostrarMensagem("Ordem de serviço atualizada com sucesso.", "sucesso");
         return;
       }
 
@@ -529,11 +529,11 @@ const CadastroOrdemServico = () => {
       });
 
       setOrdemSalva(true);
-      mostrarMensagem("Ordem de servico cadastrada com sucesso.", "sucesso");
+      mostrarMensagem("Ordem de serviço cadastrada com sucesso.", "sucesso");
     } catch (error) {
       const mensagemPadrao = modoEdicao
-        ? "Erro ao atualizar ordem de servico."
-        : "Erro ao cadastrar ordem de servico.";
+        ? "Erro ao atualizar ordem de serviço."
+        : "Erro ao cadastrar ordem de serviço.";
       const mensagemErro = error.response?.data?.message || mensagemPadrao;
 
       mostrarMensagem(mensagemErro, "erro");
@@ -555,14 +555,14 @@ const CadastroOrdemServico = () => {
           </button>
           <h1>
             {modoEdicao
-              ? "Editar Ordem de Servico"
-              : "Cadastro de Ordem de Servico"}
+              ? "Editar Ordem de Serviço"
+              : "Cadastro de Ordem de Serviço"}
           </h1>
         </div>
         <p>
           {modoEdicao
             ? "Atualize os dados e produtos vinculados a esta ordem"
-            : "Registre uma nova ordem de servico"}
+            : "Registre uma nova ordem de serviço"}
         </p>
       </div>
 

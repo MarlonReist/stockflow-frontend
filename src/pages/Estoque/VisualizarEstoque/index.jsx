@@ -8,9 +8,13 @@ import {
   FiChevronsRight,
   FiChevronUp,
   FiChevronDown,
+  FiPrinter,
 } from "react-icons/fi";
 import { listarAlmoxarifados } from "../../../services/almoxarifadoService";
-import { listarAlmoxarifadosEstoque } from "../../../services/almoxarifadoEstoqueService";
+import {
+  gerarPdfProdutosAlmoxarifado,
+  listarAlmoxarifadosEstoque,
+} from "../../../services/almoxarifadoEstoqueService";
 import { listarProdutos } from "../../../services/produtoService";
 import { formatarUnidadeMedida } from "../../../utils/unidadeMedida";
 
@@ -189,6 +193,41 @@ const VisualizarEstoque = () => {
     setBuscaProduto("");
     setPaginaProdutoAtual(1);
     setEstoqueAberto(true);
+  };
+
+  const handleImprimirProdutosAlmoxarifado = async () => {
+    if (!almoxarifadoSelecionado?.id) {
+      mostrarMensagem("Selecione um almoxarifado antes de imprimir.", "erro");
+      return;
+    }
+
+    try {
+      const response = await gerarPdfProdutosAlmoxarifado(
+        almoxarifadoSelecionado.id,
+      );
+
+      const pdfBlob = new Blob([response.data], {
+        type: "application/pdf",
+      });
+
+      const pdfUrl = URL.createObjectURL(pdfBlob);
+      const janelaPdf = window.open(pdfUrl, "_blank");
+
+      if (!janelaPdf) {
+        mostrarMensagem("Permita pop-ups para imprimir o estoque.", "erro");
+        return;
+      }
+
+      janelaPdf.onload = () => {
+        janelaPdf.print();
+      };
+
+      setTimeout(() => {
+        URL.revokeObjectURL(pdfUrl);
+      }, 10000);
+    } catch (error) {
+      mostrarMensagem("Erro ao gerar PDF do estoque.", "erro");
+    }
   };
 
   const produtosDoAlmoxarifado = almoxarifadosEstoque.filter((item) => {
@@ -429,13 +468,23 @@ const VisualizarEstoque = () => {
           <div className="estoque-modal-box">
             <div className="estoque-modal-header">
               <h2>{almoxarifadoSelecionado.nome}</h2>
-              <button
-                type="button"
-                className="close-modal-btn"
-                onClick={() => setEstoqueAberto(false)}
-              >
-                X
-              </button>
+              <div className="estoque-modal-header-actions">
+                <button
+                  type="button"
+                  className="print-stock-button"
+                  onClick={handleImprimirProdutosAlmoxarifado}
+                >
+                  <FiPrinter />
+                  Imprimir Estoque
+                </button>
+                <button
+                  type="button"
+                  className="close-modal-btn"
+                  onClick={() => setEstoqueAberto(false)}
+                >
+                  X
+                </button>
+              </div>
             </div>
 
             <div className="estoque-view-actions estoque-view-products-actions">

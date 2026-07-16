@@ -25,10 +25,17 @@ function atualizarAlmoxarifadoEstoque(id, almoxarifadoEstoque) {
   return api.put(`/estoques/${id}`, almoxarifadoEstoque);
 }
 
+function gerarPdfProdutosAlmoxarifado(almoxarifadoId) {
+  return api.get(`/estoques/almoxarifados/${almoxarifadoId}/pdf`, {
+    responseType: "blob",
+  });
+}
+
 export {
   cadastrarAlmoxarifadoEstoque,
   listarAlmoxarifadosEstoque,
   deletarAlmoxarifadoEstoque,
   buscarAlmoxarifadoEstoquePorID,
   atualizarAlmoxarifadoEstoque,
+  gerarPdfProdutosAlmoxarifado,
 };

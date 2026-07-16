@@ -33,6 +33,8 @@ import Transferencia from "./pages/Estoque/Transferencia";
 
 import OrdemServico from "./pages/OrdemServico";
 import CadastroOrdemServico from "./pages/OrdemServico/Cadastro";
+import Relatorios from "./pages/Relatorios";
+import HistoricoMovimentacoes from "./pages/Relatorios/HistoricoMovimentacoes";
 
 
 
@@ -80,6 +82,12 @@ function App() {
           <Route path="/os" element={<OrdemServico />} />
           <Route path="/os/cadastro" element={<CadastroOrdemServico />} />
           <Route path="/os/editar/:id" element={<CadastroOrdemServico />} />
+
+          <Route path="/relatorios" element={<Relatorios />} />
+          <Route
+            path="/relatorios/historico-movimentacoes"
+            element={<HistoricoMovimentacoes />}
+          />
         </Routes>
       </div>
     </div>

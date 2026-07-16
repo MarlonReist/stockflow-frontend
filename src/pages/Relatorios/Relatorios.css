@@ -1,0 +1,189 @@
+.relatorios-page {
+  width: 100%;
+  padding: 24px 32px;
+}
+
+.relatorios-header,
+.relatorios-actions,
+.relatorios-card {
+  width: min(100%, 1180px);
+}
+
+.relatorios-header {
+  margin-bottom: 24px;
+}
+
+.relatorios-header h1 {
+  margin: 0 0 8px;
+  color: var(--text-primary);
+  font-size: 28px;
+  font-weight: 700;
+}
+
+.relatorios-header p {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 15px;
+}
+
+.relatorios-actions {
+  margin-bottom: 18px;
+  padding: 18px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-purple-subtle);
+  border-radius: var(--radius-xl);
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.16);
+}
+
+.relatorios-actions input {
+  flex: 1;
+  height: 46px;
+  min-width: 220px;
+  padding: 0 14px;
+  border: 1px solid var(--border-purple-soft);
+  border-radius: var(--radius-lg);
+  background-color: var(--bg-input);
+  color: var(--text-primary);
+  font-family: inherit;
+  font-size: 14px;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.relatorios-actions input::placeholder {
+  color: var(--text-muted);
+}
+
+.relatorios-actions input:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(147, 51, 234, 0.22);
+}
+
+.relatorios-actions button {
+  height: 46px;
+  padding: 0 22px;
+  border: 1px solid rgba(59, 130, 246, 0.35);
+  border-radius: var(--radius-lg);
+  background-color: rgba(37, 99, 235, 0.12);
+  color: #dbeafe;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    transform 0.2s ease,
+    border-color 0.2s ease,
+    background-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.relatorios-actions button:hover:not(:disabled) {
+  transform: translateY(-1px);
+  color: #eff6ff;
+  border-color: rgba(96, 165, 250, 0.55);
+  background-color: rgba(37, 99, 235, 0.2);
+}
+
+.relatorios-actions button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.relatorios-card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-purple-subtle);
+  border-radius: var(--radius-xl);
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+}
+
+.relatorios-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.relatorios-table th,
+.relatorios-table td {
+  padding: 16px 18px;
+  text-align: left;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.08);
+  color: var(--text-secondary);
+  font-size: 14px;
+  vertical-align: middle;
+}
+
+.relatorios-table th {
+  color: var(--text-primary);
+  font-size: 13px;
+  font-weight: 700;
+  background-color: rgba(255, 255, 255, 0.015);
+}
+
+.relatorios-table tbody tr {
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.relatorios-table tbody tr:hover {
+  background-color: rgba(255, 255, 255, 0.03);
+}
+
+.relatorios-table tbody tr.selected-row {
+  background-color: rgba(124, 58, 237, 0.24);
+  box-shadow:
+    inset 4px 0 0 #a855f7,
+    inset 0 1px 0 rgba(168, 85, 247, 0.18),
+    inset 0 -1px 0 rgba(168, 85, 247, 0.18);
+}
+
+.relatorios-table tbody tr.selected-row td {
+  color: #f5f3ff;
+  font-weight: 600;
+}
+
+.relatorios-table tr:last-child td {
+  border-bottom: none;
+}
+
+.relatorios-table th:first-child,
+.relatorios-table td:first-child {
+  width: 280px;
+}
+
+.empty-state-cell {
+  padding: 30px 18px !important;
+  text-align: center !important;
+  color: var(--text-muted) !important;
+}
+
+@media (max-width: 768px) {
+  .relatorios-page {
+    padding: 20px;
+  }
+
+  .relatorios-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .relatorios-actions input,
+  .relatorios-actions button {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .relatorios-card {
+    overflow-x: auto;
+  }
+
+  .relatorios-table {
+    min-width: 680px;
+  }
+}
