@@ -27,7 +27,7 @@
   padding: 18px;
   display: flex;
   align-items: center;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   gap: 12px;
   background-color: var(--bg-card);
   border: 1px solid var(--border-purple-subtle);
@@ -35,16 +35,7 @@
   box-shadow: 0 10px 15px rgba(0, 0, 0, 0.16);
 }
 
-.os-actions::after {
-  content: "";
-  flex-basis: 100%;
-  width: 0;
-  height: 0;
-  order: 2;
-}
-
 .os-actions input {
-  order: 1;
   flex: 1;
   height: 46px;
   min-width: 240px;
@@ -67,18 +58,15 @@
 }
 
 .os-buttons {
-  flex: 1 1 100%;
+  flex: 0 0 auto;
   display: flex;
   align-items: center;
   gap: 10px;
-  order: 3;
-  margin-top: 4px;
 }
 
 .os-actions .new-item-button,
 .os-actions .edit-item-button,
 .os-actions .delete-item-button {
-  order: 2;
   height: 46px;
   padding: 0 22px;
   border: 1px solid transparent;
@@ -131,7 +119,6 @@
 }
 
 .os-actions .pagination-controls {
-  order: 1;
   margin-left: auto;
   display: inline-flex;
   align-items: center;

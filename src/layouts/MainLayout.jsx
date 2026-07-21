@@ -26,10 +26,10 @@ const MainLayout = () => {
       </div>
 
       <nav className="sidebar-menu">
-        <a href="#" className="sidebar-link">
+        <NavLink to="/dashboard" className="sidebar-link">
           <FiGrid />
           <span>Dashboard</span>
-        </a>
+        </NavLink>
 
         <button
           type="button"

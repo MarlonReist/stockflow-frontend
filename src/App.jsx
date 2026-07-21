@@ -35,7 +35,7 @@ import OrdemServico from "./pages/OrdemServico";
 import CadastroOrdemServico from "./pages/OrdemServico/Cadastro";
 import Relatorios from "./pages/Relatorios";
 import HistoricoMovimentacoes from "./pages/Relatorios/HistoricoMovimentacoes";
-
+import Dashboard from "./pages/Dashboard";
 
 
 function App() {
@@ -44,7 +44,9 @@ function App() {
       <MainLayout />
       <div className="content">
         <Routes>
-          <Route path="/" element={<Navigate to="/clientes" />} />
+          <Route path="/" element={<Dashboard />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+
           <Route path="/clientes" element={<Clientes />} />
           <Route path="/categorias" element={<Categorias />} />
           <Route path="/almoxarifados" element={<Almoxarifado />} />

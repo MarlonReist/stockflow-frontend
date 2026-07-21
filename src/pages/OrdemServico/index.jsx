@@ -1,24 +1,23 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
-  FiX,
-  FiChevronUp,
-  FiChevronDown,
-  FiChevronsLeft,
+  FiCheckCircle,
   FiChevronLeft,
-  FiRefreshCw,
   FiChevronRight,
+  FiChevronsLeft,
   FiChevronsRight,
-  FiSearch,
+  FiEdit2,
+  FiEye,
+  FiRefreshCw,
+  FiXCircle,
 } from "react-icons/fi";
-import "./OrdemDeServico.css";
+import { useNavigate } from "react-router-dom";
 import {
-  listarOrdensServico,
-  finalizarOrdemServico,
   cancelarOrdemServico,
   deletarOrdemServico,
+  finalizarOrdemServico,
+  listarOrdensServico,
 } from "../../services/ordemServicoService";
-import { FiEye, FiEdit2, FiCheckCircle, FiXCircle } from "react-icons/fi";
-import { useNavigate } from "react-router-dom";
+import "./OrdemDeServico.css";
 
 const OrdemServico = () => {
   const [ordensServico, setOrdensServico] = useState([]);
@@ -31,6 +30,7 @@ const OrdemServico = () => {
     coluna: "id",
     direcao: "asc",
   });
+
   const navigate = useNavigate();
 
   const mostrarMensagem = (texto, tipo) => {
@@ -48,18 +48,31 @@ const OrdemServico = () => {
     }, 3000);
   };
 
-  useEffect(() => {
-    const carregarOrdensServico = async () => {
-      try {
-        const response = await listarOrdensServico();
-        setOrdensServico(response.data);
-      } catch (error) {
-        mostrarMensagem("Erro ao carregar ordens de serviço", "erro");
-      }
-    };
+  const carregarOrdensServico = async () => {
+    try {
+      const response = await listarOrdensServico();
+      setOrdensServico(response.data);
+    } catch (error) {
+      mostrarMensagem("Erro ao carregar ordens de serviço.", "erro");
+    }
+  };
 
+  useEffect(() => {
     carregarOrdensServico();
   }, []);
+
+  const formatarData = (data) => {
+    if (!data) {
+      return "-";
+    }
+
+    return String(data).split("-").reverse().join("/");
+  };
+
+  const formatarValor = (valor) => {
+    const valorNumerico = Number(valor || 0);
+    return `R$ ${valorNumerico.toFixed(2).replace(".", ",")}`;
+  };
 
   const ordensServicoFiltradas = ordensServico.filter((ordem) => {
     const buscaFormatada = busca.toLowerCase();
@@ -88,26 +101,18 @@ const OrdemServico = () => {
     });
   };
 
-  const ordensServicoORdenadas = [...ordensServicoFiltradas].sort((a, b) => {
+  const ordensServicoOrdenadas = [...ordensServicoFiltradas].sort((a, b) => {
     let valorA = a[ordenacao.coluna];
     let valorB = b[ordenacao.coluna];
 
-    if (ordenacao.coluna === "id") {
-      valorA = Number(valorA);
-      valorB = Number(valorB);
-    } else if (ordenacao.coluna === "dataAbertura") {
-      valorA = String(valorA);
-      valorB = String(valorB);
-    } else if (ordenacao.coluna === "valorTotal") {
-      valorA = Number(valorA);
-      valorB = Number(valorB);
-    } else if (ordenacao.coluna === "dataFechamento") {
-      valorA = String(valorA);
-      valorB = String(valorB);
+    if (ordenacao.coluna === "id" || ordenacao.coluna === "valorTotal") {
+      valorA = Number(valorA || 0);
+      valorB = Number(valorB || 0);
     } else {
       valorA = String(valorA ?? "").toLowerCase();
       valorB = String(valorB ?? "").toLowerCase();
     }
+
     if (valorA < valorB) {
       return ordenacao.direcao === "asc" ? -1 : 1;
     }
@@ -122,21 +127,26 @@ const OrdemServico = () => {
   const itensPorPagina = 10;
   const indiceInicial = (paginaAtual - 1) * itensPorPagina;
   const indiceFinal = indiceInicial + itensPorPagina;
-
-  const ordensPaginadas = ordensServicoORdenadas.slice(
+  const ordensPaginadas = ordensServicoOrdenadas.slice(
     indiceInicial,
     indiceFinal,
   );
-
   const totalPaginas = Math.ceil(
-    ordensServicoORdenadas.length / itensPorPagina,
+    ordensServicoOrdenadas.length / itensPorPagina,
   );
   const inicioExibido =
-    ordensServicoORdenadas.length > 0 ? indiceInicial + 1 : 0;
-  const fimExibido = Math.min(indiceFinal, ordensServicoORdenadas.length);
+    ordensServicoOrdenadas.length > 0 ? indiceInicial + 1 : 0;
+  const fimExibido = Math.min(indiceFinal, ordensServicoOrdenadas.length);
 
   const handlePaginaAnterior = () => {
     setPaginaAtual((atual) => Math.max(atual - 1, 1));
+  };
+
+  const handleRecarregar = async () => {
+    setBusca("");
+    setPaginaAtual(1);
+    setOrdemSelecionada(null);
+    await carregarOrdensServico();
   };
 
   const handlePaginaProxima = () => {
@@ -151,13 +161,6 @@ const OrdemServico = () => {
     setPaginaAtual(totalPaginas);
   };
 
-  const handleNovaOrdem = () => {
-    mostrarMensagem(
-      "Cadastro de nova ordem ainda não está disponível.",
-      "erro",
-    );
-  };
-
   const handleEditarOrdem = (ordem) => {
     if (!ordem) {
       mostrarMensagem("Selecione uma ordem antes de editar.", "erro");
@@ -165,6 +168,14 @@ const OrdemServico = () => {
     }
 
     navigate(`/os/editar/${ordem.id}`);
+  };
+
+  const atualizarOrdemNaLista = (ordemAtualizada) => {
+    setOrdensServico((ordensAtuais) =>
+      ordensAtuais.map((ordemAtual) =>
+        ordemAtual.id === ordemAtualizada.id ? ordemAtualizada : ordemAtual,
+      ),
+    );
   };
 
   const handleDeletarOrdem = async () => {
@@ -175,8 +186,8 @@ const OrdemServico = () => {
 
     try {
       await deletarOrdemServico(ordemSelecionada.id);
-      setOrdensServico((prevOrdens) =>
-        prevOrdens.filter((ordem) => ordem.id !== ordemSelecionada.id),
+      setOrdensServico((ordensAtuais) =>
+        ordensAtuais.filter((ordem) => ordem.id !== ordemSelecionada.id),
       );
       setOrdemSelecionada(null);
       mostrarMensagem("Ordem deletada com sucesso.", "sucesso");
@@ -187,15 +198,13 @@ const OrdemServico = () => {
 
   const handleFinalizarOrdem = async (ordem) => {
     try {
-      await finalizarOrdemServico(ordem.id);
+      const response = await finalizarOrdemServico(ordem.id);
 
-      setOrdensServico((ordensAtuais) =>
-        ordensAtuais.map((ordemAtual) =>
-          ordemAtual.id === ordem.id
-            ? { ...ordemAtual, status: "FINALIZADA" }
-            : ordemAtual,
-        ),
-      );
+      if (response.data?.id) {
+        atualizarOrdemNaLista(response.data);
+      } else {
+        await carregarOrdensServico();
+      }
 
       mostrarMensagem("Ordem finalizada com sucesso.", "sucesso");
       setOrdemSelecionada(null);
@@ -211,15 +220,13 @@ const OrdemServico = () => {
 
   const handleCancelarOrdem = async (ordem) => {
     try {
-      await cancelarOrdemServico(ordem.id);
+      const response = await cancelarOrdemServico(ordem.id);
 
-      setOrdensServico((ordensAtuais) =>
-        ordensAtuais.map((ordemAtual) =>
-          ordemAtual.id === ordem.id
-            ? { ...ordemAtual, status: "CANCELADA" }
-            : ordemAtual,
-        ),
-      );
+      if (response.data?.id) {
+        atualizarOrdemNaLista(response.data);
+      } else {
+        await carregarOrdensServico();
+      }
 
       mostrarMensagem("Ordem cancelada com sucesso.", "sucesso");
       setOrdemSelecionada(null);
@@ -239,6 +246,7 @@ const OrdemServico = () => {
         <h1>Ordem de Serviço</h1>
         <p>Visualize e gerencie as Ordens de Serviço</p>
       </div>
+
       <div className="os-actions">
         <input
           type="text"
@@ -249,6 +257,7 @@ const OrdemServico = () => {
             setPaginaAtual(1);
           }}
         />
+
         <div className="os-buttons">
           <button
             type="button"
@@ -272,6 +281,7 @@ const OrdemServico = () => {
             Deletar
           </button>
         </div>
+
         <div className="pagination-controls">
           <button
             type="button"
@@ -289,9 +299,13 @@ const OrdemServico = () => {
           >
             <FiChevronLeft />
           </button>
-          <span className="total-itens">
-            {inicioExibido}–{fimExibido} de {ordensServicoORdenadas.length}
-          </span>
+          <button
+            type="button"
+            onClick={handleRecarregar}
+            aria-label="Recarregar listagem"
+          >
+            <FiRefreshCw />
+          </button>
           <button
             type="button"
             onClick={handlePaginaProxima}
@@ -308,18 +322,26 @@ const OrdemServico = () => {
           >
             <FiChevronsRight />
           </button>
+          <span className="total-itens">
+            {`${inicioExibido} - ${fimExibido} / ${ordensServicoOrdenadas.length}`}
+          </span>
         </div>
       </div>
+
       <div className="os-card" onClick={(e) => e.stopPropagation()}>
         <table className="os-table">
           <thead>
             <tr>
-              <th>ID</th>
-              <th>Cliente</th>
-              <th>Data Abertura</th>
-              <th>Valor Total</th>
-              <th>Status</th>
-              <th>Data Fechamento</th>
+              <th onClick={() => handleOrdenar("id")}>ID</th>
+              <th onClick={() => handleOrdenar("clienteNome")}>Cliente</th>
+              <th onClick={() => handleOrdenar("dataAbertura")}>
+                Data Abertura
+              </th>
+              <th onClick={() => handleOrdenar("valorTotal")}>Valor Total</th>
+              <th onClick={() => handleOrdenar("status")}>Status</th>
+              <th onClick={() => handleOrdenar("dataFechamento")}>
+                Data Fechamento
+              </th>
               <th>Ações</th>
             </tr>
           </thead>
@@ -335,8 +357,8 @@ const OrdemServico = () => {
               >
                 <td>{ordem.id}</td>
                 <td>{ordem.clienteNome}</td>
-                <td>{ordem.dataAbertura}</td>
-                <td>R$ {ordem.valorTotal?.toFixed(2).replace(".", ",")}</td>
+                <td>{formatarData(ordem.dataAbertura)}</td>
+                <td>{formatarValor(ordem.valorTotal)}</td>
                 <td>
                   <span
                     className={`os-status ${
@@ -352,11 +374,7 @@ const OrdemServico = () => {
                     {ordem.status}
                   </span>
                 </td>
-                <td>
-                  {ordem.dataFechamento
-                    ? new Date(ordem.dataFechamento).toLocaleDateString("pt-BR")
-                    : "-"}
-                </td>
+                <td>{formatarData(ordem.dataFechamento)}</td>
                 <td>
                   <button
                     type="button"
@@ -435,6 +453,7 @@ const OrdemServico = () => {
           </tbody>
         </table>
       </div>
+
       {ordemSelecionada && acaoConfirmacao && (
         <div className="modal-overlay" onClick={() => setAcaoConfirmacao("")}>
           <div className="confirm-modal" onClick={(e) => e.stopPropagation()}>
@@ -480,6 +499,7 @@ const OrdemServico = () => {
           </div>
         </div>
       )}
+
       <div className="toast-container">
         {mensagens.map((mensagem) => (
           <div
