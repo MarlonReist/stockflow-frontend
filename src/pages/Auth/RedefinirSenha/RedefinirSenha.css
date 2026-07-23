@@ -1,0 +1,168 @@
+.redefinir-senha-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background:
+    radial-gradient(circle at top left, rgba(139, 92, 246, 0.18), transparent 34%),
+    radial-gradient(circle at bottom right, rgba(37, 99, 235, 0.16), transparent 38%),
+    var(--bg-primary);
+}
+
+.redefinir-senha-card {
+  width: min(100%, 460px);
+  padding: 32px;
+  border: 1px solid var(--border-purple-subtle);
+  border-radius: 16px;
+  background-color: var(--bg-card);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.36);
+}
+
+.redefinir-senha-card h1 {
+  margin: 0 0 10px;
+  color: var(--text-primary);
+  font-size: 28px;
+  font-weight: 800;
+}
+
+.redefinir-senha-card p {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.redefinir-senha-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 22px;
+}
+
+.redefinir-senha-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  color: var(--text-primary);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.redefinir-senha-form input {
+  width: 100%;
+  min-height: 46px;
+  padding: 0 14px;
+  border: 1px solid rgba(139, 92, 246, 0.35);
+  border-radius: 10px;
+  background-color: rgba(20, 20, 42, 0.96);
+  color: var(--text-primary);
+  font-size: 15px;
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.redefinir-senha-form input:focus {
+  border-color: var(--accent-purple);
+  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.18);
+}
+
+.redefinir-senha-form input[readonly] {
+  color: var(--text-secondary);
+  cursor: not-allowed;
+  background-color: rgba(31, 31, 55, 0.78);
+}
+
+.redefinir-senha-password-field {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.redefinir-senha-password-field input {
+  padding-right: 48px;
+}
+
+.redefinir-senha-password-toggle {
+  position: absolute;
+  right: 10px;
+  width: 34px;
+  height: 34px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 8px;
+  background-color: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: color 0.2s ease, background-color 0.2s ease;
+}
+
+.redefinir-senha-password-toggle:hover {
+  background-color: rgba(139, 92, 246, 0.14);
+  color: var(--text-primary);
+}
+
+.redefinir-senha-password-toggle svg {
+  width: 18px;
+  height: 18px;
+}
+
+.redefinir-senha-form > button {
+  min-height: 48px;
+  margin-top: 6px;
+  border: none;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #7c3aed, #2563eb);
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+}
+
+.redefinir-senha-form > button:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 12px 28px rgba(37, 99, 235, 0.28);
+}
+
+.redefinir-senha-form > button:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.redefinir-senha-message {
+  margin-top: 18px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.redefinir-senha-message-error {
+  border: 1px solid rgba(248, 113, 113, 0.35);
+  background-color: rgba(127, 29, 29, 0.26);
+  color: #fecaca;
+}
+
+.redefinir-senha-message-success {
+  border: 1px solid rgba(34, 197, 94, 0.35);
+  background-color: rgba(20, 83, 45, 0.28);
+  color: #bbf7d0;
+}
+
+@media (max-width: 520px) {
+  .redefinir-senha-page {
+    padding: 16px;
+  }
+
+  .redefinir-senha-card {
+    padding: 24px;
+    border-radius: 14px;
+  }
+
+  .redefinir-senha-card h1 {
+    font-size: 24px;
+  }
+}

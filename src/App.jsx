@@ -1,5 +1,5 @@
 import MainLayout from "./layouts/MainLayout";
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 
 import "./styles/App.css";
 import "./styles/index.css";
@@ -37,60 +37,96 @@ import Dashboard from "./pages/Dashboard";
 
 import Acessos from "./pages/Acessos";
 import AtivarConta from "./pages/Auth/AtivarConta";
+import Login from "./pages/Auth/Login";
+import RedefinirSenha from "./pages/Auth/RedefinirSenha";
 
+import PrivateRoute from "./components/PrivateRoute";
 
 function App() {
+  const location = useLocation();
+  const rotasPublicas = ["/login", "/ativar-conta", "/redefinir-senha"];
+  const rotaPublica = rotasPublicas.includes(location.pathname);
+
   return (
     <div className="app-container">
-      <MainLayout />
-      <div className="content">
+      {!rotaPublica && <MainLayout />}
+
+      <div className={rotaPublica ? "content public-content" : "content"}>
         <Routes>
-          <Route path="/" element={<Dashboard />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-
-          <Route path="/acessos" element={<Acessos />} />
+          <Route path="/login" element={<Login />} />
           <Route path="/ativar-conta" element={<AtivarConta />} />
+          <Route path="/redefinir-senha" element={<RedefinirSenha />} />
 
-          <Route path="/clientes" element={<Clientes />} />
-          <Route path="/categorias" element={<Categorias />} />
-          <Route path="/almoxarifados" element={<Almoxarifado />} />
-          <Route path="/fornecedores" element={<Fornecedor />} />
-          <Route path="/colaboradores" element={<Colaborador />} />
-          <Route path="/produtos" element={<Produto />} />
-          
-          <Route path="/gerenciamento/clientes" element={<GerenciamentoClientes />} />
-          <Route path="/clientes/editar/:id" element={<Clientes />} />
-          <Route path="/gerenciamento/categorias" element={<GerenciamentoCategorias />} />
-          <Route path="/categorias/editar/:id" element={<Categorias />} />
-          <Route path="/gerenciamento/almoxarifados" element={<GerenciamentoAlmoxarifados />} />
-          <Route path="/almoxarifados/editar/:id" element={<Almoxarifado />} />
-          <Route path="/gerenciamento/fornecedores" element={<GerenciamentoFornecedores />} />
-          <Route path="/fornecedores/editar/:id" element={<Fornecedor />} />
-          <Route path="/gerenciamento/colaboradores" element={<GerenciamentoColaboradores />} />
-          <Route path="/colaboradores/editar/:id" element={<Colaborador />} />
-          <Route path="/gerenciamento/produtos" element={<GerenciamentoProdutos />} />
-          <Route path="/produtos/editar/:id" element={<Produto />} />
+          <Route element={<PrivateRoute />}>
+            <Route path="/" element={<Dashboard />} />
+            <Route path="/dashboard" element={<Dashboard />} />
 
-          <Route path="/entrada/cadastro" element={<CadastroEntrada />} />
-          <Route path="/entrada/itens" element={<ItensEntrada />} />
-          <Route path="/entrada/itens/:id" element={<ItensDetalhe />} />
+            <Route path="/clientes" element={<Clientes />} />
+            <Route path="/categorias" element={<Categorias />} />
+            <Route path="/almoxarifados" element={<Almoxarifado />} />
+            <Route path="/fornecedores" element={<Fornecedor />} />
+            <Route path="/colaboradores" element={<Colaborador />} />
+            <Route path="/produtos" element={<Produto />} />
 
-          <Route path="/saida/cadastro" element={<CadastroSaida />} />
-          <Route path="/saida/itens" element={<ItensSaida />} />
-          <Route path="/saida/itens/:id" element={<ItensDetalheSaida />} />
+            <Route
+              path="/gerenciamento/clientes"
+              element={<GerenciamentoClientes />}
+            />
+            <Route path="/clientes/editar/:id" element={<Clientes />} />
+            <Route
+              path="/gerenciamento/categorias"
+              element={<GerenciamentoCategorias />}
+            />
+            <Route path="/categorias/editar/:id" element={<Categorias />} />
+            <Route
+              path="/gerenciamento/almoxarifados"
+              element={<GerenciamentoAlmoxarifados />}
+            />
+            <Route
+              path="/almoxarifados/editar/:id"
+              element={<Almoxarifado />}
+            />
+            <Route
+              path="/gerenciamento/fornecedores"
+              element={<GerenciamentoFornecedores />}
+            />
+            <Route path="/fornecedores/editar/:id" element={<Fornecedor />} />
+            <Route
+              path="/gerenciamento/colaboradores"
+              element={<GerenciamentoColaboradores />}
+            />
+            <Route path="/colaboradores/editar/:id" element={<Colaborador />} />
+            <Route
+              path="/gerenciamento/produtos"
+              element={<GerenciamentoProdutos />}
+            />
+            <Route path="/produtos/editar/:id" element={<Produto />} />
 
-          <Route path="/estoque/visualizar" element={<VisualizarEstoque />} />
-          <Route path="/estoque/transferencia" element={<Transferencia />} />
+            <Route path="/entrada/cadastro" element={<CadastroEntrada />} />
+            <Route path="/entrada/itens" element={<ItensEntrada />} />
+            <Route path="/entrada/itens/:id" element={<ItensDetalhe />} />
 
-          <Route path="/os" element={<OrdemServico />} />
-          <Route path="/os/cadastro" element={<CadastroOrdemServico />} />
-          <Route path="/os/editar/:id" element={<CadastroOrdemServico />} />
+            <Route path="/saida/cadastro" element={<CadastroSaida />} />
+            <Route path="/saida/itens" element={<ItensSaida />} />
+            <Route path="/saida/itens/:id" element={<ItensDetalheSaida />} />
 
-          <Route path="/relatorios" element={<Relatorios />} />
-          <Route
-            path="/relatorios/historico-movimentacoes"
-            element={<HistoricoMovimentacoes />}
-          />
+            <Route path="/estoque/visualizar" element={<VisualizarEstoque />} />
+            <Route path="/estoque/transferencia" element={<Transferencia />} />
+
+            <Route path="/os" element={<OrdemServico />} />
+            <Route path="/os/cadastro" element={<CadastroOrdemServico />} />
+            <Route path="/os/editar/:id" element={<CadastroOrdemServico />} />
+
+            <Route path="/relatorios" element={<Relatorios />} />
+            <Route
+              path="/relatorios/historico-movimentacoes"
+              element={<HistoricoMovimentacoes />}
+            />
+          </Route>
+
+          <Route element={<PrivateRoute perfisPermitidos={["ADMIN"]} />}>
+            <Route path="/acessos" element={<Acessos />} />
+          </Route>
         </Routes>
       </div>
     </div>
