@@ -10,6 +10,7 @@ import {
   FiSettings,
   FiUpload,
   FiUserPlus,
+  FiShield,
 } from "react-icons/fi";
 
 const MainLayout = () => {
@@ -29,6 +30,11 @@ const MainLayout = () => {
         <NavLink to="/dashboard" className="sidebar-link">
           <FiGrid />
           <span>Dashboard</span>
+        </NavLink>
+
+        <NavLink to="/acessos" className="sidebar-link">
+          <FiShield />
+          <span>Acessos</span>
         </NavLink>
 
         <button
@@ -51,7 +57,6 @@ const MainLayout = () => {
             <NavLink to="/almoxarifados">Almoxarifado</NavLink>
             <NavLink to="/colaboradores">Colaborador</NavLink>
             <NavLink to="/fornecedores">Fornecedor</NavLink>
-            <NavLink to="/usuarios">Usuário</NavLink>
           </div>
         )}
 
@@ -75,7 +80,6 @@ const MainLayout = () => {
             <NavLink to="/gerenciamento/almoxarifados">Almoxarifados</NavLink>
             <NavLink to="/gerenciamento/colaboradores">Colaboradores</NavLink>
             <NavLink to="/gerenciamento/fornecedores">Fornecedores</NavLink>
-            <NavLink to="/gerenciamento/usuarios">Usuários</NavLink>
           </div>
         )}
 

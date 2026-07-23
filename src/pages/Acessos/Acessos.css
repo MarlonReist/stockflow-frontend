@@ -1,0 +1,22 @@
+.acessos-page {
+  width: 100%;
+  padding: 24px 32px;
+}
+
+.acessos-header {
+  width: min(100%, 1280px);
+  margin-bottom: 24px;
+}
+
+.acessos-header h1 {
+  margin: 0 0 8px;
+  color: var(--text-primary);
+  font-size: 28px;
+  font-weight: 700;
+}
+
+.acessos-header p {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 15px;
+}

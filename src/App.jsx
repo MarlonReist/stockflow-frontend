@@ -10,7 +10,6 @@ import Almoxarifado from "./pages/Cadastro/Almoxarifado";
 import Fornecedor from "./pages/Cadastro/Fornecedor";
 import Colaborador from "./pages/Cadastro/Colaborador";
 import Produto from "./pages/Cadastro/Produto";
-import Usuario from "./pages/Cadastro/Usuario";
 
 import GerenciamentoClientes from "./pages/Gerenciamento/Clientes";
 import GerenciamentoCategorias from "./pages/Gerenciamento/Categorias";
@@ -18,7 +17,6 @@ import GerenciamentoAlmoxarifados from "./pages/Gerenciamento/Almoxarifados";
 import GerenciamentoFornecedores from "./pages/Gerenciamento/Fornecedores";
 import GerenciamentoColaboradores from "./pages/Gerenciamento/Colaboradores";
 import GerenciamentoProdutos from "./pages/Gerenciamento/Produtos";
-import GerenciamentoUsuarios from "./pages/Gerenciamento/Usuarios";
 
 import CadastroEntrada from "./pages/Entrada/Cadastro";
 import ItensEntrada from "./pages/Entrada/Itens";
@@ -37,6 +35,9 @@ import Relatorios from "./pages/Relatorios";
 import HistoricoMovimentacoes from "./pages/Relatorios/HistoricoMovimentacoes";
 import Dashboard from "./pages/Dashboard";
 
+import Acessos from "./pages/Acessos";
+import AtivarConta from "./pages/Auth/AtivarConta";
+
 
 function App() {
   return (
@@ -47,13 +48,15 @@ function App() {
           <Route path="/" element={<Dashboard />} />
           <Route path="/dashboard" element={<Dashboard />} />
 
+          <Route path="/acessos" element={<Acessos />} />
+          <Route path="/ativar-conta" element={<AtivarConta />} />
+
           <Route path="/clientes" element={<Clientes />} />
           <Route path="/categorias" element={<Categorias />} />
           <Route path="/almoxarifados" element={<Almoxarifado />} />
           <Route path="/fornecedores" element={<Fornecedor />} />
           <Route path="/colaboradores" element={<Colaborador />} />
           <Route path="/produtos" element={<Produto />} />
-          <Route path="/usuarios" element={<Usuario />} />
           
           <Route path="/gerenciamento/clientes" element={<GerenciamentoClientes />} />
           <Route path="/clientes/editar/:id" element={<Clientes />} />
@@ -67,8 +70,6 @@ function App() {
           <Route path="/colaboradores/editar/:id" element={<Colaborador />} />
           <Route path="/gerenciamento/produtos" element={<GerenciamentoProdutos />} />
           <Route path="/produtos/editar/:id" element={<Produto />} />
-          <Route path="/gerenciamento/usuarios" element={<GerenciamentoUsuarios />} />
-          <Route path="/usuarios/editar/:id" element={<Usuario />} />
 
           <Route path="/entrada/cadastro" element={<CadastroEntrada />} />
           <Route path="/entrada/itens" element={<ItensEntrada />} />
