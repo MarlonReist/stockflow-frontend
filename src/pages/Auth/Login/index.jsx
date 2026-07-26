@@ -52,7 +52,13 @@ const Login = () => {
 
       navigate("/dashboard");
     } catch (error) {
-      setErro("Login ou senha inválidos.");
+      const mensagemErro = error.response?.data?.message;
+
+      if (mensagemErro === "Usuário não está ativo!") {
+        setErro("Seu acesso não está ativo. Contate um administrador.");
+      } else {
+        setErro(mensagemErro || "Login ou senha inválidos.");
+      }
     } finally {
       setCarregando(false);
     }

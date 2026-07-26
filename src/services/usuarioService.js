@@ -1,40 +1,29 @@
 import api from "./api";
 
-
-function cadastrarUsuario(usuario) {
-  return api.post("/usuarios", usuario);
-}
-
 function listarUsuarios() {
   return api.get("/usuarios");
 }
 
-function deletarUsuario(id) {
-  return api.delete(`/usuarios/${id}`);
+function bloquearUsuario(id) {
+  return api.put(`/usuarios/${id}/bloquear`);
 }
 
-function buscarUsuarioPorId(id) {
-  return api.get(`/usuarios/${id}`);
+function desbloquearUsuario(id) {
+  return api.put(`/usuarios/${id}/desbloquear`);
 }
 
-function atualizarUsuario(id, usuario) {
-  return api.put(`/usuarios/${id}`, usuario);
+function convidarUsuario(usuario) {
+  return api.post("/usuarios/convites", usuario);
 }
 
-function ativarUsuario(id) {
-  return api.put(`/usuarios/${id}/ativar`);
-}
-
-function desativarUsuario(id) {
-  return api.put(`/usuarios/${id}/desativar`);
+function reenviarConviteUsuario(id) {
+  return api.post(`/usuarios/${id}/reenviar-convite`);
 }
 
 export {
-  cadastrarUsuario,
   listarUsuarios,
-  deletarUsuario,
-  buscarUsuarioPorId,
-  atualizarUsuario,
-  ativarUsuario,
-  desativarUsuario,
+  convidarUsuario,
+  reenviarConviteUsuario,
+  bloquearUsuario,
+  desbloquearUsuario,
 };
