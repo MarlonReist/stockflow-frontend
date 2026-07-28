@@ -96,14 +96,11 @@ const Login = () => {
         login: loginRecuperacao,
       });
 
-      setMensagemRecuperacao(response.data.mensagem);
-
-      if (response.data.token) {
-        const linkRecuperacao = `${window.location.origin}/redefinir-senha?token=${response.data.token}`;
-        setMensagemRecuperacao(
-          `${response.data.mensagem} Link: ${linkRecuperacao}`,
-        );
-      }
+      setMensagemRecuperacao(
+        response.data.mensagem ||
+          "Se o login informado existir e estiver ativo, a recuperação de senha será enviada por e-mail.",
+      );
+      
     } catch (error) {
       setErroRecuperacao("Erro ao solicitar recuperação de senha.");
     } finally {

@@ -309,17 +309,10 @@ const Acessos = () => {
         </form>
         {conviteGerado && (
           <div className="convite-gerado">
-            <div>
-              <strong>Convite gerado para {conviteGerado.nome}</strong>
-              <span>
-                Envie o link abaixo para ativação. Futuramente ele será enviado
-                por e-mail.
-              </span>
-            </div>
-
-            <div className="convite-link">
-              {`${window.location.origin}/ativar-conta?token=${conviteGerado.token}`}
-            </div>
+            <strong>Convite enviado para {conviteGerado.nome}</strong>
+            <span>
+              O link de ativação foi enviado para {conviteGerado.login}.
+            </span>
           </div>
         )}
       </div>
