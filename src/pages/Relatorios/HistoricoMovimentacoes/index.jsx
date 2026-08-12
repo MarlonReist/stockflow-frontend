@@ -116,8 +116,22 @@ const HistoricoMovimentacoes = () => {
     setPaginaAtual(1);
   };
 
-  const handleImprimir = () => {
-    gerarPdfHistoricoMovimentacoes(filtros);
+  const handleImprimir = async () => {
+    try {
+      const response = await gerarPdfHistoricoMovimentacoes(filtros);
+      const pdfUrl = URL.createObjectURL(
+        new Blob([response.data], { type: "application/pdf" }),
+      );
+      const janelaPdf = window.open(pdfUrl, "_blank");
+
+      if (!janelaPdf) {
+        mostrarMensagem("Permita pop-ups para abrir o relatÃ³rio.", "erro");
+      }
+
+      setTimeout(() => URL.revokeObjectURL(pdfUrl), 1000);
+    } catch (error) {
+      mostrarMensagem("Erro ao gerar relatÃ³rio em PDF.", "erro");
+    }
   };
 
   const movimentacoesFiltradas = useMemo(() => {

@@ -40,6 +40,8 @@ import AtivarConta from "./pages/Auth/AtivarConta";
 import Login from "./pages/Auth/Login";
 import RedefinirSenha from "./pages/Auth/RedefinirSenha";
 
+import Perfil from "./pages/Perfil";
+
 import PrivateRoute from "./components/PrivateRoute";
 
 function App() {
@@ -60,6 +62,8 @@ function App() {
           <Route element={<PrivateRoute />}>
             <Route path="/" element={<Dashboard />} />
             <Route path="/dashboard" element={<Dashboard />} />
+
+            <Route path="/meu-perfil" element={<Perfil />} />
 
             <Route path="/clientes" element={<Clientes />} />
             <Route path="/categorias" element={<Categorias />} />
@@ -122,6 +126,7 @@ function App() {
               path="/relatorios/historico-movimentacoes"
               element={<HistoricoMovimentacoes />}
             />
+            
           </Route>
 
           <Route element={<PrivateRoute perfisPermitidos={["ADMIN"]} />}>

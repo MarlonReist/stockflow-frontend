@@ -256,10 +256,11 @@
   align-items: center;
   justify-content: center;
   gap: 8px;
-  border: 1px solid rgba(248, 113, 113, 0.3);
+  margin-top: 8px;
+  border: 1px solid rgba(148, 163, 184, 0.16);
   border-radius: 9px;
-  background-color: rgba(127, 29, 29, 0.18);
-  color: #fecaca;
+  background-color: rgba(15, 23, 42, 0.28);
+  color: var(--text-secondary);
   font-family: inherit;
   font-size: 14px;
   font-weight: 800;
@@ -271,6 +272,33 @@
 }
 
 .user-menu-dropdown button:hover {
+  border-color: rgba(167, 139, 250, 0.34);
+  background-color: rgba(139, 92, 246, 0.16);
+  color: #ffffff;
+}
+
+.user-menu-dropdown .user-menu-profile-button {
+  border-color: rgba(96, 165, 250, 0.24);
+  background:
+    linear-gradient(135deg, rgba(124, 58, 237, 0.18), rgba(37, 99, 235, 0.16)),
+    rgba(15, 23, 42, 0.3);
+  color: #dbeafe;
+}
+
+.user-menu-dropdown .user-menu-profile-button:hover {
+  border-color: rgba(96, 165, 250, 0.45);
+  background:
+    linear-gradient(135deg, rgba(124, 58, 237, 0.28), rgba(37, 99, 235, 0.26)),
+    rgba(15, 23, 42, 0.48);
+}
+
+.user-menu-dropdown button:last-child {
+  border-color: rgba(248, 113, 113, 0.3);
+  background-color: rgba(127, 29, 29, 0.18);
+  color: #fecaca;
+}
+
+.user-menu-dropdown button:last-child:hover {
   border-color: rgba(248, 113, 113, 0.5);
   background-color: rgba(127, 29, 29, 0.3);
   color: #ffffff;

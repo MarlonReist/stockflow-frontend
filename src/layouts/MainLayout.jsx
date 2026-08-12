@@ -13,6 +13,7 @@ import {
   FiUpload,
   FiUserPlus,
   FiShield,
+  FiUserCheck,
 } from "react-icons/fi";
 
 const MainLayout = () => {
@@ -51,12 +52,12 @@ const MainLayout = () => {
             <span>Dashboard</span>
           </NavLink>
 
-        {usuarioAdmin && (
-          <NavLink to="/acessos" className="sidebar-link">
-            <FiShield />
-            <span>Acessos</span>
-          </NavLink>
-        )}
+          {usuarioAdmin && (
+            <NavLink to="/acessos" className="sidebar-link">
+              <FiShield />
+              <span>Acessos</span>
+            </NavLink>
+          )}
 
           <button
             type="button"
@@ -176,16 +177,16 @@ const MainLayout = () => {
       </div>
 
       <div className="user-menu-wrapper">
-      <button
-        type="button"
-        className="user-menu-button"
-        onClick={() => setMenuUsuarioAberto((valorAtual) => !valorAtual)}
-        aria-label="Abrir menu do usuário"
-      >
-        <span className="user-menu-avatar">
-          <FiUser />
-        </span>
-      </button>
+        <button
+          type="button"
+          className="user-menu-button"
+          onClick={() => setMenuUsuarioAberto((valorAtual) => !valorAtual)}
+          aria-label="Abrir menu do usuário"
+        >
+          <span className="user-menu-avatar">
+            <FiUser />
+          </span>
+        </button>
 
         {menuUsuarioAberto && (
           <div className="user-menu-dropdown">
@@ -193,7 +194,17 @@ const MainLayout = () => {
               <strong>{usuarioLogado.nome || "Usuário"}</strong>
               <span>{usuarioLogado.perfil || "Perfil"}</span>
             </div>
-
+            <button
+              type="button"
+              className="user-menu-profile-button"
+              onClick={() => {
+                setMenuUsuarioAberto(false);
+                navigate("/meu-perfil");
+              }}
+            >
+              <FiUserCheck />
+              Meu Perfil
+            </button>
             <button type="button" onClick={handleLogout}>
               <FiLogOut />
               Sair
