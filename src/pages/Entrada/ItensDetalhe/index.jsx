@@ -668,7 +668,27 @@ const ItensDetalhe = () => {
               </div>
               <div className="form-group">
                 <label>Produto</label>
-                <div className="lookup-field">
+                <div
+                  className={`lookup-field ${
+                    movimentacaoSalva ? "" : "lookup-field-clickable"
+                  }`}
+                  onClick={(event) => {
+                    if (
+                      event.target.tagName === "INPUT" &&
+                      !event.target.readOnly
+                    ) {
+                      return;
+                    }
+
+                    if (movimentacaoSalva) {
+                      return;
+                    }
+
+                    setSeletorProdutoAberto(true);
+                    setBuscaProduto("");
+                    setProdutoSelecionado(null);
+                  }}
+                >
                   <input
                     type="text"
                     name="idProduto"
@@ -685,11 +705,13 @@ const ItensDetalhe = () => {
                   <button
                     name="magnifier"
                     type="button"
-                    onClick={() => {
+                    onClick={(event) => {
+                      event.stopPropagation();
                       setSeletorProdutoAberto(true);
                       setBuscaProduto("");
                       setProdutoSelecionado(null);
                     }}
+                    disabled={movimentacaoSalva}
                   >
                     <FiSearch />
                   </button>

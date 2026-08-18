@@ -438,6 +438,25 @@ const ProdutosOSTab = ({ ordemId, ordemEncerrada, mostrarMensagem }) => {
     setAlmoxarifadoModalSelecionado(null);
   };
 
+  const abrirSeletorAlmoxarifado = () => {
+    setBuscaAlmoxarifado("");
+    setPaginaAlmoxarifadoAtual(1);
+    setAlmoxarifadoModalSelecionado(null);
+    setSeletorAlmoxarifadoAberto(true);
+  };
+
+  const abrirSeletorProduto = () => {
+    if (!itemOS.almoxarifadoId) {
+      mostrarMensagem("Selecione o almoxarifado antes do produto.", "erro");
+      return;
+    }
+
+    setBuscaProduto("");
+    setPaginaProdutoAtual(1);
+    setProdutoModalSelecionado(null);
+    setSeletorProdutoAberto(true);
+  };
+
   const handleFecharModal = () => {
     setModalAberto(false);
     setItemOS({ ...itemOSInicial });
@@ -613,7 +632,19 @@ const ProdutosOSTab = ({ ordemId, ordemEncerrada, mostrarMensagem }) => {
             <div className="modal-body produtos-os-modal-body">
               <div className="form-group">
                 <label>Almoxarifado</label>
-                <div className="lookup-field produtos-os-lookup-field">
+                <div
+                  className="lookup-field lookup-field-clickable produtos-os-lookup-field"
+                  onClick={(event) => {
+                    if (
+                      event.target.tagName === "INPUT" &&
+                      !event.target.readOnly
+                    ) {
+                      return;
+                    }
+
+                    abrirSeletorAlmoxarifado();
+                  }}
+                >
                   <input
                     type="number"
                     name="almoxarifadoId"
@@ -629,11 +660,9 @@ const ProdutosOSTab = ({ ordemId, ordemEncerrada, mostrarMensagem }) => {
                   />
                   <button
                     type="button"
-                    onClick={() => {
-                      setBuscaAlmoxarifado("");
-                      setPaginaAlmoxarifadoAtual(1);
-                      setAlmoxarifadoModalSelecionado(null);
-                      setSeletorAlmoxarifadoAberto(true);
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      abrirSeletorAlmoxarifado();
                     }}
                     aria-label="Buscar almoxarifado"
                     title="Buscar almoxarifado"
@@ -645,7 +674,21 @@ const ProdutosOSTab = ({ ordemId, ordemEncerrada, mostrarMensagem }) => {
 
               <div className="form-group">
                 <label>Produto</label>
-                <div className="lookup-field produtos-os-lookup-field">
+                <div
+                  className={`lookup-field produtos-os-lookup-field ${
+                    itemOS.almoxarifadoId ? "lookup-field-clickable" : ""
+                  }`}
+                  onClick={(event) => {
+                    if (
+                      event.target.tagName === "INPUT" &&
+                      !event.target.readOnly
+                    ) {
+                      return;
+                    }
+
+                    abrirSeletorProduto();
+                  }}
+                >
                   <input
                     type="number"
                     name="produtoId"
@@ -666,19 +709,9 @@ const ProdutosOSTab = ({ ordemId, ordemEncerrada, mostrarMensagem }) => {
                   />
                   <button
                     type="button"
-                    onClick={() => {
-                      if (!itemOS.almoxarifadoId) {
-                        mostrarMensagem(
-                          "Selecione o almoxarifado antes do produto.",
-                          "erro",
-                        );
-                        return;
-                      }
-
-                      setBuscaProduto("");
-                      setPaginaProdutoAtual(1);
-                      setProdutoModalSelecionado(null);
-                      setSeletorProdutoAberto(true);
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      abrirSeletorProduto();
                     }}
                     disabled={!itemOS.almoxarifadoId}
                     aria-label="Buscar produto"

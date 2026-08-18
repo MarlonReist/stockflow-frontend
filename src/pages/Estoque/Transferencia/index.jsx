@@ -1228,7 +1228,25 @@ const Transferencia = () => {
                 <div className="section-bar">Origem</div>
                 <div className="form-group">
                   <label>Almoxarifado Origem</label>
-                  <div className="lookup-field">
+                  <div
+                    className={`lookup-field ${
+                      transferenciaBloqueada ? "" : "lookup-field-clickable"
+                    }`}
+                    onClick={(event) => {
+                      if (
+                        event.target.tagName === "INPUT" &&
+                        !event.target.readOnly
+                      ) {
+                        return;
+                      }
+
+                      if (transferenciaBloqueada) {
+                        return;
+                      }
+
+                      abrirSeletorAlmoxarifado("origem");
+                    }}
+                  >
                     <input
                       type="text"
                       name="almoxarifadoOrigemId"
@@ -1244,7 +1262,10 @@ const Transferencia = () => {
                     />
                     <button
                       type="button"
-                      onClick={() => abrirSeletorAlmoxarifado("origem")}
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        abrirSeletorAlmoxarifado("origem");
+                      }}
                       disabled={transferenciaBloqueada}
                     >
                       <FiSearch />
@@ -1254,7 +1275,25 @@ const Transferencia = () => {
                 <div className="section-bar">Destino</div>
                 <div className="form-group">
                   <label>Almoxarifado Destino</label>
-                  <div className="lookup-field">
+                  <div
+                    className={`lookup-field ${
+                      transferenciaBloqueada ? "" : "lookup-field-clickable"
+                    }`}
+                    onClick={(event) => {
+                      if (
+                        event.target.tagName === "INPUT" &&
+                        !event.target.readOnly
+                      ) {
+                        return;
+                      }
+
+                      if (transferenciaBloqueada) {
+                        return;
+                      }
+
+                      abrirSeletorAlmoxarifado("destino");
+                    }}
+                  >
                     <input
                       type="text"
                       name="almoxarifadoDestinoId"
@@ -1270,7 +1309,10 @@ const Transferencia = () => {
                     />
                     <button
                       type="button"
-                      onClick={() => abrirSeletorAlmoxarifado("destino")}
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        abrirSeletorAlmoxarifado("destino");
+                      }}
                       disabled={transferenciaBloqueada}
                     >
                       <FiSearch />
@@ -1515,7 +1557,19 @@ const Transferencia = () => {
               </div>
               <div className="form-group">
                 <label>Produto</label>
-                <div className="lookup-field">
+                <div
+                  className="lookup-field lookup-field-clickable"
+                  onClick={(event) => {
+                    if (
+                      event.target.tagName === "INPUT" &&
+                      !event.target.readOnly
+                    ) {
+                      return;
+                    }
+
+                    abrirSeletorProdutoTransferencia();
+                  }}
+                >
                   <input
                     type="text"
                     value={itemTransferencia.idProduto}
@@ -1528,7 +1582,10 @@ const Transferencia = () => {
                   />
                   <button
                     type="button"
-                    onClick={abrirSeletorProdutoTransferencia}
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      abrirSeletorProdutoTransferencia();
+                    }}
                   >
                     <FiSearch />
                   </button>

@@ -596,6 +596,28 @@ const CadastroOrdemServico = () => {
     }
   };
 
+  const abrirSeletorCliente = () => {
+    if (dadosPrincipaisBloqueados) {
+      return;
+    }
+
+    setSeletorClienteAberto(true);
+    setBuscaCliente("");
+    setPaginaClienteAtual(1);
+    setClienteSelecionado(null);
+  };
+
+  const abrirSeletorColaborador = () => {
+    if (dadosPrincipaisBloqueados) {
+      return;
+    }
+
+    setSeletorColaboradorAberto(true);
+    setBuscaColaborador("");
+    setPaginaColaboradorAtual(1);
+    setColaboradorSelecionado(null);
+  };
+
   return (
     <div className="cadastro-os-page">
       <div className="cadastro-os-header">
@@ -684,7 +706,19 @@ const CadastroOrdemServico = () => {
 
             <div className="form-group">
               <label>Cliente</label>
-              <div className="lookup-field">
+              <div
+                className={`lookup-field ${dadosPrincipaisBloqueados ? "" : "lookup-field-clickable"}`}
+                onClick={(event) => {
+                  if (
+                    event.target.tagName === "INPUT" &&
+                    !event.target.readOnly
+                  ) {
+                    return;
+                  }
+
+                  abrirSeletorCliente();
+                }}
+              >
                 <input
                   ref={clienteIdInputRef}
                   type="text"
@@ -707,11 +741,9 @@ const CadastroOrdemServico = () => {
                   aria-label="Pesquisar cliente"
                   title="Pesquisar cliente"
                   disabled={dadosPrincipaisBloqueados}
-                  onClick={() => {
-                    setSeletorClienteAberto(true);
-                    setBuscaCliente("");
-                    setPaginaClienteAtual(1);
-                    setClienteSelecionado(null);
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    abrirSeletorCliente();
                   }}
                 >
                   <FiSearch />
@@ -721,7 +753,19 @@ const CadastroOrdemServico = () => {
 
             <div className="form-group">
               <label>Colaborador</label>
-              <div className="lookup-field">
+              <div
+                className={`lookup-field ${dadosPrincipaisBloqueados ? "" : "lookup-field-clickable"}`}
+                onClick={(event) => {
+                  if (
+                    event.target.tagName === "INPUT" &&
+                    !event.target.readOnly
+                  ) {
+                    return;
+                  }
+
+                  abrirSeletorColaborador();
+                }}
+              >
                 <input
                   ref={colaboradorIdInputRef}
                   type="text"
@@ -746,11 +790,9 @@ const CadastroOrdemServico = () => {
                   aria-label="Pesquisar colaborador"
                   title="Pesquisar colaborador"
                   disabled={dadosPrincipaisBloqueados}
-                  onClick={() => {
-                    setSeletorColaboradorAberto(true);
-                    setBuscaColaborador("");
-                    setPaginaColaboradorAtual(1);
-                    setColaboradorSelecionado(null);
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    abrirSeletorColaborador();
                   }}
                 >
                   <FiSearch />
