@@ -25,6 +25,7 @@ const Acessos = () => {
   const [mensagens, setMensagens] = useState([]);
   const [conviteGerado, setConviteGerado] = useState(null);
   const [busca, setBusca] = useState("");
+  const [temposReenvio, setTemposReenvio] = useState({});
   const [ordenacao, setOrdenacao] = useState({
     coluna: "id",
     direcao: "asc",
@@ -57,6 +58,20 @@ const Acessos = () => {
 
       const response = await listarUsuarios();
       setUsuarios(response.data);
+
+      const temposIniciais = {};
+
+      response.data.forEach((usuario) => {
+        if (
+          usuario.status === "CONVIDADO" &&
+          !usuario.podeReenviarConvite &&
+          usuario.segundosParaReenviarConvite > 0
+        ) {
+          temposIniciais[usuario.id] = usuario.segundosParaReenviarConvite;
+        }
+      });
+
+      setTemposReenvio(temposIniciais);
     } catch (error) {
       mostrarMensagem("Erro ao carregar usuários.", "erro");
     } finally {
@@ -67,6 +82,34 @@ const Acessos = () => {
   useEffect(() => {
     carregarUsuarios();
   }, []);
+
+  useEffect(() => {
+    const intervalo = setInterval(() => {
+      setTemposReenvio((temposAtuais) => {
+        const novosTempos = {};
+
+        Object.entries(temposAtuais).forEach(([usuarioId, segundos]) => {
+          const novoTempo = Math.max(0, segundos - 1);
+
+          novosTempos[usuarioId] = novoTempo;
+        });
+
+        return novosTempos;
+      });
+    }, 1000);
+
+    return () => clearInterval(intervalo);
+  }, []);
+
+  useEffect(() => {
+    const algumTimerZerou = Object.values(temposReenvio).some(
+      (segundos) => segundos === 0,
+    );
+
+    if (algumTimerZerou) {
+      carregarUsuarios();
+    }
+  }, [temposReenvio]);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -189,6 +232,14 @@ const Acessos = () => {
     return usuario.status;
   };
 
+  const formatarTempoReenvio = (segundos) => {
+    const tempo = Math.max(0, Number(segundos) || 0);
+    const minutos = Math.floor(tempo / 60);
+    const segundosRestantes = tempo % 60;
+
+    return `${String(minutos).padStart(2, "0")}:${String(segundosRestantes).padStart(2, "0")}`;
+  };
+
   const handleBloquearUsuario = async (id) => {
     try {
       setCarregando(true);
@@ -232,7 +283,24 @@ const Acessos = () => {
       setConviteGerado(response.data);
       mostrarMensagem("Convite reenviado com sucesso.", "sucesso");
 
-      carregarUsuarios();
+      setUsuarios((usuariosAtuais) =>
+        usuariosAtuais.map((usuario) =>
+          usuario.id === id
+            ? {
+                ...usuario,
+                podeReenviarConvite: false,
+                segundosParaReenviarConvite: 300,
+              }
+            : usuario,
+        ),
+      );
+
+      setTemposReenvio((temposAtuais) => ({
+        ...temposAtuais,
+        [id]: 300,
+      }));
+
+      await carregarUsuarios();
     } catch (error) {
       const mensagemErro =
         error.response?.data?.message || "Erro ao reenviar convite.";
@@ -426,7 +494,7 @@ const Acessos = () => {
                       )}
 
                       {usuario.status === "CONVIDADO" &&
-                        usuario.conviteExpirado && (
+                        usuario.podeReenviarConvite && (
                           <button
                             type="button"
                             className="acessos-action-button reenviar"
@@ -439,9 +507,21 @@ const Acessos = () => {
                         )}
 
                       {usuario.status === "CONVIDADO" &&
-                        !usuario.conviteExpirado && (
+                        !usuario.podeReenviarConvite && (
                           <span className="acessos-action-waiting">
-                            Aguardando ativação
+                            {(temposReenvio[usuario.id] ??
+                              usuario.segundosParaReenviarConvite) <= 0 ? (
+                              "Liberando reenvio..."
+                            ) : (
+                              <>
+                                Reenviar convite -{" "}
+                                {formatarTempoReenvio(
+                                  temposReenvio[usuario.id] ??
+                                    usuario.segundosParaReenviarConvite,
+                                )}{" "}
+                                min
+                              </>
+                            )}
                           </span>
                         )}
                     </div>
