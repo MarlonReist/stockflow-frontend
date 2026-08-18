@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "./Cadastro.css";
 import {
   cadastrarEntrada,
@@ -17,11 +17,21 @@ const CadastroEntrada = () => {
   const [fornecedores, setFornecedores] = useState([]);
   const [almoxarifados, setAlmoxarifados] = useState([]);
   const [mensagens, setMensagens] = useState([]);
+  const [camposInvalidos, setCamposInvalidos] = useState({});
+  const fornecedorSelectRef = useRef(null);
+  const almoxarifadoSelectRef = useRef(null);
   const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setEntrada({ ...entrada, [name]: value });
+
+    if (camposInvalidos[name]) {
+      setCamposInvalidos((camposAtuais) => ({
+        ...camposAtuais,
+        [name]: false,
+      }));
+    }
   };
 
   const mostrarMensagem = (texto, tipo) => {
@@ -65,14 +75,18 @@ const CadastroEntrada = () => {
 
   const validarCadastro = () => {
     const erros = [];
+    const camposComErro = {};
 
     if (!entrada.fornecedorId.trim()) {
+      camposComErro.fornecedorId = true;
       erros.push("Fornecedor é obrigatório");
     }
     if (!entrada.almoxarifadoId.trim()) {
+      camposComErro.almoxarifadoId = true;
       erros.push("Almoxarifado é obrigatório");
     }
 
+    setCamposInvalidos(camposComErro);
     return erros;
   };
 
@@ -84,6 +98,13 @@ const CadastroEntrada = () => {
       erros.forEach((erro) => {
         mostrarMensagem(erro, "erro");
       });
+
+      if (!entrada.fornecedorId.trim()) {
+        fornecedorSelectRef.current?.focus();
+      } else if (!entrada.almoxarifadoId.trim()) {
+        almoxarifadoSelectRef.current?.focus();
+      }
+
       return;
     }
 
@@ -101,6 +122,7 @@ const CadastroEntrada = () => {
 
   const handleClear = () => {
     setEntrada({ ...entradaInicial });
+    setCamposInvalidos({});
   };
 
   return (
@@ -114,9 +136,11 @@ const CadastroEntrada = () => {
           <div className="form-group">
             <label>Fornecedor</label>
             <select
+              ref={fornecedorSelectRef}
               name="fornecedorId"
               value={entrada.fornecedorId}
               onChange={handleChange}
+              className={camposInvalidos.fornecedorId ? "input-error" : ""}
             >
               <option value="">Selecione um fornecedor</option>
               {fornecedores.map((fornecedor) => (
@@ -129,9 +153,11 @@ const CadastroEntrada = () => {
           <div className="form-group">
             <label>Almoxarifado de Destino</label>
             <select
+              ref={almoxarifadoSelectRef}
               name="almoxarifadoId"
               value={entrada.almoxarifadoId}
               onChange={handleChange}
+              className={camposInvalidos.almoxarifadoId ? "input-error" : ""}
             >
               <option value="">Selecione o almoxarifado</option>
               {almoxarifados.map((almoxarifado) => (

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "./Categoria.css";
 import {
   cadastrarCategoria,
@@ -14,9 +14,11 @@ const categoriaInicial = {
 const Categorias = () => {
   const [categoria, setCategoria] = useState({ ...categoriaInicial });
   const [mensagens, setMensagens] = useState([]);
+  const [camposInvalidos, setCamposInvalidos] = useState({});
   const navigate = useNavigate();
   const { id } = useParams();
   const modoEdicao = Boolean(id);
+  const nomeInputRef = useRef(null);
 
   useEffect(() => {
     if (!modoEdicao) {
@@ -37,7 +39,15 @@ const Categorias = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+
     setCategoria({ ...categoria, [name]: value });
+
+    if (camposInvalidos[name]) {
+      setCamposInvalidos((camposAtuais) => ({
+        ...camposAtuais,
+        [name]: false,
+      }));
+    }
   };
 
   const mostrarMensagem = (texto, tipo) => {
@@ -57,10 +67,15 @@ const Categorias = () => {
 
   const validarCategoria = () => {
     const erros = [];
+    const camposComErro = {};
 
     if (!categoria.nome.trim()) {
       erros.push("Nome é obrigatório");
+      camposComErro.nome = true;
     }
+
+    setCamposInvalidos(camposComErro);
+
     return erros;
   };
 
@@ -72,6 +87,11 @@ const Categorias = () => {
       erros.forEach((erro) => {
         mostrarMensagem(erro, "erro");
       });
+
+      if (camposInvalidos.nome || !categoria.nome.trim()) {
+        nomeInputRef.current?.focus();
+      }
+
       return;
     }
 
@@ -101,6 +121,7 @@ const Categorias = () => {
 
   const handleClear = () => {
     setCategoria({ ...categoriaInicial });
+    setCamposInvalidos({});
   };
 
   return (
@@ -118,11 +139,13 @@ const Categorias = () => {
           <div className="form-group">
             <label>Nome</label>
             <input
+              ref={nomeInputRef}
               type="text"
               name="nome"
               placeholder="Digite o nome da categoria"
               value={categoria.nome}
               onChange={handleChange}
+              className={camposInvalidos.nome ? "input-error" : ""}
             />
           </div>
           <div className="form-actions">

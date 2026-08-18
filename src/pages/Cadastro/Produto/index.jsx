@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "./Produto.css";
 import {
   cadastrarProduto,
@@ -20,9 +20,14 @@ const Produto = () => {
   const [produto, setProduto] = useState({ ...produtoInicial });
   const [categorias, setCategorias] = useState([]);
   const [mensagens, setMensagens] = useState([]);
+  const [camposInvalidos, setCamposInvalidos] = useState({});
   const navigate = useNavigate();
   const { id } = useParams();
   const modoEdicao = Boolean(id);
+  const nomeInputRef = useRef(null);
+  const precoInputRef = useRef(null);
+  const categoriaSelectRef = useRef(null);
+  const unidadeMedidaSelectRef = useRef(null);
 
   useEffect(() => {
     if (!modoEdicao) {
@@ -48,7 +53,29 @@ const Produto = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+
     setProduto({ ...produto, [name]: value });
+
+    if (camposInvalidos[name]) {
+      setCamposInvalidos((camposAtuais) => ({
+        ...camposAtuais,
+        [name]: false,
+      }));
+    }
+  };
+
+  const handleMaskedChange = (name, value) => {
+    setProduto((produtoAtual) => ({
+      ...produtoAtual,
+      [name]: value,
+    }));
+
+    if (camposInvalidos[name]) {
+      setCamposInvalidos((camposAtuais) => ({
+        ...camposAtuais,
+        [name]: false,
+      }));
+    }
   };
 
   const mostrarMensagem = (texto, tipo) => {
@@ -80,19 +107,27 @@ const Produto = () => {
 
   const validarProduto = () => {
     const erros = [];
+    const camposComErro = {};
 
     if (!produto.nome.trim()) {
       erros.push("Nome é obrigatório");
+      camposComErro.nome = true;
     }
     if (!produto.preco.trim()) {
       erros.push("Preço é obrigatório");
+      camposComErro.preco = true;
     }
     if (!produto.categoriaId.trim()) {
       erros.push("Categoria é obrigatório");
+      camposComErro.categoriaId = true;
     }
     if (!produto.unidadeMedida.trim()) {
       erros.push("Unidade de Medida é obrigatório");
+      camposComErro.unidadeMedida = true;
     }
+
+    setCamposInvalidos(camposComErro);
+
     return erros;
   };
 
@@ -109,6 +144,17 @@ const Produto = () => {
       erros.forEach((erro) => {
         mostrarMensagem(erro, "erro");
       });
+
+      if (!produto.nome.trim()) {
+        nomeInputRef.current?.focus();
+      } else if (!produto.preco.trim()) {
+        precoInputRef.current?.focus();
+      } else if (!produto.categoriaId.trim()) {
+        categoriaSelectRef.current?.focus();
+      } else if (!produto.unidadeMedida.trim()) {
+        unidadeMedidaSelectRef.current?.focus();
+      }
+
       return;
     }
 
@@ -138,6 +184,7 @@ const Produto = () => {
 
   const handleClear = () => {
     setProduto({ ...produtoInicial });
+    setCamposInvalidos({});
   };
 
   return (
@@ -155,34 +202,41 @@ const Produto = () => {
           <div className="form-group">
             <label>Nome</label>
             <input
+              ref={nomeInputRef}
               type="text"
               name="nome"
               placeholder="Digite o nome do produto"
               value={produto.nome}
               onChange={handleChange}
+              className={camposInvalidos.nome ? "input-error" : ""}
             />
           </div>
           <div className="form-row">
             <div className="form-group">
               <label>Preço</label>
               <IMaskInput
+                inputRef={precoInputRef}
                 mask={Number}
                 scale={2}
                 radix=","
                 thousandsSeparator="."
+                name="preco"
                 placeholder="Digite o preço"
                 padFractionalZeros={true}
                 normalizeZeros={true}
                 value={produto.preco}
-                onAccept={(value) => setProduto({ ...produto, preco: value })}
+                onAccept={(value) => handleMaskedChange("preco", value)}
+                className={camposInvalidos.preco ? "input-error" : ""}
               />
             </div>
             <div className="form-group">
               <label>Categoria</label>
               <select
+                ref={categoriaSelectRef}
                 name="categoriaId"
                 value={produto.categoriaId}
                 onChange={handleChange}
+                className={camposInvalidos.categoriaId ? "input-error" : ""}
               >
                 <option value="">Selecione uma categoria</option>
                 {categorias.map((categoria) => (
@@ -196,9 +250,11 @@ const Produto = () => {
           <div className="form-group">
             <label>Unidade de Medida</label>
             <select
+              ref={unidadeMedidaSelectRef}
               name="unidadeMedida"
               value={produto.unidadeMedida}
               onChange={handleChange}
+              className={camposInvalidos.unidadeMedida ? "input-error" : ""}
             >
               <option value=""> Selecione uma unidade</option>
               <option value="UNIDADES">Unidades</option>

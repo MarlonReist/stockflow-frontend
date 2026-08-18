@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "./Fornecedor.css";
 import {
   cadastrarFornecedor,
@@ -16,9 +16,12 @@ const fornecedorInicial = {
 const Fornecedor = () => {
   const [fornecedor, setFornecedor] = useState({ ...fornecedorInicial });
   const [mensagens, setMensagens] = useState([]);
+  const [camposInvalidos, setCamposInvalidos] = useState({});
   const navigate = useNavigate();
   const { id } = useParams();
   const modoEdicao = Boolean(id);
+  const nomeInputRef = useRef(null);
+  const cnpjInputRef = useRef(null);
 
   useEffect(() => {
     if (!modoEdicao) {
@@ -39,7 +42,29 @@ const Fornecedor = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+
     setFornecedor({ ...fornecedor, [name]: value });
+
+    if (camposInvalidos[name]) {
+      setCamposInvalidos((camposAtuais) => ({
+        ...camposAtuais,
+        [name]: false,
+      }));
+    }
+  };
+
+  const handleMaskedChange = (name, value) => {
+    setFornecedor((fornecedorAtual) => ({
+      ...fornecedorAtual,
+      [name]: value,
+    }));
+
+    if (camposInvalidos[name]) {
+      setCamposInvalidos((camposAtuais) => ({
+        ...camposAtuais,
+        [name]: false,
+      }));
+    }
   };
 
   const mostrarMensagem = (texto, tipo) => {
@@ -59,13 +84,19 @@ const Fornecedor = () => {
 
   const validarFornecedor = () => {
     const erros = [];
+    const camposComErro = {};
 
     if (!fornecedor.nome.trim()) {
       erros.push("Nome é obrigatório");
+      camposComErro.nome = true;
     }
     if (!fornecedor.cnpj.trim()) {
       erros.push("CNPJ é obrigatório");
+      camposComErro.cnpj = true;
     }
+
+    setCamposInvalidos(camposComErro);
+
     return erros;
   };
 
@@ -77,6 +108,13 @@ const Fornecedor = () => {
       erros.forEach((erro) => {
         mostrarMensagem(erro, "erro");
       });
+
+      if (!fornecedor.nome.trim()) {
+        nomeInputRef.current?.focus();
+      } else if (!fornecedor.cnpj.trim()) {
+        cnpjInputRef.current?.focus();
+      }
+
       return;
     }
 
@@ -106,6 +144,7 @@ const Fornecedor = () => {
 
   const handleClear = () => {
     setFornecedor({ ...fornecedorInicial });
+    setCamposInvalidos({});
   };
 
   return (
@@ -123,21 +162,25 @@ const Fornecedor = () => {
           <div className="form-group">
             <label>Nome</label>
             <input
+              ref={nomeInputRef}
               type="text"
               name="nome"
               placeholder="Digite o nome do fornecedor"
               value={fornecedor.nome}
               onChange={handleChange}
+              className={camposInvalidos.nome ? "input-error" : ""}
             />
           </div>
           <div className="form-group">
             <label>CNPJ</label>
             <IMaskInput
+              inputRef={cnpjInputRef}
               mask="00.000.000/0000-00"
               name="cnpj"
               placeholder="00.000.000/0000-00"
               value={fornecedor.cnpj}
-              onAccept={(value) => setFornecedor({ ...fornecedor, cnpj: value })}
+              onAccept={(value) => handleMaskedChange("cnpj", value)}
+              className={camposInvalidos.cnpj ? "input-error" : ""}
             />
           </div>
           <div className="form-actions">

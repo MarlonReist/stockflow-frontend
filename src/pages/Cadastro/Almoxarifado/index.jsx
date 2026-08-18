@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "./Almoxarifado.css";
 import {
   cadastrarAlmoxarifado,
@@ -14,9 +14,11 @@ const almoxarifadoInicial = {
 const Almoxarifado = () => {
   const [almoxarifado, setAlmoxarifado] = useState({ ...almoxarifadoInicial });
   const [mensagens, setMensagens] = useState([]);
+  const [camposInvalidos, setCamposInvalidos] = useState({});
   const navigate = useNavigate();
   const { id } = useParams();
   const modoEdicao = Boolean(id);
+  const nomeInputRef = useRef(null);
 
   useEffect(() => {
     if (!modoEdicao) {
@@ -37,7 +39,15 @@ const Almoxarifado = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+
     setAlmoxarifado({ ...almoxarifado, [name]: value });
+
+    if (camposInvalidos[name]) {
+      setCamposInvalidos((camposAtuais) => ({
+        ...camposAtuais,
+        [name]: false,
+      }));
+    }
   };
 
   const mostrarMensagem = (texto, tipo) => {
@@ -57,10 +67,15 @@ const Almoxarifado = () => {
 
   const validarAlmoxarifado = () => {
     const erros = [];
+    const camposComErro = {};
 
     if (!almoxarifado.nome.trim()) {
       erros.push("Nome é obrigatório");
+      camposComErro.nome = true;
     }
+
+    setCamposInvalidos(camposComErro);
+
     return erros;
   };
 
@@ -72,6 +87,11 @@ const Almoxarifado = () => {
       erros.forEach((erro) => {
         mostrarMensagem(erro, "erro");
       });
+
+      if (!almoxarifado.nome.trim()) {
+        nomeInputRef.current?.focus();
+      }
+
       return;
     }
 
@@ -101,6 +121,7 @@ const Almoxarifado = () => {
 
   const handleClear = () => {
     setAlmoxarifado({ ...almoxarifadoInicial });
+    setCamposInvalidos({});
   };
 
   return (
@@ -120,11 +141,13 @@ const Almoxarifado = () => {
           <div className="form-group">
             <label>Nome</label>
             <input
+              ref={nomeInputRef}
               type="text"
               name="nome"
               placeholder="Digite o nome do almoxarifado"
               value={almoxarifado.nome}
               onChange={handleChange}
+              className={camposInvalidos.nome ? "input-error" : ""}
             />
           </div>
           <div className="form-actions">

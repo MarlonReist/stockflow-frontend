@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "./Cadastro.css";
 import { cadastrarSaida } from "../../../services/saidaEstoqueService";
 import { listarAlmoxarifados } from "../../../services/almoxarifadoService";
@@ -12,11 +12,20 @@ const CadastroSaida = () => {
   const [saida, setSaida] = useState({ ...saidaInicial });
   const [almoxarifados, setAlmoxarifados] = useState([]);
   const [mensagens, setMensagens] = useState([]);
+  const [camposInvalidos, setCamposInvalidos] = useState({});
+  const almoxarifadoSelectRef = useRef(null);
   const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setSaida({ ...saida, [name]: value });
+
+    if (camposInvalidos[name]) {
+      setCamposInvalidos((camposAtuais) => ({
+        ...camposAtuais,
+        [name]: false,
+      }));
+    }
   };
 
   const mostrarMensagem = (texto, tipo) => {
@@ -48,11 +57,14 @@ const CadastroSaida = () => {
 
   const validarCadastro = () => {
     const erros = [];
+    const camposComErro = {};
 
     if (!saida.almoxarifadoId.trim()) {
+      camposComErro.almoxarifadoId = true;
       erros.push("Almoxarifado é obrigatório");
     }
 
+    setCamposInvalidos(camposComErro);
     return erros;
   };
 
@@ -64,6 +76,11 @@ const CadastroSaida = () => {
       erros.forEach((erro) => {
         mostrarMensagem(erro, "erro");
       });
+
+      if (!saida.almoxarifadoId.trim()) {
+        almoxarifadoSelectRef.current?.focus();
+      }
+
       return;
     }
 
@@ -81,6 +98,7 @@ const CadastroSaida = () => {
 
   const handleClear = () => {
     setSaida({ ...saidaInicial });
+    setCamposInvalidos({});
   };
 
   return (
@@ -94,9 +112,11 @@ const CadastroSaida = () => {
           <div className="form-group">
             <label>Almoxarifado</label>
             <select
+              ref={almoxarifadoSelectRef}
               name="almoxarifadoId"
               value={saida.almoxarifadoId}
               onChange={handleChange}
+              className={camposInvalidos.almoxarifadoId ? "input-error" : ""}
             >
               <option value="">Selecione o almoxarifado</option>
               {almoxarifados.map((almoxarifado) => (

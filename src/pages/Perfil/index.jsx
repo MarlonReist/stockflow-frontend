@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 import {
@@ -17,11 +17,15 @@ const Perfil = () => {
   const [mostrarSenhaAtual, setMostrarSenhaAtual] = useState(false);
   const [mostrarNovaSenha, setMostrarNovaSenha] = useState(false);
   const [mostrarConfirmacaoSenha, setMostrarConfirmacaoSenha] = useState(false);
+  const [camposInvalidos, setCamposInvalidos] = useState({});
   const [formSenha, setFormSenha] = useState({
     senhaAtual: "",
     novaSenha: "",
     confirmacaoSenha: "",
   });
+  const senhaAtualInputRef = useRef(null);
+  const novaSenhaInputRef = useRef(null);
+  const confirmacaoSenhaInputRef = useRef(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -46,41 +50,70 @@ const Perfil = () => {
       ...formAtual,
       [name]: value,
     }));
+
+    if (camposInvalidos[name]) {
+      setCamposInvalidos((camposAtuais) => ({
+        ...camposAtuais,
+        [name]: false,
+      }));
+    }
   };
 
   const validarSenha = () => {
+    const camposComErro = {};
+
     if (
       !formSenha.senhaAtual ||
       !formSenha.novaSenha ||
       !formSenha.confirmacaoSenha
     ) {
+      if (!formSenha.senhaAtual) {
+        camposComErro.senhaAtual = true;
+      }
+
+      if (!formSenha.novaSenha) {
+        camposComErro.novaSenha = true;
+      }
+
+      if (!formSenha.confirmacaoSenha) {
+        camposComErro.confirmacaoSenha = true;
+      }
+
+      setCamposInvalidos(camposComErro);
       return "Preencha todos os campos de senha.";
     }
 
     if (formSenha.novaSenha.length < 8) {
+      setCamposInvalidos({ novaSenha: true });
       return "A nova senha deve ter pelo menos 8 caracteres.";
     }
 
     if (!/[A-Z]/.test(formSenha.novaSenha)) {
+      setCamposInvalidos({ novaSenha: true });
       return "A nova senha deve conter pelo menos uma letra maiúscula.";
     }
 
     if (!/[a-z]/.test(formSenha.novaSenha)) {
+      setCamposInvalidos({ novaSenha: true });
       return "A nova senha deve conter pelo menos uma letra minúscula.";
     }
 
     if (!/[0-9]/.test(formSenha.novaSenha)) {
+      setCamposInvalidos({ novaSenha: true });
       return "A nova senha deve conter pelo menos um número.";
     }
 
     if (!/[^A-Za-z0-9]/.test(formSenha.novaSenha)) {
+      setCamposInvalidos({ novaSenha: true });
       return "A nova senha deve conter pelo menos um caractere especial.";
     }
 
     if (formSenha.novaSenha !== formSenha.confirmacaoSenha) {
+      setCamposInvalidos({ confirmacaoSenha: true });
       return "A confirmação de senha não confere.";
     }
 
+    setCamposInvalidos({});
     return "";
   };
 
@@ -94,6 +127,22 @@ const Perfil = () => {
 
     if (erroValidacao) {
       setErroSenha(erroValidacao);
+
+      if (!formSenha.senhaAtual) {
+        senhaAtualInputRef.current?.focus();
+      } else if (
+        !formSenha.novaSenha ||
+        formSenha.novaSenha.length < 8 ||
+        !/[A-Z]/.test(formSenha.novaSenha) ||
+        !/[a-z]/.test(formSenha.novaSenha) ||
+        !/[0-9]/.test(formSenha.novaSenha) ||
+        !/[^A-Za-z0-9]/.test(formSenha.novaSenha)
+      ) {
+        novaSenhaInputRef.current?.focus();
+      } else {
+        confirmacaoSenhaInputRef.current?.focus();
+      }
+
       return;
     }
 
@@ -190,11 +239,13 @@ const Perfil = () => {
               Senha atual
               <div className="perfil-password-field">
                 <input
+                  ref={senhaAtualInputRef}
                   type={mostrarSenhaAtual ? "text" : "password"}
                   name="senhaAtual"
                   value={formSenha.senhaAtual}
                   onChange={handleChangeSenha}
                   placeholder="Digite sua senha atual"
+                  className={camposInvalidos.senhaAtual ? "input-error" : ""}
                 />
 
                 <button
@@ -214,11 +265,13 @@ const Perfil = () => {
               Nova senha
               <div className="perfil-password-field">
                 <input
+                  ref={novaSenhaInputRef}
                   type={mostrarNovaSenha ? "text" : "password"}
                   name="novaSenha"
                   value={formSenha.novaSenha}
                   onChange={handleChangeSenha}
                   placeholder="Digite a nova senha"
+                  className={camposInvalidos.novaSenha ? "input-error" : ""}
                 />
 
                 <button
@@ -238,11 +291,15 @@ const Perfil = () => {
               Confirmar nova senha
               <div className="perfil-password-field">
                 <input
+                  ref={confirmacaoSenhaInputRef}
                   type={mostrarConfirmacaoSenha ? "text" : "password"}
                   name="confirmacaoSenha"
                   value={formSenha.confirmacaoSenha}
                   onChange={handleChangeSenha}
                   placeholder="Confirme a nova senha"
+                  className={
+                    camposInvalidos.confirmacaoSenha ? "input-error" : ""
+                  }
                 />
 
                 <button

@@ -67,6 +67,16 @@
   box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.18);
 }
 
+.redefinir-senha-form input.input-error {
+  border-color: rgba(239, 68, 68, 0.78);
+  background-color: rgba(127, 29, 29, 0.18);
+}
+
+.redefinir-senha-form input.input-error:focus {
+  border-color: #ef4444;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.18);
+}
+
 .redefinir-senha-form input[readonly] {
   color: var(--text-secondary);
   cursor: not-allowed;

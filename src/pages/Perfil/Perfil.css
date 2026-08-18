@@ -185,6 +185,16 @@
   box-shadow: 0 0 0 3px rgba(147, 51, 234, 0.14);
 }
 
+.perfil-form-grid input.input-error {
+  border-color: rgba(239, 68, 68, 0.78);
+  background-color: rgba(127, 29, 29, 0.14);
+}
+
+.perfil-form-grid input.input-error:focus {
+  border-color: #ef4444;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.18);
+}
+
 .perfil-password-rules {
   margin-top: 16px;
   padding: 12px 14px;

@@ -6,7 +6,6 @@ import {
   FiChevronsLeft,
   FiChevronsRight,
   FiEdit2,
-  FiEye,
   FiRefreshCw,
   FiXCircle,
 } from "react-icons/fi";
@@ -376,19 +375,6 @@ const OrdemServico = () => {
                 </td>
                 <td>{formatarData(ordem.dataFechamento)}</td>
                 <td>
-                  <button
-                    type="button"
-                    className="action-button"
-                    title="Visualizar ordem"
-                    aria-label="Visualizar ordem"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setOrdemSelecionada(ordem);
-                    }}
-                  >
-                    <FiEye />
-                  </button>
-
                   <button
                     type="button"
                     className="action-button"

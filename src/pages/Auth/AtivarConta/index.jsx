@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { ativarConvite, validarConvite } from "../../../services/authService";
@@ -19,6 +19,9 @@ const AtivarConta = () => {
   const [enviando, setEnviando] = useState(false);
   const [mostrarSenha, setMostrarSenha] = useState(false);
   const [mostrarConfirmacaoSenha, setMostrarConfirmacaoSenha] = useState(false);
+  const [camposInvalidos, setCamposInvalidos] = useState({});
+  const senhaInputRef = useRef(null);
+  const confirmacaoSenhaInputRef = useRef(null);
 
   useEffect(() => {
     const validarTokenConvite = async () => {
@@ -53,6 +56,13 @@ const AtivarConta = () => {
       ...formAtual,
       [name]: value,
     }));
+
+    if (camposInvalidos[name]) {
+      setCamposInvalidos((camposAtuais) => ({
+        ...camposAtuais,
+        [name]: false,
+      }));
+    }
   };
 
   const handleSubmit = async (event) => {
@@ -60,6 +70,37 @@ const AtivarConta = () => {
 
     setErro("");
     setSucesso("");
+    const camposComErro = {};
+
+    if (!form.senha || !form.confirmacaoSenha) {
+      if (!form.senha) {
+        camposComErro.senha = true;
+      }
+
+      if (!form.confirmacaoSenha) {
+        camposComErro.confirmacaoSenha = true;
+      }
+    } else if (
+      form.senha.length < 8 ||
+      !/[A-Z]/.test(form.senha) ||
+      !/[a-z]/.test(form.senha) ||
+      !/[0-9]/.test(form.senha) ||
+      !/[^A-Za-z0-9]/.test(form.senha)
+    ) {
+      camposComErro.senha = true;
+    } else if (form.senha !== form.confirmacaoSenha) {
+      camposComErro.confirmacaoSenha = true;
+    }
+
+    setCamposInvalidos(camposComErro);
+
+    if (Object.keys(camposComErro).length > 0) {
+      if (camposComErro.senha) {
+        senhaInputRef.current?.focus();
+      } else {
+        confirmacaoSenhaInputRef.current?.focus();
+      }
+    }
 
     if (!form.senha || !form.confirmacaoSenha) {
       setErro("Informe a senha e a confirmação de senha.");
@@ -149,10 +190,12 @@ const AtivarConta = () => {
               Senha
               <div className="ativar-conta-password-field">
                 <input
+                  ref={senhaInputRef}
                   type={mostrarSenha ? "text" : "password"}
                   name="senha"
                   value={form.senha}
                   onChange={handleChange}
+                  className={camposInvalidos.senha ? "input-error" : ""}
                 />
                 <button
                   type="button"
@@ -169,10 +212,14 @@ const AtivarConta = () => {
               Confirmar senha
               <div className="ativar-conta-password-field">
                 <input
+                  ref={confirmacaoSenhaInputRef}
                   type={mostrarConfirmacaoSenha ? "text" : "password"}
                   name="confirmacaoSenha"
                   value={form.confirmacaoSenha}
                   onChange={handleChange}
+                  className={
+                    camposInvalidos.confirmacaoSenha ? "input-error" : ""
+                  }
                 />
                 <button
                   type="button"

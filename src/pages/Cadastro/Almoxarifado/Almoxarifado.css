@@ -74,6 +74,16 @@
   box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.3);
 }
 
+.almoxarifado-form input.input-error {
+  border-color: rgba(239, 68, 68, 0.78);
+  background-color: rgba(127, 29, 29, 0.14);
+}
+
+.almoxarifado-form input.input-error:focus {
+  border-color: #ef4444;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.18);
+}
+
 .almoxarifado-page .form-actions {
   display: flex;
   gap: 16px;

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 import { esqueciSenha, login } from "../../../services/authService";
@@ -13,6 +13,13 @@ const Login = () => {
   const [erro, setErro] = useState("");
   const [carregando, setCarregando] = useState(false);
   const [mostrarSenha, setMostrarSenha] = useState(false);
+  const [camposInvalidos, setCamposInvalidos] = useState({});
+  const [camposRecuperacaoInvalidos, setCamposRecuperacaoInvalidos] = useState(
+    {},
+  );
+  const loginInputRef = useRef(null);
+  const senhaInputRef = useRef(null);
+  const loginRecuperacaoInputRef = useRef(null);
 
   const [modalRecuperacaoAberto, setModalRecuperacaoAberto] = useState(false);
   const [loginRecuperacao, setLoginRecuperacao] = useState("");
@@ -27,12 +34,42 @@ const Login = () => {
       ...formAtual,
       [name]: value,
     }));
+
+    if (camposInvalidos[name]) {
+      setCamposInvalidos((camposAtuais) => ({
+        ...camposAtuais,
+        [name]: false,
+      }));
+    }
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
 
     setErro("");
+    const camposComErro = {};
+
+    if (!form.login) {
+      camposComErro.login = true;
+    }
+
+    if (!form.senha) {
+      camposComErro.senha = true;
+    }
+
+    setCamposInvalidos(camposComErro);
+
+    if (Object.keys(camposComErro).length > 0) {
+      setErro("Informe o login e a senha.");
+
+      if (camposComErro.login) {
+        loginInputRef.current?.focus();
+      } else {
+        senhaInputRef.current?.focus();
+      }
+
+      return;
+    }
 
     if (!form.login || !form.senha) {
       setErro("Informe o login e a senha.");
@@ -76,6 +113,7 @@ const Login = () => {
     setLoginRecuperacao("");
     setMensagemRecuperacao("");
     setErroRecuperacao("");
+    setCamposRecuperacaoInvalidos({});
   };
 
   const handleRecuperarSenha = async (event) => {
@@ -83,9 +121,12 @@ const Login = () => {
 
     setErroRecuperacao("");
     setMensagemRecuperacao("");
+    setCamposRecuperacaoInvalidos({});
 
     if (!loginRecuperacao) {
+      setCamposRecuperacaoInvalidos({ login: true });
       setErroRecuperacao("Informe o login para recuperar a senha.");
+      loginRecuperacaoInputRef.current?.focus();
       return;
     }
 
@@ -124,11 +165,13 @@ const Login = () => {
           <label>
             Login
             <input
+              ref={loginInputRef}
               type="text"
               name="login"
               value={form.login}
               onChange={handleChange}
               placeholder="Digite seu login"
+              className={camposInvalidos.login ? "input-error" : ""}
             />
           </label>
 
@@ -136,11 +179,13 @@ const Login = () => {
             Senha
             <div className="login-password-field">
               <input
+                ref={senhaInputRef}
                 type={mostrarSenha ? "text" : "password"}
                 name="senha"
                 value={form.senha}
                 onChange={handleChange}
                 placeholder="Digite sua senha"
+                className={camposInvalidos.senha ? "input-error" : ""}
               />
 
               <button
@@ -191,10 +236,23 @@ const Login = () => {
               <label>
                 Login
                 <input
+                  ref={loginRecuperacaoInputRef}
                   type="text"
                   value={loginRecuperacao}
-                  onChange={(event) => setLoginRecuperacao(event.target.value)}
+                  onChange={(event) => {
+                    setLoginRecuperacao(event.target.value);
+
+                    if (camposRecuperacaoInvalidos.login) {
+                      setCamposRecuperacaoInvalidos((camposAtuais) => ({
+                        ...camposAtuais,
+                        login: false,
+                      }));
+                    }
+                  }}
                   placeholder="Digite seu login"
+                  className={
+                    camposRecuperacaoInvalidos.login ? "input-error" : ""
+                  }
                 />
               </label>
 

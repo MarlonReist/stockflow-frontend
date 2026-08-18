@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   FiArrowLeft,
   FiChevronDown,
@@ -51,6 +51,7 @@ const CadastroOrdemServico = () => {
   const [buscaColaborador, setBuscaColaborador] = useState("");
   const [paginaClienteAtual, setPaginaClienteAtual] = useState(1);
   const [paginaColaboradorAtual, setPaginaColaboradorAtual] = useState(1);
+  const [camposInvalidos, setCamposInvalidos] = useState({});
   const [ordenacaoCliente, setOrdenacaoCliente] = useState({
     coluna: "id",
     direcao: "asc",
@@ -60,6 +61,9 @@ const CadastroOrdemServico = () => {
     direcao: "asc",
   });
   const navigate = useNavigate();
+  const clienteIdInputRef = useRef(null);
+  const colaboradorIdInputRef = useRef(null);
+  const descricaoTextareaRef = useRef(null);
   const { id } = useParams();
   const modoEdicao = Boolean(id);
   const ordemEncerrada =
@@ -301,6 +305,13 @@ const CadastroOrdemServico = () => {
       ...ordemAtual,
       [name]: value,
     }));
+
+    if (camposInvalidos[name]) {
+      setCamposInvalidos((camposAtuais) => ({
+        ...camposAtuais,
+        [name]: false,
+      }));
+    }
   };
 
   const handleClienteIdChange = (e) => {
@@ -314,6 +325,13 @@ const CadastroOrdemServico = () => {
       clienteId: valorDigitado,
       clienteNome: clienteEncontrado ? clienteEncontrado.nome : "",
     }));
+
+    if (camposInvalidos.clienteId) {
+      setCamposInvalidos((camposAtuais) => ({
+        ...camposAtuais,
+        clienteId: false,
+      }));
+    }
   };
 
   const handleColaboradorIdChange = (e) => {
@@ -327,6 +345,13 @@ const CadastroOrdemServico = () => {
       colaboradorId: valorDigitado,
       colaboradorNome: colaboradorEncontrado ? colaboradorEncontrado.nome : "",
     }));
+
+    if (camposInvalidos.colaboradorId) {
+      setCamposInvalidos((camposAtuais) => ({
+        ...camposAtuais,
+        colaboradorId: false,
+      }));
+    }
   };
 
   const confirmarCliente = (cliente) => {
@@ -334,6 +359,11 @@ const CadastroOrdemServico = () => {
       ...ordemAtual,
       clienteId: String(cliente.id),
       clienteNome: cliente.nome,
+    }));
+
+    setCamposInvalidos((camposAtuais) => ({
+      ...camposAtuais,
+      clienteId: false,
     }));
 
     setSeletorClienteAberto(false);
@@ -346,6 +376,11 @@ const CadastroOrdemServico = () => {
       ...ordemAtual,
       colaboradorId: String(colaborador.id),
       colaboradorNome: colaborador.nome,
+    }));
+
+    setCamposInvalidos((camposAtuais) => ({
+      ...camposAtuais,
+      colaboradorId: false,
     }));
 
     setSeletorColaboradorAberto(false);
@@ -434,10 +469,12 @@ const CadastroOrdemServico = () => {
         ...ordemAtual,
         descricao: "",
       }));
+      setCamposInvalidos({});
       return;
     }
 
     setOrdem({ ...ordemInicial });
+    setCamposInvalidos({});
     setOrdemSalva(false);
     setClienteSelecionado(null);
     setColaboradorSelecionado(null);
@@ -448,27 +485,34 @@ const CadastroOrdemServico = () => {
 
   const validarOrdem = () => {
     const erros = [];
+    const camposComErro = {};
 
     if (modoEdicao) {
       if (!ordem.descricao.trim()) {
+        camposComErro.descricao = true;
         erros.push("Descricao e obrigatoria.");
       }
 
+      setCamposInvalidos(camposComErro);
       return erros;
     }
 
     if (!ordem.clienteId || !ordem.clienteNome) {
+      camposComErro.clienteId = true;
       erros.push("Selecione um cliente valido.");
     }
 
     if (!ordem.colaboradorId || !ordem.colaboradorNome) {
+      camposComErro.colaboradorId = true;
       erros.push("Selecione um colaborador valido.");
     }
 
     if (!ordem.descricao.trim()) {
+      camposComErro.descricao = true;
       erros.push("Descricao e obrigatoria.");
     }
 
+    setCamposInvalidos(camposComErro);
     return erros;
   };
 
@@ -485,6 +529,18 @@ const CadastroOrdemServico = () => {
       erros.forEach((erro) => {
         mostrarMensagem(erro, "erro");
       });
+
+      if (!modoEdicao && (!ordem.clienteId || !ordem.clienteNome)) {
+        clienteIdInputRef.current?.focus();
+      } else if (
+        !modoEdicao &&
+        (!ordem.colaboradorId || !ordem.colaboradorNome)
+      ) {
+        colaboradorIdInputRef.current?.focus();
+      } else if (!ordem.descricao.trim()) {
+        descricaoTextareaRef.current?.focus();
+      }
+
       return;
     }
 
@@ -630,12 +686,14 @@ const CadastroOrdemServico = () => {
               <label>Cliente</label>
               <div className="lookup-field">
                 <input
+                  ref={clienteIdInputRef}
                   type="text"
                   name="clienteId"
                   placeholder="ID"
                   value={ordem.clienteId}
                   onChange={handleClienteIdChange}
                   readOnly={dadosPrincipaisBloqueados}
+                  className={camposInvalidos.clienteId ? "input-error" : ""}
                 />
                 <input
                   type="text"
@@ -665,12 +723,16 @@ const CadastroOrdemServico = () => {
               <label>Colaborador</label>
               <div className="lookup-field">
                 <input
+                  ref={colaboradorIdInputRef}
                   type="text"
                   name="colaboradorId"
                   placeholder="ID"
                   value={ordem.colaboradorId}
                   onChange={handleColaboradorIdChange}
                   readOnly={dadosPrincipaisBloqueados}
+                  className={
+                    camposInvalidos.colaboradorId ? "input-error" : ""
+                  }
                 />
                 <input
                   type="text"
@@ -699,11 +761,13 @@ const CadastroOrdemServico = () => {
             <div className="form-group form-group-full">
               <label>Descricao</label>
               <textarea
+                ref={descricaoTextareaRef}
                 name="descricao"
                 placeholder="Descreva o Serviço"
                 value={ordem.descricao}
                 onChange={handleChange}
                 readOnly={descricaoBloqueada}
+                className={camposInvalidos.descricao ? "input-error" : ""}
               />
             </div>
 

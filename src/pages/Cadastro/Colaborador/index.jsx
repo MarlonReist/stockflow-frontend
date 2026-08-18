@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "./Colaborador.css";
 import {
   cadastrarColaborador,
@@ -18,9 +18,14 @@ const colaboradorInicial = {
 const Colaborador = () => {
   const [colaborador, setColaborador] = useState({ ...colaboradorInicial });
   const [mensagens, setMensagens] = useState([]);
+  const [camposInvalidos, setCamposInvalidos] = useState({});
   const navigate = useNavigate();
   const { id } = useParams();
   const modoEdicao = Boolean(id);
+  const nomeInputRef = useRef(null);
+  const cpfInputRef = useRef(null);
+  const cargoInputRef = useRef(null);
+  const telefoneInputRef = useRef(null);
 
   useEffect(() => {
     if (!modoEdicao) {
@@ -41,7 +46,29 @@ const Colaborador = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+
     setColaborador({ ...colaborador, [name]: value });
+
+    if (camposInvalidos[name]) {
+      setCamposInvalidos((camposAtuais) => ({
+        ...camposAtuais,
+        [name]: false,
+      }));
+    }
+  };
+
+  const handleMaskedChange = (name, value) => {
+    setColaborador((colaboradorAtual) => ({
+      ...colaboradorAtual,
+      [name]: value,
+    }));
+
+    if (camposInvalidos[name]) {
+      setCamposInvalidos((camposAtuais) => ({
+        ...camposAtuais,
+        [name]: false,
+      }));
+    }
   };
 
   const mostrarMensagem = (texto, tipo) => {
@@ -61,19 +88,27 @@ const Colaborador = () => {
 
   const validarColaborador = () => {
     const erros = [];
+    const camposComErro = {};
 
     if (!colaborador.nome.trim()) {
       erros.push("Nome é obrigatório");
+      camposComErro.nome = true;
     }
     if (!colaborador.cpf.trim()) {
       erros.push("CPF é obrigatório");
+      camposComErro.cpf = true;
     }
     if (!colaborador.cargo.trim()) {
       erros.push("Cargo é obrigatório");
+      camposComErro.cargo = true;
     }
     if (!colaborador.telefone.trim()) {
       erros.push("Telefone é obrigatório");
+      camposComErro.telefone = true;
     }
+
+    setCamposInvalidos(camposComErro);
+
     return erros;
   };
 
@@ -85,6 +120,17 @@ const Colaborador = () => {
       erros.forEach((erro) => {
         mostrarMensagem(erro, "erro");
       });
+
+      if (!colaborador.nome.trim()) {
+        nomeInputRef.current?.focus();
+      } else if (!colaborador.cpf.trim()) {
+        cpfInputRef.current?.focus();
+      } else if (!colaborador.cargo.trim()) {
+        cargoInputRef.current?.focus();
+      } else if (!colaborador.telefone.trim()) {
+        telefoneInputRef.current?.focus();
+      }
+
       return;
     }
 
@@ -114,6 +160,7 @@ const Colaborador = () => {
 
   const handleClear = () => {
     setColaborador({ ...colaboradorInicial });
+    setCamposInvalidos({});
   };
 
   return (
@@ -131,45 +178,51 @@ const Colaborador = () => {
           <div className="form-group">
             <label>Nome</label>
             <input
+              ref={nomeInputRef}
               type="text"
               name="nome"
               placeholder="Digite o nome do colaborador"
               value={colaborador.nome}
               onChange={handleChange}
+              className={camposInvalidos.nome ? "input-error" : ""}
             />
           </div>
           <div className="form-row">
             <div className="form-group">
               <label>CPF</label>
               <IMaskInput
+                inputRef={cpfInputRef}
                 mask="000.000.000-00"
                 name="cpf"
                 placeholder="000.000.000-00"
                 value={colaborador.cpf}
-                onAccept={(value) => setColaborador({ ...colaborador, cpf: value })}
+                onAccept={(value) => handleMaskedChange("cpf", value)}
+                className={camposInvalidos.cpf ? "input-error" : ""}
               />
             </div>
             <div className="form-group">
               <label>Cargo</label>
               <input
+                ref={cargoInputRef}
                 type="text"
                 name="cargo"
                 placeholder="Ex: Técnico, Gerente"
                 value={colaborador.cargo}
                 onChange={handleChange}
+                className={camposInvalidos.cargo ? "input-error" : ""}
               />
             </div>
           </div>
           <div className="form-group">
             <label>Telefone</label>
             <IMaskInput
+              inputRef={telefoneInputRef}
               mask="(00) 00000-0000"
               name="telefone"
               placeholder="(00) 00000-0000"
               value={colaborador.telefone}
-              onAccept={(value) =>
-                setColaborador({ ...colaborador, telefone: value })
-              }
+              onAccept={(value) => handleMaskedChange("telefone", value)}
+              className={camposInvalidos.telefone ? "input-error" : ""}
             />
           </div>
           <div className="form-actions">

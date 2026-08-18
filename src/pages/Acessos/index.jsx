@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   convidarUsuario,
   listarUsuarios,
@@ -26,10 +26,14 @@ const Acessos = () => {
   const [conviteGerado, setConviteGerado] = useState(null);
   const [busca, setBusca] = useState("");
   const [temposReenvio, setTemposReenvio] = useState({});
+  const [camposInvalidos, setCamposInvalidos] = useState({});
   const [ordenacao, setOrdenacao] = useState({
     coluna: "id",
     direcao: "asc",
   });
+  const nomeInputRef = useRef(null);
+  const loginInputRef = useRef(null);
+  const perfilSelectRef = useRef(null);
 
   const [form, setForm] = useState({
     nome: "",
@@ -85,31 +89,31 @@ const Acessos = () => {
 
   useEffect(() => {
     const intervalo = setInterval(() => {
+      let deveRecarregarUsuarios = false;
+
       setTemposReenvio((temposAtuais) => {
         const novosTempos = {};
 
         Object.entries(temposAtuais).forEach(([usuarioId, segundos]) => {
           const novoTempo = Math.max(0, segundos - 1);
 
+          if (segundos > 0 && novoTempo === 0) {
+            deveRecarregarUsuarios = true;
+          }
+
           novosTempos[usuarioId] = novoTempo;
         });
 
         return novosTempos;
       });
+
+      if (deveRecarregarUsuarios) {
+        carregarUsuarios();
+      }
     }, 1000);
 
     return () => clearInterval(intervalo);
   }, []);
-
-  useEffect(() => {
-    const algumTimerZerou = Object.values(temposReenvio).some(
-      (segundos) => segundos === 0,
-    );
-
-    if (algumTimerZerou) {
-      carregarUsuarios();
-    }
-  }, [temposReenvio]);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -118,12 +122,49 @@ const Acessos = () => {
       ...formAtual,
       [name]: value,
     }));
+
+    if (camposInvalidos[name]) {
+      setCamposInvalidos((camposAtuais) => ({
+        ...camposAtuais,
+        [name]: false,
+      }));
+    }
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
 
     setConviteGerado(null);
+    const camposComErro = {};
+
+    if (!form.nome.trim()) {
+      camposComErro.nome = true;
+      mostrarMensagem("Nome é obrigatório.", "erro");
+    }
+
+    if (!form.login.trim()) {
+      camposComErro.login = true;
+      mostrarMensagem("Login é obrigatório.", "erro");
+    }
+
+    if (!form.perfil) {
+      camposComErro.perfil = true;
+      mostrarMensagem("Perfil é obrigatório.", "erro");
+    }
+
+    setCamposInvalidos(camposComErro);
+
+    if (Object.keys(camposComErro).length > 0) {
+      if (camposComErro.nome) {
+        nomeInputRef.current?.focus();
+      } else if (camposComErro.login) {
+        loginInputRef.current?.focus();
+      } else if (camposComErro.perfil) {
+        perfilSelectRef.current?.focus();
+      }
+
+      return;
+    }
 
     if (!form.nome.trim()) {
       mostrarMensagem("Nome é obrigatório.", "erro");
@@ -152,6 +193,7 @@ const Acessos = () => {
         login: "",
         perfil: "USUARIO",
       });
+      setCamposInvalidos({});
 
       carregarUsuarios();
     } catch (error) {
@@ -343,28 +385,38 @@ const Acessos = () => {
           <div className="form-group">
             <label>Nome</label>
             <input
+              ref={nomeInputRef}
               type="text"
               name="nome"
               value={form.nome}
               onChange={handleChange}
               placeholder="Digite o nome completo"
+              className={camposInvalidos.nome ? "input-error" : ""}
             />
           </div>
 
           <div className="form-group">
             <label>Login</label>
             <input
+              ref={loginInputRef}
               type="text"
               name="login"
               value={form.login}
               onChange={handleChange}
               placeholder="Digite o login ou e-mail"
+              className={camposInvalidos.login ? "input-error" : ""}
             />
           </div>
 
           <div className="form-group">
             <label>Perfil</label>
-            <select name="perfil" value={form.perfil} onChange={handleChange}>
+            <select
+              ref={perfilSelectRef}
+              name="perfil"
+              value={form.perfil}
+              onChange={handleChange}
+              className={camposInvalidos.perfil ? "input-error" : ""}
+            >
               <option value="USUARIO">Usuário</option>
               <option value="ADMIN">Administrador</option>
             </select>
