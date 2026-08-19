@@ -864,6 +864,16 @@
   border-left: 1px solid rgba(148, 163, 184, 0.08);
 }
 
+.lookup-field.lookup-field-clickable input[readonly],
+.lookup-field.lookup-field-clickable input:nth-of-type(2) {
+  cursor: pointer;
+}
+
+.lookup-field.lookup-field-clickable:hover input[readonly],
+.lookup-field.lookup-field-clickable:hover input:nth-of-type(2) {
+  color: #dbeafe;
+}
+
 .lookup-field button:disabled {
   cursor: not-allowed;
   opacity: 0.6;

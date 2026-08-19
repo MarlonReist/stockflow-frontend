@@ -7,6 +7,10 @@
 .dashboard-header {
   width: min(100%, 1380px);
   margin-bottom: 28px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
 }
 
 .dashboard-header h1 {
@@ -20,6 +24,111 @@
   margin: 0;
   color: var(--text-secondary);
   font-size: 15px;
+}
+
+.dashboard-filter-area {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
+  margin-top: 46px;
+}
+
+.dashboard-period-filter {
+  display: inline-flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 6px;
+  border: 1px solid rgba(139, 92, 246, 0.16);
+  border-radius: 12px;
+  background-color: rgba(31, 33, 55, 0.72);
+  box-shadow: 0 12px 26px rgba(0, 0, 0, 0.14);
+}
+
+.dashboard-period-filter button {
+  min-height: 36px;
+  padding: 0 13px;
+  border: 1px solid transparent;
+  border-radius: 9px;
+  background-color: transparent;
+  color: var(--text-secondary);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 800;
+  cursor: pointer;
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease,
+    color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.dashboard-period-filter button:hover {
+  border-color: rgba(167, 139, 250, 0.28);
+  background-color: rgba(255, 255, 255, 0.045);
+  color: var(--text-primary);
+}
+
+.dashboard-period-filter button.active {
+  border-color: rgba(96, 165, 250, 0.42);
+  background: linear-gradient(135deg, rgba(124, 58, 237, 0.92), rgba(37, 99, 235, 0.92));
+  color: #ffffff;
+  box-shadow: 0 10px 22px rgba(37, 99, 235, 0.22);
+}
+
+.dashboard-custom-period {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  width: 100%;
+}
+
+.dashboard-custom-period label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.dashboard-custom-period input {
+  width: 150px;
+  height: 38px;
+  padding: 0 10px;
+  border: 1px solid rgba(139, 92, 246, 0.24);
+  border-radius: 9px;
+  background-color: rgba(31, 33, 55, 0.72);
+  color: var(--text-primary);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  outline: none;
+  color-scheme: dark;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background-color 0.2s ease;
+}
+
+.dashboard-custom-period input:focus {
+  border-color: rgba(96, 165, 250, 0.52);
+  background-color: rgba(31, 33, 55, 0.92);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.14);
+}
+
+.dashboard-period-error {
+  max-width: 360px;
+  margin: 0;
+  padding: 9px 12px;
+  border: 1px solid rgba(239, 68, 68, 0.32);
+  border-radius: 9px;
+  background-color: rgba(127, 29, 29, 0.18);
+  color: #fecaca;
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.4;
 }
 
 .dashboard-summary-grid {
@@ -316,6 +425,34 @@
 @media (max-width: 768px) {
   .dashboard-page {
     padding: 22px;
+  }
+
+  .dashboard-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .dashboard-filter-area {
+    align-items: stretch;
+    margin-top: 0;
+  }
+
+  .dashboard-period-filter {
+    justify-content: flex-start;
+  }
+
+  .dashboard-custom-period {
+    justify-content: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .dashboard-custom-period label {
+    flex: 1;
+    min-width: 140px;
+  }
+
+  .dashboard-custom-period input {
+    width: 100%;
   }
 
   .dashboard-header h1 {

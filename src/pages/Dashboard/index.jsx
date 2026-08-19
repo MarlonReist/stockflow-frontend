@@ -17,15 +17,104 @@ const Dashboard = () => {
   });
   const [movimentacoesRecentes, setMovimentacoesRecentes] = useState([]);
   const [osPorStatus, setOsPorStatus] = useState([]);
+  const [periodoSelecionado, setPeriodoSelecionado] = useState("30d");
+  const [dataInicioPersonalizada, setDataInicioPersonalizada] = useState("");
+  const [dataFimPersonalizada, setDataFimPersonalizada] = useState("");
+  const [erroPeriodo, setErroPeriodo] = useState("");
+
+  const opcoesPeriodo = [
+    { label: "7 dias", value: "7d" },
+    { label: "30 dias", value: "30d" },
+    { label: "3 meses", value: "3m" },
+    { label: "6 meses", value: "6m" },
+    { label: "12 meses", value: "12m" },
+    { label: "Total", value: "total" },
+    { label: "Personalizado", value: "custom" },
+  ];
+
+  const formatarDataParametro = (data) => {
+    return data.toISOString().split("T")[0];
+  };
+
+  const calcularPeriodoDashboard = () => {
+    if (periodoSelecionado === "custom") {
+      if (!dataInicioPersonalizada || !dataFimPersonalizada) {
+        return null;
+      }
+
+      if (dataInicioPersonalizada > dataFimPersonalizada) {
+        return null;
+      }
+
+      return {
+        dataInicio: dataInicioPersonalizada,
+        dataFim: dataFimPersonalizada,
+      };
+    }
+
+    if (periodoSelecionado === "total") {
+      return {
+        dataInicio: "2000-01-01",
+        dataFim: formatarDataParametro(new Date()),
+      };
+    }
+
+    const dataFim = new Date();
+    const dataInicio = new Date();
+
+    if (periodoSelecionado === "7d") {
+      dataInicio.setDate(dataFim.getDate() - 7);
+    }
+
+    if (periodoSelecionado === "30d") {
+      dataInicio.setDate(dataFim.getDate() - 30);
+    }
+
+    if (periodoSelecionado === "3m") {
+      dataInicio.setMonth(dataFim.getMonth() - 3);
+    }
+
+    if (periodoSelecionado === "6m") {
+      dataInicio.setMonth(dataFim.getMonth() - 6);
+    }
+
+    if (periodoSelecionado === "12m") {
+      dataInicio.setMonth(dataFim.getMonth() - 12);
+    }
+
+    return {
+      dataInicio: formatarDataParametro(dataInicio),
+      dataFim: formatarDataParametro(dataFim),
+    };
+  };
 
   useEffect(() => {
     const carregarDadosDashboard = async () => {
       try {
+        const paramsPeriodo = calcularPeriodoDashboard();
+
+        if (!paramsPeriodo) {
+          if (
+            periodoSelecionado === "custom" &&
+            dataInicioPersonalizada &&
+            dataFimPersonalizada &&
+            dataInicioPersonalizada > dataFimPersonalizada
+          ) {
+            setErroPeriodo(
+              "A data inicial não pode ser maior que a data final.",
+            );
+          }
+
+          return;
+        }
+
+        setErroPeriodo("");
+
         const [resumoResponse, movimentacoesResponse, osPorStatusResponse] =
           await Promise.all([
-            buscarResumoDashboard(),
-            buscarMovimentacoesRecentesDashboard(),
-            buscarOsPorStatusDashboard(),
+            buscarResumoDashboard(paramsPeriodo),
+            buscarMovimentacoesRecentesDashboard(paramsPeriodo),
+            buscarOsPorStatusDashboard(paramsPeriodo),
           ]);
 
         setResumo(resumoResponse.data);
@@ -37,7 +126,7 @@ const Dashboard = () => {
     };
 
     carregarDadosDashboard();
-  }, []);
+  }, [periodoSelecionado, dataInicioPersonalizada, dataFimPersonalizada]);
 
   const formatarData = (data) => {
     if (!data) {
@@ -156,8 +245,54 @@ const Dashboard = () => {
   return (
     <div className="dashboard-page">
       <div className="dashboard-header">
-        <h1>Dashboard</h1>
-        <p>Bem-vindo ao StockFlow - Gerencie seu estoque</p>
+        <div>
+          <h1>Dashboard</h1>
+          <p>Bem-vindo ao StockFlow - Gerencie seu estoque</p>
+        </div>
+
+        <div className="dashboard-filter-area">
+          <div className="dashboard-period-filter">
+            {opcoesPeriodo.map((opcao) => (
+              <button
+                key={opcao.value}
+                type="button"
+                className={periodoSelecionado === opcao.value ? "active" : ""}
+                onClick={() => {
+                  setPeriodoSelecionado(opcao.value);
+                  setErroPeriodo("");
+                }}
+              >
+                {opcao.label}
+              </button>
+            ))}
+          </div>
+
+          {periodoSelecionado === "custom" && (
+            <div className="dashboard-custom-period">
+              <label>
+                Início
+                <input
+                  type="date"
+                  value={dataInicioPersonalizada}
+                  onChange={(e) => setDataInicioPersonalizada(e.target.value)}
+                />
+              </label>
+
+              <label>
+                Fim
+                <input
+                  type="date"
+                  value={dataFimPersonalizada}
+                  onChange={(e) => setDataFimPersonalizada(e.target.value)}
+                />
+              </label>
+            </div>
+          )}
+
+          {erroPeriodo && (
+            <p className="dashboard-period-error">{erroPeriodo}</p>
+          )}
+        </div>
       </div>
 
       <div className="dashboard-summary-grid">

@@ -1,15 +1,19 @@
 import api from "./api";
 
-function buscarResumoDashboard() {
-  return api.get("/dashboard/resumo");
+function buscarResumoDashboard(params) {
+  return api.get("/dashboard/resumo", { params });
 }
 
-function buscarMovimentacoesRecentesDashboard() {
-  return api.get("/dashboard/movimentacoes-recentes");
+function buscarMovimentacoesRecentesDashboard(params) {
+  return api.get("/dashboard/movimentacoes-recentes", { params });
 }
 
-function buscarOsPorStatusDashboard() {
-  return api.get("/dashboard/os-por-status");
+function buscarOsPorStatusDashboard(params) {
+  return api.get("/dashboard/os-por-status", { params });
 }
 
-export { buscarResumoDashboard, buscarMovimentacoesRecentesDashboard, buscarOsPorStatusDashboard };
+export {
+  buscarResumoDashboard,
+  buscarMovimentacoesRecentesDashboard,
+  buscarOsPorStatusDashboard,
+};
