@@ -129,6 +129,15 @@ const ItensEntrada = () => {
     }
   };
 
+  const formatarMoeda = (valor) => {
+    const valorNumerico = Number(valor) || 0;
+
+    return valorNumerico.toLocaleString("pt-BR", {
+      style: "currency",
+      currency: "BRL",
+    });
+  };
+
   const entradasFiltradas = entradas.filter((entrada) => {
     const buscaFormatada = busca.toLowerCase();
 
@@ -160,7 +169,7 @@ const ItensEntrada = () => {
     let valorA = a[ordenacao.coluna];
     let valorB = b[ordenacao.coluna];
 
-    if (ordenacao.coluna === "id") {
+    if (ordenacao.coluna === "id" || ordenacao.coluna === "valorTotal") {
       valorA = Number(valorA);
       valorB = Number(valorB);
     } else if (ordenacao.coluna === "dataEntrada") {
@@ -342,6 +351,17 @@ const ItensEntrada = () => {
                     ))}
                 </span>
               </th>
+              <th onClick={() => handleOrdenar("valorTotal")}>
+                <span className="sortable-header">
+                  Valor Total
+                  {ordenacao.coluna === "valorTotal" &&
+                    (ordenacao.direcao === "asc" ? (
+                      <FiChevronUp />
+                    ) : (
+                      <FiChevronDown />
+                    ))}
+                </span>
+              </th>
               <th onClick={() => handleOrdenar("status")}>
                 <span className="sortable-header">
                   Status
@@ -363,6 +383,9 @@ const ItensEntrada = () => {
                 <td>{entrada.fornecedorNome}</td>
                 <td>{entrada.almoxarifadoNome}</td>
                 <td>{entrada.dataEntrada}</td>
+                <td className="entrada-total-value">
+                  {formatarMoeda(entrada.valorTotal)}
+                </td>
                 <td>
                   <span
                     className={`entrada-status ${entrada.status === "ABERTA" ? "entrada-status-open" : entrada.status === "FINALIZADA" ? "entrada-status-finished" : "entrada-status-canceled"}`}

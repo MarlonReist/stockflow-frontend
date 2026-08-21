@@ -13,7 +13,10 @@ const Dashboard = () => {
     totalProdutos: 0,
     almoxarifadosAtivos: 0,
     osAbertas: 0,
-    movimentacoesNoMes: 0,
+    movimentacoesNoPeriodo: 0,
+    valorTotalEntradasPeriodo: 0,
+    valorTotalSaidasPeriodo: 0,
+    custoTotalOrdensServicoPeriodo: 0,
   });
   const [movimentacoesRecentes, setMovimentacoesRecentes] = useState([]);
   const [osPorStatus, setOsPorStatus] = useState([]);
@@ -21,6 +24,12 @@ const Dashboard = () => {
   const [dataInicioPersonalizada, setDataInicioPersonalizada] = useState("");
   const [dataFimPersonalizada, setDataFimPersonalizada] = useState("");
   const [erroPeriodo, setErroPeriodo] = useState("");
+
+  const usuarioLogado = JSON.parse(
+    localStorage.getItem("stockflow_usuario") || "{}",
+  );
+
+  const usuarioAdmin = usuarioLogado.perfil === "ADMIN";
 
   const opcoesPeriodo = [
     { label: "7 dias", value: "7d" },
@@ -31,6 +40,15 @@ const Dashboard = () => {
     { label: "Total", value: "total" },
     { label: "Personalizado", value: "custom" },
   ];
+
+  const formatarMoeda = (valor) => {
+    const valorNumerico = Number(valor) || 0;
+
+    return valorNumerico.toLocaleString("pt-BR", {
+      style: "currency",
+      currency: "BRL",
+    });
+  };
 
   const formatarDataParametro = (data) => {
     return data.toISOString().split("T")[0];
@@ -235,10 +253,28 @@ const Dashboard = () => {
       cor: "green",
     },
     {
-      titulo: "Movimentações no Mês",
-      valor: resumo.movimentacoesNoMes,
+      titulo: "Movimentações no Período",
+      valor: resumo.movimentacoesNoPeriodo,
       icone: FiRepeat,
       cor: "red",
+    },
+  ];
+
+  const cardsGerenciaisAdmin = [
+    {
+      titulo: "Valor das Entradas",
+      valor: formatarMoeda(resumo.valorTotalEntradasPeriodo),
+      cor: "green",
+    },
+    {
+      titulo: "Valor das Saídas",
+      valor: formatarMoeda(resumo.valorTotalSaidasPeriodo),
+      cor: "red",
+    },
+    {
+      titulo: "Custo das OS",
+      valor: formatarMoeda(resumo.custoTotalOrdensServicoPeriodo),
+      cor: "blue",
     },
   ];
 
@@ -313,6 +349,26 @@ const Dashboard = () => {
           );
         })}
       </div>
+      {usuarioAdmin && (
+        <section className="dashboard-admin-metrics">
+          <div className="dashboard-admin-metrics-header">
+            <h2>Indicadores gerenciais</h2>
+            <span>Valores do período selecionado</span>
+          </div>
+
+          <div className="dashboard-admin-metrics-grid">
+            {cardsGerenciaisAdmin.map((card) => (
+              <div
+                key={card.titulo}
+                className={`dashboard-admin-card dashboard-admin-card-${card.cor}`}
+              >
+                <span>{card.titulo}</span>
+                <strong>{card.valor}</strong>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
 
       <div className="dashboard-content-grid">
         <section className="dashboard-panel">

@@ -38,6 +38,15 @@ const ItensSaida = () => {
   const itensPorPagina = 10;
   const navigate = useNavigate();
 
+  const formatarMoeda = (valor) => {
+    const valorNumerico = Number(valor) || 0;
+
+    return valorNumerico.toLocaleString("pt-BR", {
+      style: "currency",
+      currency: "BRL",
+    });
+  };
+
   const mostrarMensagem = (texto, tipo) => {
     const id = `${Date.now()}-${Math.random()}`;
 
@@ -160,7 +169,7 @@ const ItensSaida = () => {
     let valorA = a[ordenacao.coluna];
     let valorB = b[ordenacao.coluna];
 
-    if (ordenacao.coluna === "id") {
+    if (ordenacao.coluna === "id" || ordenacao.coluna === "valorTotal") {
       valorA = Number(valorA);
       valorB = Number(valorB);
     } else if (ordenacao.coluna === "dataSaida") {
@@ -330,6 +339,17 @@ const ItensSaida = () => {
                     ))}
                 </span>
               </th>
+              <th onClick={() => handleOrdenar("valorTotal")}>
+                <span className="sortable-header">
+                  Valor Total
+                  {ordenacao.coluna === "valorTotal" &&
+                    (ordenacao.direcao === "asc" ? (
+                      <FiChevronUp />
+                    ) : (
+                      <FiChevronDown />
+                    ))}
+                </span>
+              </th>
               <th onClick={() => handleOrdenar("status")}>
                 <span className="sortable-header">
                   Status
@@ -350,6 +370,9 @@ const ItensSaida = () => {
                 <td>{saida.id}</td>
                 <td>{saida.almoxarifadoNome}</td>
                 <td>{saida.dataSaida}</td>
+                <td className="saida-total-value">
+                  {formatarMoeda(saida.valorTotal)}
+                </td>
                 <td>
                   <span
                     className={`saida-status ${saida.status === "ABERTA" ? "saida-status-open" : saida.status === "FINALIZADA" ? "saida-status-finished" : "saida-status-canceled"}`}

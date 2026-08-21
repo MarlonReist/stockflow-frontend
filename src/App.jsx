@@ -46,8 +46,9 @@ import PrivateRoute from "./components/PrivateRoute";
 
 function App() {
   const location = useLocation();
+  const token = localStorage.getItem("stockflow_token");
   const rotasPublicas = ["/login", "/ativar-conta", "/redefinir-senha"];
-  const rotaPublica = rotasPublicas.includes(location.pathname);
+  const rotaPublica = rotasPublicas.includes(location.pathname) || location.pathname === "/";
 
   return (
     <div className="app-container">
@@ -58,9 +59,14 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/ativar-conta" element={<AtivarConta />} />
           <Route path="/redefinir-senha" element={<RedefinirSenha />} />
+          <Route
+            path="/"
+            element={
+              <Navigate to={token ? "/dashboard" : "/login"} replace />
+            }
+          />
 
           <Route element={<PrivateRoute />}>
-            <Route path="/" element={<Dashboard />} />
             <Route path="/dashboard" element={<Dashboard />} />
 
             <Route path="/meu-perfil" element={<Perfil />} />

@@ -192,18 +192,18 @@
 
 .gerenciamento-itens-table th:nth-child(2),
 .gerenciamento-itens-table td:nth-child(2) {
-  width: 34%;
+  width: 28%;
   text-align: left;
 }
 
 .gerenciamento-itens-table th:nth-child(3),
 .gerenciamento-itens-table td:nth-child(3) {
-  width: 140px;
+  width: 150px;
 }
 
 .gerenciamento-itens-table th:nth-child(4),
 .gerenciamento-itens-table td:nth-child(4) {
-  width: 180px;
+  width: 130px;
 }
 
 .gerenciamento-itens-table th:nth-child(5),
@@ -214,6 +214,12 @@
 
 .gerenciamento-itens-table th:nth-child(6),
 .gerenciamento-itens-table td:nth-child(6) {
+  width: 140px;
+  text-align: center;
+}
+
+.gerenciamento-itens-table th:nth-child(7),
+.gerenciamento-itens-table td:nth-child(7) {
   width: 180px;
   text-align: center;
 }
@@ -226,6 +232,12 @@
 .gerenciamento-itens-table td:nth-child(2) {
   color: var(--text-primary);
   font-weight: 700;
+}
+
+.entrada-total-value {
+  color: #bfdbfe;
+  font-weight: 800;
+  white-space: nowrap;
 }
 
 .entrada-status {

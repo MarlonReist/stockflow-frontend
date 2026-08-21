@@ -89,7 +89,7 @@ const Acessos = () => {
 
   useEffect(() => {
     const intervalo = setInterval(() => {
-      let deveRecarregarUsuarios = false;
+      const usuariosLiberados = [];
 
       setTemposReenvio((temposAtuais) => {
         const novosTempos = {};
@@ -98,7 +98,8 @@ const Acessos = () => {
           const novoTempo = Math.max(0, segundos - 1);
 
           if (segundos > 0 && novoTempo === 0) {
-            deveRecarregarUsuarios = true;
+            usuariosLiberados.push(Number(usuarioId));
+            return;
           }
 
           novosTempos[usuarioId] = novoTempo;
@@ -107,7 +108,19 @@ const Acessos = () => {
         return novosTempos;
       });
 
-      if (deveRecarregarUsuarios) {
+      if (usuariosLiberados.length > 0) {
+        setUsuarios((usuariosAtuais) =>
+          usuariosAtuais.map((usuario) =>
+            usuariosLiberados.includes(usuario.id)
+              ? {
+                  ...usuario,
+                  podeReenviarConvite: true,
+                  segundosParaReenviarConvite: 0,
+                }
+              : usuario,
+          ),
+        );
+
         carregarUsuarios();
       }
     }, 1000);
@@ -268,7 +281,7 @@ const Acessos = () => {
     }
 
     if (usuario.status === "CONVIDADO") {
-      return "CONVITE PENDENTE";
+      return "PENDENTE";
     }
 
     return usuario.status;

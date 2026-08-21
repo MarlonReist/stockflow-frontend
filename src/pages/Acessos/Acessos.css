@@ -310,7 +310,7 @@
 .acessos-table td {
   padding: 15px 16px;
   border-bottom: 1px solid rgba(148, 163, 184, 0.12);
-  text-align: left;
+  text-align: center;
   vertical-align: middle;
   font-size: 14px;
 }
@@ -334,6 +334,7 @@
 .acessos-page .sortable-header {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 6px;
 }
 
@@ -366,6 +367,16 @@
   font-size: 12px;
   font-weight: 900;
   line-height: 1;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.perfil-badge {
+  width: 82px;
+}
+
+.status-badge {
+  width: 90px;
 }
 
 .perfil-ADMIN {
@@ -408,9 +419,12 @@
   display: flex;
   align-items: center;
   gap: 10px;
+  justify-content: center;
+  min-width: 228px;
 }
 
 .acessos-action-button {
+  width: 228px;
   min-height: 36px;
   display: inline-flex;
   align-items: center;
@@ -422,6 +436,8 @@
   font-family: inherit;
   font-size: 13px;
   font-weight: 800;
+  text-align: center;
+  white-space: nowrap;
   cursor: pointer;
   transition:
     background-color 0.2s ease,
@@ -474,6 +490,7 @@
 }
 
 .acessos-action-waiting {
+  width: 228px;
   min-height: 36px;
   display: inline-flex;
   align-items: center;
