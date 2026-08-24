@@ -403,10 +403,10 @@
   box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.12);
 }
 
-.modal-overlay {
+.transferencia-modal-overlay {
   position: fixed;
   inset: 0;
-  z-index: 20;
+  z-index: 1200;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -418,7 +418,7 @@
 .almoxarifado-overlay {
   position: fixed;
   inset: 0;
-  z-index: 30;
+  z-index: 1300;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -440,11 +440,11 @@
 }
 
 .item-transferencia-overlay {
-  z-index: 40;
+  z-index: 1400;
 }
 
 .produto-transferencia-overlay {
-  z-index: 50;
+  z-index: 1500;
 }
 
 .transferencia-modal {
@@ -822,6 +822,16 @@
   cursor: pointer;
 }
 
+.lookup-field.lookup-field-clickable input:nth-of-type(2) {
+  background-color: rgba(255, 255, 255, 0.026);
+  color: #cbd5e1;
+}
+
+.lookup-field.lookup-field-clickable input:first-of-type[readonly] + input[readonly] {
+  color: #cbd5e1;
+  background-color: rgba(255, 255, 255, 0.026);
+}
+
 .lookup-field.lookup-field-clickable:hover input[readonly],
 .lookup-field.lookup-field-clickable:hover input:nth-of-type(2) {
   color: #dbeafe;
@@ -1162,6 +1172,16 @@
   background-color: rgba(15, 23, 42, 0.88);
   border-color: rgba(148, 163, 184, 0.16);
   cursor: not-allowed;
+}
+
+.item-transferencia-form .lookup-field-clickable input[readonly],
+.item-transferencia-form .lookup-field-clickable input:nth-of-type(2) {
+  cursor: pointer;
+}
+
+.item-transferencia-form .lookup-field-clickable input:nth-of-type(2) {
+  color: #cbd5e1;
+  background-color: rgba(255, 255, 255, 0.026);
 }
 
 .item-transferencia-form .form-group:first-child input {
@@ -1736,7 +1756,7 @@
     text-align: center;
   }
 
-  .modal-overlay {
+  .transferencia-modal-overlay {
     padding: 12px;
   }
 

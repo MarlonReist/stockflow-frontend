@@ -100,6 +100,11 @@ const Transferencia = () => {
   const itensPorPaginaProduto = 10;
   const itensPorPaginaSeletorProduto = 10;
   const transferenciaBloqueada = Boolean(transferencia.id);
+  const getAlmoxarifadoOrigemIdAtual = () =>
+    transferencia.almoxarifadoOrigemId ||
+    transferenciaSelecionada?.almoxarifadoOrigemId ||
+    transferenciaSelecionada?.almoxarifadoOrigem?.id ||
+    "";
 
   const mostrarMensagem = (texto, tipo) => {
     const id = `${Date.now()}-${Math.random()}`;
@@ -655,7 +660,9 @@ const Transferencia = () => {
   };
 
   const abrirSeletorProdutoTransferencia = async () => {
-    if (!transferencia.almoxarifadoOrigemId) {
+    const almoxarifadoOrigemId = getAlmoxarifadoOrigemIdAtual();
+
+    if (!almoxarifadoOrigemId) {
       mostrarMensagem("Selecione o almoxarifado de origem primeiro", "erro");
       return;
     }
@@ -663,17 +670,23 @@ const Transferencia = () => {
     setBuscaProduto("");
     setProdutoTransferenciaSelecionado(null);
     setPaginaSeletorProdutoAtual(1);
-    await carregarProdutosOrigem(transferencia.almoxarifadoOrigemId);
+    await carregarProdutosOrigem(almoxarifadoOrigemId);
     setSeletorProdutoAberto(true);
   };
 
-  const abrirModalNovoItemTransferencia = () => {
+  const abrirModalNovoItemTransferencia = async () => {
     const transferenciaId = Number(
       transferencia.id || transferenciaSelecionada?.id || 0,
     );
+    const almoxarifadoOrigemId = getAlmoxarifadoOrigemIdAtual();
 
     if (!transferenciaId) {
       mostrarMensagem("Salve a transferência antes de adicionar produtos", "erro");
+      return;
+    }
+
+    if (!almoxarifadoOrigemId) {
+      mostrarMensagem("Selecione o almoxarifado de origem primeiro", "erro");
       return;
     }
 
@@ -681,6 +694,7 @@ const Transferencia = () => {
     setProdutoTransferenciaSelecionado(null);
     setBuscaProduto("");
     setPaginaSeletorProdutoAtual(1);
+    await carregarProdutosOrigem(almoxarifadoOrigemId);
     setModalItemAberto(true);
   };
 
@@ -1169,7 +1183,7 @@ const Transferencia = () => {
       </div>
 
       {modalAberto && (
-        <div className="modal-overlay">
+        <div className="transferencia-modal-overlay">
           <div className="transferencia-modal">
             <div className="transferencia-modal-header">
               <h2>Transferência entre Almoxarifados</h2>
