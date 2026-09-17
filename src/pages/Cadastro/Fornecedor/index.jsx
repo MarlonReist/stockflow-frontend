@@ -148,8 +148,8 @@ const Fornecedor = () => {
   };
 
   return (
-    <div className="fornecedor-page">
-      <div className="fornecedor-header">
+    <div className="fornecedor-page cadastro-base-page">
+      <div className="fornecedor-header cadastro-base-header">
         <h1>{modoEdicao ? "Editar Fornecedor" : "Cadastro de Fornecedores"}</h1>
         <p>
           {modoEdicao
@@ -157,7 +157,17 @@ const Fornecedor = () => {
             : "Adicione novos fornecedores ao sistema"}
         </p>
       </div>
-      <div className="fornecedor-card">
+      <div className="toast-container" role="status" aria-live="polite">
+        {mensagens.map((mensagem) => (
+          <div
+            key={mensagem.id}
+            className={`form-message form-message-${mensagem.tipo}`}
+          >
+            {mensagem.texto}
+          </div>
+        ))}
+      </div>
+      <div className="fornecedor-card cadastro-base-card">
         <form className="fornecedor-form" onSubmit={handleSubmit}>
           <div className="form-group">
             <label>Nome</label>
@@ -199,16 +209,6 @@ const Fornecedor = () => {
             </button>
           </div>
         </form>
-      </div>
-      <div className="toast-container">
-        {mensagens.map((mensagem) => (
-          <div
-            key={mensagem.id}
-            className={`form-message form-message-${mensagem.tipo}`}
-          >
-            {mensagem.texto}
-          </div>
-        ))}
       </div>
     </div>
   );

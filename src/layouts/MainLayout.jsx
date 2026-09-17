@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import {
   FiBox,
@@ -14,9 +14,12 @@ import {
   FiUserPlus,
   FiShield,
   FiUserCheck,
+  FiMenu,
+  FiX,
 } from "react-icons/fi";
 
 const MainLayout = () => {
+  const [sidebarAberta, setSidebarAberta] = useState(false);
   const [cadastroAberto, setCadastroAberto] = useState(false);
   const [gerenciamentoAberto, setGerenciamentoAberto] = useState(false);
   const [entradaAberto, setEntradaAberto] = useState(false);
@@ -31,6 +34,22 @@ const MainLayout = () => {
   );
   const usuarioAdmin = usuarioLogado.perfil === "ADMIN";
 
+  useEffect(() => {
+    if (!sidebarAberta) return;
+
+    const handleKeyDown = (event) => {
+      if (event.key === "Escape") {
+        setSidebarAberta(false);
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [sidebarAberta]);
+
   const handleLogout = () => {
     localStorage.removeItem("stockflow_token");
     localStorage.removeItem("stockflow_usuario");
@@ -41,12 +60,52 @@ const MainLayout = () => {
 
   return (
     <>
-      <div className="sidebar">
+      <button
+        type="button"
+        className="sidebar-open-button"
+        onClick={() => {
+          setSidebarAberta(true);
+          setMenuUsuarioAberto(false);
+        }}
+        aria-label="Abrir menu de navegação"
+        aria-expanded={sidebarAberta}
+        aria-controls="sidebar-navegacao"
+      >
+        <FiMenu />
+      </button>
+      {sidebarAberta && (
+        <button
+          type="button"
+          className="sidebar-backdrop"
+          onClick={() => setSidebarAberta(false)}
+          aria-label="Fechar menu de navegação"
+          tabIndex={-1}
+        />
+      )}
+      <div
+        id="sidebar-navegacao"
+        className={`sidebar ${sidebarAberta ? "sidebar-aberta" : ""}`}
+      >
         <div className="sidebar-header">
           <h1>StockFlow</h1>
+          <button
+            type="button"
+            className="sidebar-close-button"
+            onClick={() => setSidebarAberta(false)}
+            aria-label="Fechar menu de navegação"
+          >
+            <FiX />
+          </button>
         </div>
 
-        <nav className="sidebar-menu">
+        <nav
+          className="sidebar-menu"
+          onClick={(event) => {
+            if (event.target.closest("a")) {
+              setSidebarAberta(false);
+            }
+          }}
+        >
           <NavLink to="/dashboard" className="sidebar-link">
             <FiGrid />
             <span>Dashboard</span>

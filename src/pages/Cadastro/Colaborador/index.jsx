@@ -164,8 +164,8 @@ const Colaborador = () => {
   };
 
   return (
-    <div className="colaborador-page">
-      <div className="colaborador-header">
+    <div className="colaborador-page cadastro-base-page">
+      <div className="colaborador-header cadastro-base-header">
         <h1>{modoEdicao ? "Editar Colaborador" : "Cadastro de Colaborador"}</h1>
         <p>
           {modoEdicao
@@ -173,7 +173,17 @@ const Colaborador = () => {
             : "Adicione novos colaboradores ao sistema"}
         </p>
       </div>
-      <div className="colaborador-card">
+      <div className="toast-container" role="status" aria-live="polite">
+        {mensagens.map((mensagem) => (
+          <div
+            key={mensagem.id}
+            className={`form-message form-message-${mensagem.tipo}`}
+          >
+            {mensagem.texto}
+          </div>
+        ))}
+      </div>
+      <div className="colaborador-card cadastro-base-card">
         <form className="colaborador-form" onSubmit={handleSubmit}>
           <div className="form-group">
             <label>Nome</label>
@@ -241,16 +251,6 @@ const Colaborador = () => {
             </button>
           </div>
         </form>
-      </div>
-      <div className="toast-container">
-        {mensagens.map((mensagem) => (
-          <div
-            key={mensagem.id}
-            className={`form-message form-message-${mensagem.tipo}`}
-          >
-            {mensagem.texto}
-          </div>
-        ))}
       </div>
     </div>
   );

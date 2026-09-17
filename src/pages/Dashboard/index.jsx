@@ -293,6 +293,7 @@ const Dashboard = () => {
                 key={opcao.value}
                 type="button"
                 className={periodoSelecionado === opcao.value ? "active" : ""}
+                aria-pressed={periodoSelecionado === opcao.value}
                 onClick={() => {
                   setPeriodoSelecionado(opcao.value);
                   setErroPeriodo("");
@@ -326,7 +327,7 @@ const Dashboard = () => {
           )}
 
           {erroPeriodo && (
-            <p className="dashboard-period-error">{erroPeriodo}</p>
+            <p className="dashboard-period-error" role="alert">{erroPeriodo}</p>
           )}
         </div>
       </div>

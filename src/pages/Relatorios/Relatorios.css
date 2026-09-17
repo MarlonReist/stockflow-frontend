@@ -1,4 +1,5 @@
 .relatorios-page {
+  min-width: 0;
   width: 100%;
   padding: 24px 32px;
 }
@@ -163,10 +164,19 @@
   color: var(--text-muted) !important;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
   .relatorios-page {
-    padding: 20px;
+    padding: 0;
   }
+
+  .relatorios-actions input,
+  .relatorios-actions button {
+    min-height: 48px;
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 768px) {
 
   .relatorios-actions {
     flex-direction: column;
@@ -184,6 +194,23 @@
   }
 
   .relatorios-table {
-    min-width: 680px;
+    min-width: 0;
   }
+
+  .relatorios-table th:first-child,
+  .relatorios-table td:first-child {
+    width: 40%;
+  }
+
+  .relatorios-table th,
+  .relatorios-table td {
+    padding: 16px 12px;
+    overflow-wrap: anywhere;
+    line-height: 1.5;
+  }
+}
+
+.relatorios-actions button:focus-visible {
+  outline: 2px solid var(--accent-purple);
+  outline-offset: 3px;
 }

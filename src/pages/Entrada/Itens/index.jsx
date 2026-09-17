@@ -227,7 +227,7 @@ const ItensEntrada = () => {
   };
 
   return (
-    <div className="gerenciamento-itens-page">
+    <div className="gerenciamento-itens-page movimentacao-page">
       <div className="gerenciamento-itens-header">
         <h1>Itens da Entrada</h1>
         <p>Gerencie os itens das entradas cadastradas</p>
@@ -303,7 +303,7 @@ const ItensEntrada = () => {
           </span>
         </div>
       </div>
-      <div className="gerenciamento-itens-card">
+      <div className="gerenciamento-itens-card" role="region" aria-label="Movimentações de estoque" tabIndex={0}>
         <table className="gerenciamento-itens-table">
           <thead>
             <tr>

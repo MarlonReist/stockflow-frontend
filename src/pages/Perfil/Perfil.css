@@ -1,4 +1,5 @@
 .perfil-page {
+  min-width: 0;
   width: 100%;
   min-height: 100vh;
   padding: 8px 74px 32px 0;
@@ -33,6 +34,7 @@
 }
 
 .perfil-card {
+  min-width: 0;
   border: 1px solid var(--border-purple-subtle);
   border-radius: 12px;
   background:
@@ -122,6 +124,7 @@
 }
 
 .perfil-form-grid input {
+  min-width: 0;
   width: 100%;
   height: 46px;
   border: 1px solid var(--border-purple-soft);
@@ -244,6 +247,8 @@
 
 .perfil-message,
 .perfil-loading {
+  overflow-wrap: anywhere;
+  line-height: 1.5;
   margin-bottom: 16px;
   padding: 13px 14px;
   border-radius: 10px;
@@ -269,19 +274,46 @@
   color: #bbf7d0;
 }
 
-@media (max-width: 980px) {
+@media (max-width: 1280px) {
   .perfil-page {
     padding-right: 0;
   }
 
   .perfil-content {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 1024px) {
+  .perfil-page {
+    padding: 0;
+    min-height: 0;
+  }
+
+  .perfil-info-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .perfil-form-grid input {
+    height: 48px;
+    font-size: 16px;
+    padding-right: 54px;
+  }
+
+  .perfil-password-toggle {
+    right: 3px;
+    width: 44px;
+    height: 44px;
+  }
+
+  .perfil-actions button {
+    min-height: 48px;
   }
 }
 
 @media (max-width: 640px) {
-  .perfil-page {
-    padding-top: 72px;
+  .perfil-info-grid {
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .perfil-header h1 {
@@ -300,4 +332,9 @@
   .perfil-actions button {
     width: 100%;
   }
+}
+
+.perfil-page button:focus-visible {
+  outline: 2px solid var(--accent-purple);
+  outline-offset: 3px;
 }

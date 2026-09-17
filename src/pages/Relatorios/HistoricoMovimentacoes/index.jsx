@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { FiPrinter } from "react-icons/fi";
+import { FiPrinter, FiChevronLeft, FiChevronRight } from "react-icons/fi";
 import {
   gerarPdfHistoricoMovimentacoes,
   listarHistoricoMovimentacoes,
@@ -269,6 +269,17 @@ const HistoricoMovimentacoes = () => {
         </button>
       </div>
 
+      <div className="historico-messages" role="status" aria-live="polite">
+        {mensagens.map((mensagem) => (
+          <div
+            key={mensagem.id}
+            className={`form-message form-message-${mensagem.tipo}`}
+          >
+            {mensagem.texto}
+          </div>
+        ))}
+      </div>
+
       <div className="historico-card">
         <div className="historico-filters">
           <div className="historico-filter-group historico-filter-search">
@@ -344,7 +355,7 @@ const HistoricoMovimentacoes = () => {
           </button>
         </div>
 
-        <div className="historico-table-wrapper">
+        <div className="historico-table-wrapper" role="region" aria-label="Histórico de movimentações" tabIndex={0}>
           <table className="historico-table">
             <thead>
               <tr>
@@ -434,38 +445,35 @@ const HistoricoMovimentacoes = () => {
             {movimentacoesFiltradas.length} movimentações
           </span>
 
-          <div className="historico-pagination-controls">
+          <div className="pagination-controls historico-pagination-controls">
             <button
               type="button"
               disabled={paginaAtual === 1}
               onClick={irParaPaginaAnterior}
+              aria-label="Página anterior"
+              title="Página anterior"
             >
-              Anterior
+              <FiChevronLeft />
             </button>
-            <span>
-              Página {paginaAtual} de {totalPaginas}
-            </span>
             <button
               type="button"
               disabled={paginaAtual === totalPaginas}
               onClick={irParaProximaPagina}
+              aria-label="Próxima página"
+              title="Próxima página"
             >
-              Próxima
+              <FiChevronRight />
             </button>
+            <span className="total-itens" aria-live="polite">
+              {movimentacoesOrdenadas.length === 0 ? 0 : (paginaAtual - 1) * itensPorPagina + 1}
+              {" - "}
+              {Math.min(paginaAtual * itensPorPagina, movimentacoesOrdenadas.length)}
+              {" / "}{movimentacoesOrdenadas.length}
+            </span>
           </div>
         </div>
       </div>
 
-      <div className="toast-container">
-        {mensagens.map((mensagem) => (
-          <div
-            key={mensagem.id}
-            className={`form-message form-message-${mensagem.tipo}`}
-          >
-            {mensagem.texto}
-          </div>
-        ))}
-      </div>
     </div>
   );
 };

@@ -1,3 +1,5 @@
+@import "../../../styles/EstoqueOrdemResponsivo.css";
+
 .estoque-view {
   width: 100%;
   padding: 24px 32px;

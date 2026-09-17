@@ -1,4 +1,5 @@
 .historico-page {
+  min-width: 0;
   width: 100%;
   padding: 24px 32px;
 }
@@ -72,7 +73,7 @@
 
 .historico-filters {
   display: grid;
-  grid-template-columns: minmax(240px, 1.4fr) repeat(4, minmax(150px, 1fr)) auto;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 14px;
   align-items: end;
   padding: 20px;
@@ -108,6 +109,31 @@
     border-color 0.2s ease,
     box-shadow 0.2s ease,
     background-color 0.2s ease;
+}
+
+.historico-filter-group input,
+.historico-filter-group select {
+  min-width: 0;
+}
+
+.historico-page button:focus-visible,
+.historico-table-wrapper:focus-visible {
+  outline: 2px solid var(--accent-purple);
+  outline-offset: -3px;
+}
+
+.historico-messages {
+  position: fixed;
+  top: 88px;
+  right: 24px;
+  z-index: 9999;
+  display: grid;
+  gap: 12px;
+  pointer-events: none;
+}
+
+.historico-messages:empty {
+  display: none;
 }
 
 .historico-filter-group input::placeholder {
@@ -384,5 +410,74 @@
   .form-message {
     min-width: 0;
     max-width: 100%;
+  }
+}
+
+@media (max-width: 1024px) {
+  .historico-page {
+    padding: 0;
+  }
+
+  .historico-header h1 {
+    overflow-wrap: anywhere;
+  }
+
+  .historico-filters {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    padding: 16px;
+  }
+
+  .historico-filter-group input,
+  .historico-filter-group select {
+    min-height: 48px;
+    font-size: 16px;
+  }
+
+  .historico-print-button,
+  .historico-clear-button,
+  .historico-pagination-controls button {
+    min-height: 48px;
+  }
+
+  .historico-table th button {
+    min-height: 44px;
+  }
+
+  .historico-pagination {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 16px;
+  }
+
+  .historico-pagination-controls {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    gap: 8px;
+  }
+
+  .historico-pagination-controls span {
+    min-width: 0;
+  }
+
+  .historico-pagination-controls button {
+    padding: 0 8px;
+  }
+
+  .historico-page .historico-messages {
+    position: static;
+    margin-bottom: 16px;
+  }
+
+  .historico-messages .form-message {
+    min-width: 0;
+    max-width: 100%;
+    width: 100%;
+    overflow-wrap: anywhere;
+  }
+}
+
+@media (max-width: 600px) {
+  .historico-filters {
+    grid-template-columns: minmax(0, 1fr);
   }
 }

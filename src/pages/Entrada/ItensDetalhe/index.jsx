@@ -424,7 +424,7 @@ const ItensDetalhe = () => {
   };
 
   return (
-    <div className="entrada-itens-page">
+    <div className="entrada-itens-page movimentacao-page">
       <div className="entrada-itens-header">
         <div className="entrada-itens-header-top">
           <button
@@ -512,7 +512,7 @@ const ItensDetalhe = () => {
         </div>
       </div>
       <div className="entrada-itens-card">
-        <div className="entrada-itens-table-wrapper">
+        <div className="entrada-itens-table-wrapper" role="region" aria-label="Itens da movimentação" tabIndex={0}>
           <table className="entrada-itens-table">
             <thead>
               <tr>
@@ -834,7 +834,7 @@ const ItensDetalhe = () => {
                 </span>
               </div>
             </div>
-            <div className="produto-table-wrapper">
+            <div className="produto-table-wrapper" role="region" aria-label="Produtos disponíveis" tabIndex={0}>
               <table className="produto-table">
                 <thead>
                   <tr>

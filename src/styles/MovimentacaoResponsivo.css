@@ -1,0 +1,271 @@
+/* Regras compartilhadas somente pelas telas de entrada e saida. */
+.movimentacao-page {
+  min-width: 0;
+  width: 100%;
+}
+
+.movimentacao-page :is(.form-group, .lookup-field, .currency-field) {
+  min-width: 0;
+}
+
+.movimentacao-page :is(.gerenciamento-itens-card, .entrada-itens-table-wrapper, .saida-itens-table-wrapper) {
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+.movimentacao-page :is(.gerenciamento-itens-table, .entrada-itens-table, .saida-itens-table) {
+  min-width: 980px;
+}
+
+.movimentacao-page .gerenciamento-itens-table td:last-child {
+  white-space: nowrap;
+}
+
+.movimentacao-page .gerenciamento-itens-actions {
+  flex-wrap: wrap;
+}
+
+.movimentacao-page .gerenciamento-itens-actions > input {
+  flex: 1 1 240px;
+}
+
+.movimentacao-page :is(.overlay, .modal-overlay) {
+  z-index: 1100;
+}
+
+.movimentacao-page .produto-overlay {
+  z-index: 1200;
+}
+
+.movimentacao-page :is(.modal-box, .produto-box, .confirm-modal) {
+  min-width: 0;
+  max-height: calc(100dvh - 32px);
+  overflow-y: auto;
+}
+
+.movimentacao-page button:focus-visible {
+  outline: 2px solid var(--accent-purple);
+  outline-offset: 2px;
+}
+
+.movimentacao-page .toast-container {
+  top: 88px;
+}
+
+.movimentacao-page .pagination-controls {
+  flex-wrap: nowrap;
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+.movimentacao-page .pagination-controls .total-itens {
+  flex-shrink: 0;
+  width: auto;
+  white-space: nowrap;
+}
+
+@media (max-width: 1024px) {
+  .movimentacao-page {
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .movimentacao-page > :is(.cadastro-header, .saida-header, .gerenciamento-itens-header, .entrada-itens-header, .saida-itens-header) {
+    order: -2;
+  }
+
+  .movimentacao-page :is(h1, h2, p) {
+    overflow-wrap: anywhere;
+  }
+
+  .movimentacao-page :is(.cadastro-card, .saida-card) {
+    padding: 20px;
+    width: 100%;
+  }
+
+  .movimentacao-page :is(input, select) {
+    min-width: 0;
+    max-width: 100%;
+    min-height: 48px;
+    font-size: 16px;
+  }
+
+  .movimentacao-page :is(.form-actions, .modal-actions, .confirm-modal-actions) {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .movimentacao-page :is(.form-actions, .modal-actions, .confirm-modal-actions) button {
+    flex: 1 1 120px;
+    min-height: 48px;
+    padding: 10px 16px;
+    white-space: normal;
+  }
+
+  .movimentacao-page :is(.entrada-itens-actions, .saida-itens-actions, .gerenciamento-itens-actions) {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 12px;
+    padding: 16px;
+  }
+
+  .movimentacao-page :is(.entrada-itens-actions, .saida-itens-actions) > button {
+    flex: 1 1 120px;
+    min-height: 48px;
+    padding: 10px 12px;
+    height: auto;
+  }
+
+  .movimentacao-page .date-filter-group {
+    display: flex;
+    flex: 1 1 220px;
+    min-width: 0;
+  }
+
+  .movimentacao-page .date-filter-group input[type="date"] {
+    flex: 1 1 0;
+    width: 100%;
+    min-width: 0;
+  }
+
+  .movimentacao-page .clear-date-button,
+  .movimentacao-page .action-button,
+  .movimentacao-page .close-modal-btn,
+  .movimentacao-page .back-button {
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    flex: 0 0 44px;
+    padding: 0;
+  }
+
+  .movimentacao-page .pagination-controls {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(28px, 44px)) max-content;
+    align-items: center;
+    justify-content: start;
+    gap: 4px;
+    margin: 0;
+    width: 100%;
+    min-width: 0;
+    flex: 1 1 100%;
+    padding: 4px;
+    overflow-x: auto;
+  }
+
+  .movimentacao-page .pagination-controls button {
+    width: 100%;
+    height: 44px;
+    min-width: 0;
+    min-height: 44px;
+    padding: 0;
+    margin: 0;
+  }
+
+  .movimentacao-page .pagination-controls .total-itens {
+    min-width: 0;
+    white-space: nowrap;
+    margin: 0;
+    width: auto;
+    padding-left: 8px;
+    border-left: 1px solid var(--border-purple-soft);
+    text-align: center;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .movimentacao-page :is(.overlay, .produto-overlay, .modal-overlay) {
+    padding: 12px;
+  }
+
+  .movimentacao-page :is(.modal-box, .produto-box, .confirm-modal) {
+    max-width: 100%;
+    max-height: calc(100dvh - 24px);
+  }
+
+  .movimentacao-page .produto-box {
+    display: block;
+  }
+
+  .movimentacao-page :is(.modal-header, .produto-header, .modal-actions, .produto-actions, .modal-form, .produto-footer) {
+    padding: 16px;
+  }
+
+  .movimentacao-page :is(.modal-header, .produto-header) h1 {
+    font-size: 20px;
+  }
+
+  .movimentacao-page .produto-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .movimentacao-page .produto-actions input {
+    flex: none;
+    width: 100%;
+  }
+
+  .movimentacao-page .produto-table-wrapper {
+    max-width: 100%;
+    max-height: 45dvh;
+    overflow: auto;
+  }
+
+  .movimentacao-page .produto-footer button {
+    min-height: 48px;
+  }
+
+  .movimentacao-page .lookup-field {
+    grid-template-columns: 76px minmax(0, 1fr) 48px;
+  }
+
+  .movimentacao-page .lookup-field button {
+    width: 48px;
+    min-width: 48px;
+  }
+
+  .movimentacao-page .toast-container {
+    position: static;
+    order: -1;
+    margin-bottom: 16px;
+    width: 100%;
+  }
+
+  .movimentacao-page .toast-container:empty {
+    display: none;
+  }
+
+  .movimentacao-page .form-message {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    overflow-wrap: anywhere;
+  }
+
+  /* Erros do formulario aberto precisam permanecer acima do modal. */
+  .movimentacao-page:has(.overlay, .modal-overlay, .produto-overlay) .toast-container {
+    position: fixed;
+    top: 12px;
+    right: 12px;
+    left: 12px;
+    width: auto;
+  }
+}
+
+@media (max-width: 600px) {
+  .movimentacao-page :is(.cadastro-card, .saida-card) {
+    padding: 16px;
+  }
+
+  .movimentacao-page :is(.form-actions, .modal-actions, .confirm-modal-actions) {
+    flex-direction: column;
+  }
+
+  .movimentacao-page :is(.form-actions, .modal-actions, .confirm-modal-actions) button {
+    flex: none;
+    width: 100%;
+  }
+}

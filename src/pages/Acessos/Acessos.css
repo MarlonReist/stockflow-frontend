@@ -1,5 +1,6 @@
 .acessos-page {
   width: 100%;
+  min-width: 0;
   padding: 24px 32px;
 }
 
@@ -518,7 +519,9 @@
 .acessos-page .toast-container {
   position: fixed;
   right: 24px;
-  top: 24px;
+  top: 88px;
+  max-height: calc(100dvh - 112px);
+  overflow-y: auto;
   z-index: 1000;
   display: flex;
   flex-direction: column;
@@ -527,6 +530,9 @@
 }
 
 .acessos-page .form-message {
+  flex-shrink: 0;
+  overflow-wrap: anywhere;
+  line-height: 1.5;
   min-width: 280px;
   max-width: 360px;
   padding: 16px 18px;
@@ -568,9 +574,69 @@
   box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.12);
 }
 
-@media (max-width: 960px) {
+.acessos-page .toast-container:empty {
+  display: none;
+}
+
+.acessos-page .acessos-card,
+.acessos-page .acessos-header > div,
+.acessos-page .acessos-card-title > div,
+.acessos-page .acessos-list-header > div,
+.acessos-page .form-group {
+  min-width: 0;
+}
+
+.acessos-page .acessos-header,
+.acessos-page .acessos-card-title,
+.acessos-page .convite-gerado {
+  overflow-wrap: anywhere;
+}
+
+.acessos-page .acessos-table-wrapper {
+  overscroll-behavior-x: contain;
+  scrollbar-color: rgba(167, 139, 250, 0.55) var(--bg-card);
+}
+
+.acessos-page .acessos-table {
+  min-width: 980px;
+  table-layout: fixed;
+}
+
+.acessos-page .acessos-table th:first-child {
+  width: 60px;
+}
+
+.acessos-page .acessos-table th:nth-child(4) {
+  width: 110px;
+}
+
+.acessos-page .acessos-table th:nth-child(5) {
+  width: 120px;
+}
+
+.acessos-page .acessos-table th:last-child {
+  width: 260px;
+}
+
+.acessos-page .acessos-table td {
+  overflow-wrap: anywhere;
+}
+
+.acessos-page .acessos-action-button,
+.acessos-page .acessos-action-waiting {
+  flex-shrink: 0;
+  font-variant-numeric: tabular-nums;
+}
+
+.acessos-page button:focus-visible,
+.acessos-page .acessos-table-wrapper:focus-visible {
+  outline: 2px solid #a78bfa;
+  outline-offset: 3px;
+}
+
+@media (max-width: 1280px) {
   .acessos-form {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .acessos-list-header {
@@ -582,28 +648,91 @@
   }
 }
 
-@media (max-width: 520px) {
-  .acessos-page {
-    padding: 20px 16px;
+@media (max-width: 1024px) {
+  .content .acessos-page {
+    padding: 0;
   }
 
-  .acessos-card {
-    padding: 22px;
+  .acessos-page .acessos-card {
+    padding: 24px;
   }
 
-  .acessos-form {
-    grid-template-columns: 1fr;
+  .acessos-page .acessos-header p {
+    line-height: 1.5;
+  }
+
+  .acessos-page .acessos-form input,
+  .acessos-page .acessos-form select,
+  .acessos-page .acessos-search input {
+    min-width: 0;
+    min-height: 48px;
+    font-size: 16px;
+    scroll-margin-block: 96px;
+  }
+
+  .acessos-page .acessos-form button[type="submit"] {
+    min-height: 48px;
+    padding: 12px 16px;
+    white-space: normal;
+  }
+
+  .acessos-page .acessos-form button[type="submit"] svg {
+    flex-shrink: 0;
+  }
+
+  .acessos-page .acessos-action-button,
+  .acessos-page .acessos-action-waiting {
+    min-height: 44px;
+  }
+
+  .acessos-page .acessos-table th,
+  .acessos-page .acessos-table td {
+    padding: 14px 12px;
   }
 
   .acessos-page .toast-container {
-    right: 16px;
-    left: 16px;
+    position: static;
+    inset: auto;
+    width: min(100%, 1280px);
+    max-height: none;
+    margin-bottom: 16px;
+    gap: 8px;
     align-items: stretch;
+    overflow: visible;
   }
 
   .acessos-page .form-message {
     width: 100%;
     min-width: 0;
     max-width: none;
+    margin: 0;
+    padding: 10px 14px;
+    border-radius: 8px;
+    box-shadow: none;
+  }
+}
+
+@media (max-width: 600px) {
+  .acessos-page .acessos-card {
+    padding: 20px 16px;
+  }
+
+  .acessos-page .acessos-header {
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .acessos-page .acessos-form {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 20px;
+  }
+
+  .acessos-page .acessos-card-title h2 {
+    font-size: 18px;
+    line-height: 1.4;
+  }
+
+  .acessos-page .acessos-list-header .acessos-card-title {
+    margin-bottom: 0;
   }
 }

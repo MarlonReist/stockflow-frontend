@@ -126,7 +126,7 @@ const CadastroEntrada = () => {
   };
 
   return (
-    <div className="cadastro-page">
+    <div className="cadastro-page movimentacao-page">
       <div className="cadastro-header">
         <h1>Cadastro de Entrada</h1>
         <p>Registre novas entradas de produtos no estoque</p>

@@ -102,7 +102,7 @@ const CadastroSaida = () => {
   };
 
   return (
-    <div className="saida-page">
+    <div className="saida-page movimentacao-page">
       <div className="saida-header">
         <h1>Cadastro de Saída</h1>
         <p>Registre saídas de produtos do estoque</p>

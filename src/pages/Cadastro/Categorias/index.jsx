@@ -125,8 +125,8 @@ const Categorias = () => {
   };
 
   return (
-    <div className="categorias-page">
-      <div className="categorias-header">
+    <div className="categorias-page cadastro-base-page">
+      <div className="categorias-header cadastro-base-header">
         <h1>{modoEdicao ? "Editar Categoria" : "Cadastro de Categorias"}</h1>
         <p>
           {modoEdicao
@@ -134,7 +134,17 @@ const Categorias = () => {
             : "Adicione novas categorias ao sistema"}
         </p>
       </div>
-      <div className="categorias-card">
+      <div className="toast-container" role="status" aria-live="polite">
+        {mensagens.map((mensagem) => (
+          <div
+            key={mensagem.id}
+            className={`form-message form-message-${mensagem.tipo}`}
+          >
+            {mensagem.texto}
+          </div>
+        ))}
+      </div>
+      <div className="categorias-card cadastro-base-card">
         <form className="categorias-form" onSubmit={handleSubmit}>
           <div className="form-group">
             <label>Nome</label>
@@ -164,16 +174,6 @@ const Categorias = () => {
             </button>
           </div>
         </form>
-      </div>
-      <div className="toast-container">
-        {mensagens.map((mensagem) => (
-          <div
-            key={mensagem.id}
-            className={`form-message form-message-${mensagem.tipo}`}
-          >
-            {mensagem.texto}
-          </div>
-        ))}
       </div>
     </div>
   );

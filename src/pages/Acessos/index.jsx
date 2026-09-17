@@ -379,6 +379,16 @@ const Acessos = () => {
         </div>
       </div>
 
+      <div className="toast-container" role="status" aria-live="polite">
+        {mensagens.map((mensagem) => (
+          <div
+            key={mensagem.id}
+            className={`form-message form-message-${mensagem.tipo}`}
+          >
+            {mensagem.texto}
+          </div>
+        ))}
+      </div>
       <div className="acessos-card acessos-invite-card">
         <div className="acessos-card-title">
           <FiUserPlus />
@@ -472,7 +482,7 @@ const Acessos = () => {
             <FiSearch />
           </div>
         </div>
-        <div className="acessos-table-wrapper">
+        <div className="acessos-table-wrapper" role="region" aria-label="Lista de usuários" tabIndex={0}>
           <table className="acessos-table">
             <thead>
               <tr>
@@ -604,16 +614,6 @@ const Acessos = () => {
             </tbody>
           </table>
         </div>
-      </div>
-      <div className="toast-container">
-        {mensagens.map((mensagem) => (
-          <div
-            key={mensagem.id}
-            className={`form-message form-message-${mensagem.tipo}`}
-          >
-            {mensagem.texto}
-          </div>
-        ))}
       </div>
     </div>
   );

@@ -125,8 +125,8 @@ const Almoxarifado = () => {
   };
 
   return (
-    <div className="almoxarifado-page">
-      <div className="almoxarifado-header">
+    <div className="almoxarifado-page cadastro-base-page">
+      <div className="almoxarifado-header cadastro-base-header">
         <h1>
           {modoEdicao ? "Editar Almoxarifado" : "Cadastro de Almoxarifado"}
         </h1>
@@ -136,7 +136,17 @@ const Almoxarifado = () => {
             : "Adicione novos almoxarifados ao sistema"}
         </p>
       </div>
-      <div className="almoxarifado-card">
+      <div className="toast-container" role="status" aria-live="polite">
+        {mensagens.map((mensagem) => (
+          <div
+            key={mensagem.id}
+            className={`form-message form-message-${mensagem.tipo}`}
+          >
+            {mensagem.texto}
+          </div>
+        ))}
+      </div>
+      <div className="almoxarifado-card cadastro-base-card">
         <form className="almoxarifado-form" onSubmit={handleSubmit}>
           <div className="form-group">
             <label>Nome</label>
@@ -166,16 +176,6 @@ const Almoxarifado = () => {
             </button>
           </div>
         </form>
-      </div>
-      <div className="toast-container">
-        {mensagens.map((mensagem) => (
-          <div
-            key={mensagem.id}
-            className={`form-message form-message-${mensagem.tipo}`}
-          >
-            {mensagem.texto}
-          </div>
-        ))}
       </div>
     </div>
   );

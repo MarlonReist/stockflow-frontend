@@ -1,0 +1,135 @@
+.cadastro-base-page .cadastro-base-header,
+.cadastro-base-page .cadastro-base-card,
+.cadastro-base-page form,
+.cadastro-base-page .form-row,
+.cadastro-base-page .form-group {
+  min-width: 0;
+}
+
+.cadastro-base-page .cadastro-base-header {
+  max-width: 896px;
+  overflow-wrap: anywhere;
+}
+
+.cadastro-base-page .cadastro-base-card {
+  width: 100%;
+}
+
+.cadastro-base-page form input,
+.cadastro-base-page form select {
+  min-width: 0;
+  max-width: 100%;
+  scroll-margin-block: 96px;
+}
+
+.cadastro-base-page .form-actions {
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.cadastro-base-page .form-actions button {
+  width: auto;
+  min-height: 44px;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+.cadastro-base-page .toast-container {
+  top: 88px;
+  max-height: calc(100dvh - 112px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.cadastro-base-page .toast-container:empty {
+  display: none;
+}
+
+.cadastro-base-page .form-message {
+  flex-shrink: 0;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 1024px) {
+  .content .cadastro-base-page {
+    padding: 0;
+  }
+
+  .cadastro-base-page .cadastro-base-header {
+    margin-bottom: 20px;
+  }
+
+  .cadastro-base-page .cadastro-base-header p {
+    line-height: 1.5;
+  }
+
+  .cadastro-base-page .cadastro-base-card {
+    padding: 24px;
+  }
+
+  .cadastro-base-page form .form-row {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+  }
+
+  .cadastro-base-page form input,
+  .cadastro-base-page form select {
+    min-height: 48px;
+    font-size: 16px;
+  }
+
+  .cadastro-base-page .form-actions button {
+    min-height: 48px;
+    padding: 12px 24px;
+    font-size: 16px;
+  }
+
+  /* No fluxo da pagina, as mensagens nao encobrem o campo com foco. */
+  .cadastro-base-page .toast-container {
+    position: static;
+    inset: auto;
+    width: 100%;
+    max-width: 896px;
+    max-height: none;
+    margin-bottom: 16px;
+    gap: 8px;
+    align-items: stretch;
+    overflow: visible;
+  }
+
+  .cadastro-base-page .form-message {
+    width: 100%;
+    min-width: 0;
+    max-width: none;
+    margin: 0;
+    padding: 10px 14px;
+    border-radius: 8px;
+    box-shadow: none;
+  }
+}
+
+@media (max-width: 600px) {
+  .cadastro-base-page .cadastro-base-card {
+    padding: 20px 16px;
+  }
+
+  .cadastro-base-page .cadastro-base-card form {
+    gap: 20px;
+  }
+
+  .cadastro-base-page form .form-row {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .cadastro-base-page .form-actions {
+    flex-direction: column;
+    gap: 12px;
+    padding-top: 4px;
+  }
+
+  .cadastro-base-page .form-actions button {
+    width: 100%;
+  }
+}

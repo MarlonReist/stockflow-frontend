@@ -163,12 +163,22 @@ const GerenciamentoCategorias = () => {
   };
 
   return (
-    <div className="gerenciamento-categorias-page">
-      <div className="gerenciamento-categorias-header">
+    <div className="gerenciamento-categorias-page gerenciamento-base-page">
+      <div className="gerenciamento-categorias-header gerenciamento-base-header">
         <h1>Gerenciamento de Categorias</h1>
         <p>Visualize, edite ou remova categorias cadastradas</p>
       </div>
-      <div className="gerenciamento-categorias-actions">
+      <div className="toast-container" role="status" aria-live="polite">
+        {mensagens.map((mensagem) => (
+          <div
+            key={mensagem.id}
+            className={`form-message form-message-${mensagem.tipo}`}
+          >
+            {mensagem.texto}
+          </div>
+        ))}
+      </div>
+      <div className="gerenciamento-categorias-actions gerenciamento-base-actions">
         <input
           type="text"
           placeholder="Buscar por ID ou Nome..."
@@ -184,6 +194,8 @@ const GerenciamentoCategorias = () => {
         <div className="pagination-controls">
           <button
             className="first"
+            title="Primeira página"
+            aria-label="Primeira página"
             onClick={handlePrimeiraPagina}
             disabled={paginaAtual === 1}
           >
@@ -191,16 +203,20 @@ const GerenciamentoCategorias = () => {
           </button>
           <button
             className="previous"
+            title="Página anterior"
+            aria-label="Página anterior"
             onClick={handlePaginaAnterior}
             disabled={paginaAtual === 1}
           >
             <FiChevronLeft />
           </button>
-          <button className="refresh" onClick={handleRecarregar}>
+          <button className="refresh" onClick={handleRecarregar} title="Recarregar" aria-label="Recarregar">
             <FiRefreshCw />
           </button>
           <button
             className="next"
+            title="Próxima página"
+            aria-label="Próxima página"
             onClick={handleProximaPagina}
             disabled={totalPaginas === 0 || paginaAtual === totalPaginas}
           >
@@ -208,6 +224,8 @@ const GerenciamentoCategorias = () => {
           </button>
           <button
             className="last"
+            title="Última página"
+            aria-label="Última página"
             onClick={handleUltimaPagina}
             disabled={totalPaginas === 0 || paginaAtual === totalPaginas}
           >
@@ -218,8 +236,11 @@ const GerenciamentoCategorias = () => {
           </span>
         </div>
       </div>
-      <div className="gerenciamento-categorias-card">
-        <table className="gerenciamento-categorias-table">
+      <div className="gerenciamento-categorias-card gerenciamento-base-table-wrapper"
+        role="region"
+        aria-label="Lista de categorias"
+        tabIndex={0}>
+        <table className="gerenciamento-categorias-table gerenciamento-base-table">
           <thead>
             <tr>
               <th onClick={() => handleOrdenar("id")}>
@@ -304,16 +325,6 @@ const GerenciamentoCategorias = () => {
           </div>
         </div>
       )}
-      <div className="toast-container">
-        {mensagens.map((mensagem) => (
-          <div
-            key={mensagem.id}
-            className={`form-message form-message-${mensagem.tipo}`}
-          >
-            {mensagem.texto}
-          </div>
-        ))}
-      </div>
     </div>
   );
 };

@@ -43,6 +43,10 @@ import RedefinirSenha from "./pages/Auth/RedefinirSenha";
 import Perfil from "./pages/Perfil";
 
 import PrivateRoute from "./components/PrivateRoute";
+import "./pages/Cadastro/CadastroResponsivo.css";
+import "./pages/Gerenciamento/GerenciamentoResponsivo.css";
+import "./styles/MovimentacaoResponsivo.css";
+import "./styles/Pagination.css";
 
 function App() {
   const location = useLocation();

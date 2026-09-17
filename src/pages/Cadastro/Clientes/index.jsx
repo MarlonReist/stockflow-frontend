@@ -172,8 +172,8 @@ const Clientes = () => {
   };
 
   return (
-    <div className="clientes-page">
-      <div className="clientes-header">
+    <div className="clientes-page cadastro-base-page">
+      <div className="clientes-header cadastro-base-header">
         <h1>{modoEdicao ? "Editar Cliente" : "Cadastro de Clientes"}</h1>
         <p>
           {modoEdicao
@@ -181,7 +181,17 @@ const Clientes = () => {
             : "Adicione novos clientes ao sistema"}
         </p>
       </div>
-      <div className="clientes-card">
+      <div className="toast-container" role="status" aria-live="polite">
+        {mensagens.map((mensagem) => (
+          <div
+            key={mensagem.id}
+            className={`form-message form-message-${mensagem.tipo}`}
+          >
+            {mensagem.texto}
+          </div>
+        ))}
+      </div>
+      <div className="clientes-card cadastro-base-card">
         <form className="clientes-form" onSubmit={handleSubmit}>
           <div className="form-group">
             <label>Nome</label>
@@ -261,16 +271,6 @@ const Clientes = () => {
             </button>
           </div>
         </form>
-      </div>
-      <div className="toast-container">
-        {mensagens.map((mensagem) => (
-          <div
-            key={mensagem.id}
-            className={`form-message form-message-${mensagem.tipo}`}
-          >
-            {mensagem.texto}
-          </div>
-        ))}
       </div>
     </div>
   );

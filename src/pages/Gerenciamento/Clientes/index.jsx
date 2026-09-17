@@ -164,12 +164,22 @@ const GerenciamentoClientes = () => {
   };
 
   return (
-    <div className="gerenciamento-clientes-page">
-      <div className="gerenciamento-clientes-header">
+    <div className="gerenciamento-clientes-page gerenciamento-base-page">
+      <div className="gerenciamento-clientes-header gerenciamento-base-header">
         <h1>Gerenciamento de Clientes</h1>
         <p>Visualize, edite ou remova clientes cadastrados</p>
       </div>
-      <div className="gerenciamento-clientes-actions">
+      <div className="toast-container" role="status" aria-live="polite">
+        {mensagens.map((mensagem) => (
+          <div
+            key={mensagem.id}
+            className={`form-message form-message-${mensagem.tipo}`}
+          >
+            {mensagem.texto}
+          </div>
+        ))}
+      </div>
+      <div className="gerenciamento-clientes-actions gerenciamento-base-actions">
         <input
           type="text"
           placeholder="Buscar por ID ou Nome..."
@@ -185,6 +195,8 @@ const GerenciamentoClientes = () => {
         <div className="pagination-controls">
           <button
             className="first"
+            title="Primeira página"
+            aria-label="Primeira página"
             onClick={handlePrimeiraPagina}
             disabled={paginaAtual === 1}
           >
@@ -192,16 +204,20 @@ const GerenciamentoClientes = () => {
           </button>
           <button
             className="previous"
+            title="Página anterior"
+            aria-label="Página anterior"
             onClick={handlePaginaAnterior}
             disabled={paginaAtual === 1}
           >
             <FiChevronLeft />
           </button>
-          <button className="refresh" onClick={handleRecarregar}>
+          <button className="refresh" onClick={handleRecarregar} title="Recarregar" aria-label="Recarregar">
             <FiRefreshCw />
           </button>
           <button
             className="next"
+            title="Próxima página"
+            aria-label="Próxima página"
             onClick={handleProximaPagina}
             disabled={totalPaginas === 0 || paginaAtual === totalPaginas}
           >
@@ -209,6 +225,8 @@ const GerenciamentoClientes = () => {
           </button>
           <button
             className="last"
+            title="Última página"
+            aria-label="Última página"
             onClick={handleUltimaPagina}
             disabled={totalPaginas === 0 || paginaAtual === totalPaginas}
           >
@@ -219,8 +237,11 @@ const GerenciamentoClientes = () => {
           </span>
         </div>
       </div>
-      <div className="gerenciamento-clientes-card">
-        <table className="gerenciamento-clientes-table">
+      <div className="gerenciamento-clientes-card gerenciamento-base-table-wrapper"
+        role="region"
+        aria-label="Lista de clientes"
+        tabIndex={0}>
+        <table className="gerenciamento-clientes-table gerenciamento-base-table">
           <thead>
             <tr>
               <th onClick={() => handleOrdenar("id")}>
@@ -355,16 +376,6 @@ const GerenciamentoClientes = () => {
           </div>
         </div>
       )}
-      <div className="toast-container">
-        {mensagens.map((mensagem) => (
-          <div
-            key={mensagem.id}
-            className={`form-message form-message-${mensagem.tipo}`}
-          >
-            {mensagem.texto}
-          </div>
-        ))}
-      </div>
     </div>
   );
 };

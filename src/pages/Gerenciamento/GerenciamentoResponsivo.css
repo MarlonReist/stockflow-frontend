@@ -1,0 +1,235 @@
+.gerenciamento-base-page,
+.gerenciamento-base-page > * {
+  min-width: 0;
+}
+
+.gerenciamento-base-page .gerenciamento-base-header {
+  overflow-wrap: anywhere;
+}
+
+.gerenciamento-base-page .gerenciamento-base-actions {
+  flex-wrap: wrap;
+}
+
+.gerenciamento-base-page .gerenciamento-base-actions > input {
+  flex: 1 1 220px;
+}
+
+.gerenciamento-base-page .gerenciamento-base-actions > button {
+  flex-shrink: 0;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+.gerenciamento-base-page .gerenciamento-base-table-wrapper {
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scrollbar-color: rgba(167, 139, 250, 0.55) var(--bg-card);
+}
+
+.gerenciamento-base-page .gerenciamento-base-table {
+  min-width: 440px;
+}
+
+.gerenciamento-clientes-page .gerenciamento-base-table {
+  min-width: 1100px;
+}
+
+.gerenciamento-colaboradores-page .gerenciamento-base-table,
+.gerenciamento-produtos-page .gerenciamento-base-table {
+  min-width: 860px;
+}
+
+.gerenciamento-fornecedores-page .gerenciamento-base-table {
+  min-width: 640px;
+}
+
+.gerenciamento-base-page .gerenciamento-base-table td {
+  overflow-wrap: anywhere;
+}
+
+.gerenciamento-base-page .gerenciamento-base-table td:last-child {
+  min-width: 128px;
+}
+
+.gerenciamento-base-page button:focus-visible,
+.gerenciamento-base-page .gerenciamento-base-table-wrapper:focus-visible {
+  outline: 2px solid #a78bfa;
+  outline-offset: 3px;
+}
+
+.gerenciamento-base-page .toast-container {
+  top: 88px;
+  max-height: calc(100dvh - 112px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.gerenciamento-base-page .toast-container:empty {
+  display: none;
+}
+
+.gerenciamento-base-page .form-message {
+  flex-shrink: 0;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.gerenciamento-base-page > .modal-overlay {
+  z-index: 1100;
+}
+
+.gerenciamento-base-page .confirm-modal {
+  min-width: 0;
+  max-height: calc(100dvh - 32px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 1024px) {
+  .content .gerenciamento-base-page {
+    padding: 0;
+  }
+
+  .gerenciamento-base-page .gerenciamento-base-header p {
+    line-height: 1.5;
+  }
+
+  .gerenciamento-base-page .gerenciamento-base-actions {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 12px;
+    padding: 16px;
+  }
+
+  .gerenciamento-base-page .gerenciamento-base-actions > input,
+  .gerenciamento-base-page .gerenciamento-base-actions > button {
+    width: 100%;
+    min-width: 0;
+    min-height: 48px;
+    height: auto;
+    font-size: 16px;
+  }
+
+  .gerenciamento-base-page .gerenciamento-base-actions > button {
+    padding: 12px 16px;
+  }
+
+  .gerenciamento-base-page .pagination-controls {
+    grid-column: 1 / -1;
+    justify-self: end;
+    margin-left: 0;
+    padding: 6px;
+    gap: 4px;
+    max-width: 100%;
+  }
+
+  .gerenciamento-base-page .pagination-controls button {
+    flex: 0 0 44px;
+    width: 44px;
+    min-width: 44px;
+    height: 44px;
+  }
+
+  .gerenciamento-base-page .pagination-controls .total-itens {
+    margin-left: 4px;
+    padding: 0 8px;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .gerenciamento-base-page .gerenciamento-base-table th,
+  .gerenciamento-base-page .gerenciamento-base-table td {
+    padding: 14px 12px;
+  }
+
+  .gerenciamento-base-page .gerenciamento-base-table .action-button {
+    width: 44px;
+    height: 44px;
+    margin-right: 8px;
+  }
+
+  .gerenciamento-base-page .gerenciamento-base-table .action-button:last-child {
+    margin-right: 0;
+  }
+
+  .gerenciamento-base-page > .modal-overlay {
+    padding: 16px;
+  }
+
+  .gerenciamento-base-page .confirm-modal {
+    padding: 20px;
+  }
+
+  .gerenciamento-base-page .confirm-modal-actions {
+    flex-wrap: wrap;
+  }
+
+  .gerenciamento-base-page .confirm-modal-actions button {
+    min-height: 48px;
+    height: auto;
+    padding: 12px 18px;
+  }
+
+  .gerenciamento-base-page .toast-container {
+    position: static;
+    inset: auto;
+    width: min(100%, 1280px);
+    max-height: none;
+    margin-bottom: 16px;
+    gap: 8px;
+    align-items: stretch;
+    overflow: visible;
+  }
+
+  .gerenciamento-base-page .form-message {
+    width: 100%;
+    min-width: 0;
+    max-width: none;
+    margin: 0;
+    padding: 10px 14px;
+    border-radius: 8px;
+    box-shadow: none;
+  }
+}
+
+@media (max-width: 600px) {
+  .gerenciamento-base-page .gerenciamento-base-header h1 {
+    font-size: 24px;
+    line-height: 1.25;
+  }
+
+  .gerenciamento-base-page .gerenciamento-base-actions {
+    grid-template-columns: minmax(0, 1fr);
+    padding: 12px;
+  }
+
+  .gerenciamento-base-page .gerenciamento-base-actions > input {
+    padding: 0 12px;
+  }
+
+  .gerenciamento-base-page .pagination-controls {
+    width: 100%;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin: 0;
+  }
+
+  .gerenciamento-base-page .pagination-controls .total-itens {
+    flex-basis: 100%;
+    margin: 0;
+    padding: 4px 0;
+    border-left: 0;
+    text-align: center;
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+
+  .gerenciamento-base-page .confirm-modal-actions {
+    flex-direction: column;
+  }
+
+  .gerenciamento-base-page .confirm-modal-actions button {
+    width: 100%;
+  }
+}
