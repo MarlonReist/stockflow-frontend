@@ -8,10 +8,12 @@ import {
 import { useNavigate, useParams } from "react-router-dom";
 import { IMaskInput } from "react-imask";
 
-
 const clienteInicial = {
+  tipoPessoa: "FISICA",
   nome: "",
   cpf: "",
+  cnpj: "",
+  responsavelContato: "",
   telefone: "",
   email: "",
   endereco: "",
@@ -24,8 +26,11 @@ const Clientes = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const modoEdicao = Boolean(id);
+  const tipoPessoaInputRef = useRef(null);
   const nomeInputRef = useRef(null);
   const cpfInputRef = useRef(null);
+  const cnpjInputRef = useRef(null);
+  const responsavelContatoInputRef = useRef(null);
   const telefoneInputRef = useRef(null);
   const emailInputRef = useRef(null);
   const enderecoInputRef = useRef(null);
@@ -38,7 +43,18 @@ const Clientes = () => {
     const carregarCliente = async () => {
       try {
         const response = await buscarClientePorID(id);
-        setCliente(response.data);
+        const dados = response.data;
+
+        setCliente({
+          tipoPessoa: dados.tipoPessoa ?? "FISICA",
+          nome: dados.nome ?? "",
+          cpf: dados.cpf ?? "",
+          cnpj: dados.cnpj ?? "",
+          responsavelContato: dados.responsavelContato ?? "",
+          telefone: dados.telefone ?? "",
+          email: dados.email ?? "",
+          endereco: dados.endereco ?? "",
+        });
       } catch (error) {
         mostrarMensagem("Erro ao carregar cliente", "erro");
       }
@@ -46,6 +62,27 @@ const Clientes = () => {
 
     carregarCliente();
   }, [id, modoEdicao]);
+
+  const handleTipoPessoaChange = (e) => {
+    const novoTipo = e.target.value;
+
+    setCliente((clienteAtual) => ({
+      ...clienteAtual,
+      tipoPessoa: novoTipo,
+      cpf: novoTipo === "FISICA" ? clienteAtual.cpf : "",
+      cnpj: novoTipo === "JURIDICA" ? clienteAtual.cnpj : "",
+      responsavelContato:
+        novoTipo === "JURIDICA" ? clienteAtual.responsavelContato : "",
+    }));
+
+    setCamposInvalidos((camposAtuais) => ({
+      ...camposAtuais,
+      tipoPessoa: false,
+      ...(novoTipo === "FISICA"
+        ? { cnpj: false, responsavelContato: false }
+        : { cpf: false }),
+    }));
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -93,17 +130,32 @@ const Clientes = () => {
     const erros = [];
     const camposComErro = {};
 
+    if (!["FISICA", "JURIDICA"].includes(cliente.tipoPessoa)) {
+      erros.push("Selecione um tipo de pessoa válido");
+      camposComErro.tipoPessoa = true;
+    }
     if (!cliente.nome.trim()) {
       erros.push("Nome é obrigatório");
       camposComErro.nome = true;
     }
-    if (!cliente.cpf.trim()) {
+    if (cliente.tipoPessoa === "FISICA" && !cliente.cpf.trim()) {
       erros.push("CPF é obrigatório");
       camposComErro.cpf = true;
+    }
+    if (cliente.tipoPessoa === "JURIDICA" && !cliente.cnpj.trim()) {
+      erros.push("CNPJ é obrigatório");
+      camposComErro.cnpj = true;
     }
     if (!cliente.telefone.trim()) {
       erros.push("Telefone é obrigatório");
       camposComErro.telefone = true;
+    }
+    if (
+      cliente.tipoPessoa === "JURIDICA" &&
+      !cliente.responsavelContato.trim()
+    ) {
+      erros.push("Responsável pelo contato é obrigatório");
+      camposComErro.responsavelContato = true;
     }
     if (!cliente.email.trim()) {
       erros.push("Email é obrigatório");
@@ -128,12 +180,21 @@ const Clientes = () => {
         mostrarMensagem(erro, "erro");
       });
 
-      if (!cliente.nome.trim()) {
+      if (!["FISICA", "JURIDICA"].includes(cliente.tipoPessoa)) {
+        tipoPessoaInputRef.current?.focus();
+      } else if (!cliente.nome.trim()) {
         nomeInputRef.current?.focus();
-      } else if (!cliente.cpf.trim()) {
+      } else if (cliente.tipoPessoa === "FISICA" && !cliente.cpf.trim()) {
         cpfInputRef.current?.focus();
+      } else if (cliente.tipoPessoa === "JURIDICA" && !cliente.cnpj.trim()) {
+        cnpjInputRef.current?.focus();
       } else if (!cliente.telefone.trim()) {
         telefoneInputRef.current?.focus();
+      } else if (
+        cliente.tipoPessoa === "JURIDICA" &&
+        !cliente.responsavelContato.trim()
+      ) {
+        responsavelContatoInputRef.current?.focus();
       } else if (!cliente.email.trim()) {
         emailInputRef.current?.focus();
       } else if (!cliente.endereco.trim()) {
@@ -143,16 +204,30 @@ const Clientes = () => {
       return;
     }
 
+    const dadosEnvio = {
+      tipoPessoa: cliente.tipoPessoa,
+      nome: cliente.nome,
+      telefone: cliente.telefone,
+      email: cliente.email,
+      endereco: cliente.endereco,
+      ...(cliente.tipoPessoa === "FISICA"
+        ? { cpf: cliente.cpf }
+        : {
+            cnpj: cliente.cnpj,
+            responsavelContato: cliente.responsavelContato,
+          }),
+    };
+
     try {
       if (modoEdicao) {
-        await atualizarCliente(id, cliente);
+        await atualizarCliente(id, dadosEnvio);
         mostrarMensagem("Cliente atualizado com sucesso", "sucesso");
 
         setTimeout(() => {
           navigate("/gerenciamento/clientes");
         }, 1000);
       } else {
-        await cadastrarCliente(cliente);
+        await cadastrarCliente(dadosEnvio);
         mostrarMensagem("Cliente cadastrado com sucesso", "sucesso");
         handleClear();
       }
@@ -194,30 +269,69 @@ const Clientes = () => {
       <div className="clientes-card cadastro-base-card">
         <form className="clientes-form" onSubmit={handleSubmit}>
           <div className="form-group">
-            <label>Nome</label>
+            <label htmlFor="tipoPessoa">Tipo de Pessoa</label>
+            <select
+              id="tipoPessoa"
+              ref={tipoPessoaInputRef}
+              name="tipoPessoa"
+              value={cliente.tipoPessoa}
+              onChange={handleTipoPessoaChange}
+              className={camposInvalidos.tipoPessoa ? "input-error" : ""}
+            >
+              <option value="FISICA">Pessoa Física</option>
+              <option value="JURIDICA">Pessoa Jurídica</option>
+            </select>
+          </div>
+          <div className="form-group">
+            <label>
+              {cliente.tipoPessoa === "JURIDICA" ? "Nome/Razão Social" : "Nome"}
+            </label>
             <input
               ref={nomeInputRef}
               type="text"
               name="nome"
-              placeholder="Digite o nome do cliente"
+              placeholder={
+                cliente.tipoPessoa === "JURIDICA"
+                  ? "Digite o nome ou razão social da empresa"
+                  : "Digite o nome do cliente"
+              }
               value={cliente.nome}
               onChange={handleChange}
               className={camposInvalidos.nome ? "input-error" : ""}
             />
           </div>
           <div className="form-row">
-            <div className="form-group">
-              <label>CPF</label>
-              <IMaskInput
-                inputRef={cpfInputRef}
-                mask="000.000.000-00"
-                name="cpf"
-                placeholder="000.000.000-00"
-                value={cliente.cpf}
-                onAccept={(value) => handleMaskedChange("cpf", value)}
-                className={camposInvalidos.cpf ? "input-error" : ""}
-              />
-            </div>
+            {cliente.tipoPessoa === "FISICA" ? (
+              <div className="form-group">
+                <label htmlFor="cpf">CPF</label>
+                <IMaskInput
+                  key="cpf"
+                  id="cpf"
+                  inputRef={cpfInputRef}
+                  mask="000.000.000-00"
+                  name="cpf"
+                  placeholder="000.000.000-00"
+                  value={cliente.cpf}
+                  onAccept={(value) => handleMaskedChange("cpf", value)}
+                  className={camposInvalidos.cpf ? "input-error" : ""}
+                />
+              </div>
+            ) : (
+              <div className="form-group">
+                <label htmlFor="cnpj">CNPJ</label>
+                <IMaskInput
+                  key="cnpj"
+                  id="cnpj"
+                  inputRef={cnpjInputRef}
+                  mask="00.000.000/0000-00"
+                  name="cnpj"
+                  placeholder="00.000.000/0000-00"
+                  value={cliente.cnpj}
+                  onAccept={(value) => handleMaskedChange("cnpj", value)}
+                  className={camposInvalidos.cnpj ? "input-error" : ""}
+                />
+              </div>
+            )}
             <div className="form-group">
               <label>Telefone</label>
               <IMaskInput
@@ -231,6 +345,25 @@ const Clientes = () => {
               />
             </div>
           </div>
+          {cliente.tipoPessoa === "JURIDICA" && (
+            <div className="form-group">
+              <label htmlFor="responsavelContato">
+                Responsável pelo contato
+              </label>
+              <input
+                id="responsavelContato"
+                ref={responsavelContatoInputRef}
+                type="text"
+                name="responsavelContato"
+                placeholder="Digite o nome do responsável"
+                value={cliente.responsavelContato}
+                onChange={handleChange}
+                className={
+                  camposInvalidos.responsavelContato ? "input-error" : ""
+                }
+              />
+            </div>
+          )}
           <div className="form-group">
             <label>Email</label>
             <input

@@ -214,7 +214,11 @@
 }
 
 .gerenciamento-clientes-table th:nth-child(3),
-.gerenciamento-clientes-table td:nth-child(3),
+.gerenciamento-clientes-table td:nth-child(3) {
+  width: 190px;
+  white-space: nowrap;
+}
+
 .gerenciamento-clientes-table th:nth-child(4),
 .gerenciamento-clientes-table td:nth-child(4) {
   width: 15%;
@@ -239,6 +243,40 @@
 .gerenciamento-clientes-table td:nth-child(2) {
   color: var(--text-primary);
   font-weight: 700;
+}
+
+.gerenciamento-clientes-table .sortable-header {
+  max-width: 100%;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+.gerenciamento-clientes-table .cliente-identificacao {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  min-width: 0;
+}
+
+.gerenciamento-clientes-table .cliente-identificacao > span:first-child {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  line-height: 1.45;
+}
+
+.gerenciamento-clientes-table .cliente-tipo {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border: 1px solid var(--border-purple-soft);
+  border-radius: 999px;
+  background-color: rgba(124, 58, 237, 0.12);
+  color: var(--text-primary);
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.5;
+  white-space: nowrap;
 }
 
 .endereco-cell {

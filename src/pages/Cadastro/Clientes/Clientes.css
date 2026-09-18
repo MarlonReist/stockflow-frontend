@@ -46,6 +46,7 @@
 }
 
 .clientes-form input,
+.clientes-form select,
 .clientes-form .react-input-mask,
 .clientes-form .form-group input,
 .clientes-form .form-group .react-input-mask {
@@ -59,12 +60,34 @@
   box-sizing: border-box;
 }
 
+.clientes-form select {
+  padding-right: 44px;
+  font-family: inherit;
+  font-size: 14px;
+  cursor: pointer;
+  appearance: none;
+  background-image:
+    linear-gradient(45deg, transparent 50%, #a78bfa 50%),
+    linear-gradient(135deg, #a78bfa 50%, transparent 50%);
+  background-position:
+    calc(100% - 18px) center,
+    calc(100% - 12px) center;
+  background-size: 6px 6px;
+  background-repeat: no-repeat;
+}
+
+.clientes-form select option {
+  background-color: var(--bg-input);
+  color: var(--text-primary);
+}
+
 .clientes-form input::placeholder,
 .clientes-form .react-input-mask::placeholder {
   color: var(--text-muted);
 }
 
 .clientes-form input:focus,
+.clientes-form select:focus,
 .clientes-form .react-input-mask:focus {
   outline: none;
   border-color: var(--primary);
@@ -72,12 +95,14 @@
 }
 
 .clientes-form input.input-error,
+.clientes-form select.input-error,
 .clientes-form .react-input-mask.input-error {
   border-color: rgba(239, 68, 68, 0.78);
   background-color: rgba(127, 29, 29, 0.14);
 }
 
 .clientes-form input.input-error:focus,
+.clientes-form select.input-error:focus,
 .clientes-form .react-input-mask.input-error:focus {
   border-color: #ef4444;
   box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.18);

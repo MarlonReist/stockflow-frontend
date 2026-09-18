@@ -104,15 +104,29 @@ const GerenciamentoClientes = () => {
   };
 
   const clientesOrdenados = [...clientesFiltrados].sort((a, b) => {
-    let valorA = a[ordenacao.coluna];
-    let valorB = b[ordenacao.coluna];
+    let valorA =
+      ordenacao.coluna === "documento"
+        ? a.tipoPessoa === "JURIDICA"
+          ? a.cnpj
+          : a.cpf
+        : a[ordenacao.coluna];
+
+    let valorB =
+      ordenacao.coluna === "documento"
+        ? b.tipoPessoa === "JURIDICA"
+          ? b.cnpj
+          : b.cpf
+        : b[ordenacao.coluna];
 
     if (ordenacao.coluna === "id") {
       valorA = Number(valorA);
       valorB = Number(valorB);
-    } else if (ordenacao.coluna === "cpf" || ordenacao.coluna === "telefone") {
-      valorA = String(valorA).replace(/\D/g, "");
-      valorB = String(valorB).replace(/\D/g, "");
+    } else if (
+      ordenacao.coluna === "documento" ||
+      ordenacao.coluna === "telefone"
+    ) {
+      valorA = String(valorA ?? "").replace(/\D/g, "");
+      valorB = String(valorB ?? "").replace(/\D/g, "");
     } else {
       valorA = String(valorA).toLowerCase();
       valorB = String(valorB).toLowerCase();
@@ -211,7 +225,12 @@ const GerenciamentoClientes = () => {
           >
             <FiChevronLeft />
           </button>
-          <button className="refresh" onClick={handleRecarregar} title="Recarregar" aria-label="Recarregar">
+          <button
+            className="refresh"
+            onClick={handleRecarregar}
+            title="Recarregar"
+            aria-label="Recarregar"
+          >
             <FiRefreshCw />
           </button>
           <button
@@ -237,10 +256,12 @@ const GerenciamentoClientes = () => {
           </span>
         </div>
       </div>
-      <div className="gerenciamento-clientes-card gerenciamento-base-table-wrapper"
+      <div
+        className="gerenciamento-clientes-card gerenciamento-base-table-wrapper"
         role="region"
         aria-label="Lista de clientes"
-        tabIndex={0}>
+        tabIndex={0}
+      >
         <table className="gerenciamento-clientes-table gerenciamento-base-table">
           <thead>
             <tr>
@@ -257,7 +278,7 @@ const GerenciamentoClientes = () => {
               </th>
               <th onClick={() => handleOrdenar("nome")}>
                 <span className="sortable-header">
-                  Nome
+                  Nome/Razão Social
                   {ordenacao.coluna === "nome" &&
                     (ordenacao.direcao === "asc" ? (
                       <FiChevronUp />
@@ -266,10 +287,10 @@ const GerenciamentoClientes = () => {
                     ))}
                 </span>
               </th>
-              <th onClick={() => handleOrdenar("cpf")}>
+              <th onClick={() => handleOrdenar("documento")}>
                 <span className="sortable-header">
-                  CPF
-                  {ordenacao.coluna === "cpf" &&
+                  CPF/CNPJ
+                  {ordenacao.coluna === "documento" &&
                     (ordenacao.direcao === "asc" ? (
                       <FiChevronUp />
                     ) : (
@@ -317,8 +338,26 @@ const GerenciamentoClientes = () => {
             {clientesPaginados.map((cliente) => (
               <tr key={cliente.id}>
                 <td>{cliente.id}</td>
-                <td>{cliente.nome}</td>
-                <td>{cliente.cpf}</td>
+                <td>
+                  <div className="cliente-identificacao">
+                    <span>{cliente.nome}</span>
+                    <span
+                      className="cliente-tipo"
+                      title={
+                        cliente.tipoPessoa === "JURIDICA"
+                          ? "Pessoa Jurídica"
+                          : "Pessoa Física"
+                      }
+                    >
+                      {cliente.tipoPessoa === "JURIDICA" ? "PJ" : "PF"}
+                    </span>
+                  </div>
+                </td>
+                <td>
+                  {cliente.tipoPessoa === "JURIDICA"
+                    ? cliente.cnpj
+                    : cliente.cpf}
+                </td>
                 <td>{cliente.telefone}</td>
                 <td>{cliente.email}</td>
                 <td>
