@@ -20,6 +20,10 @@ function atualizarDescricaoOrdemServico(id, ordemServico) {
   return api.put(`/os/${id}/descricao`, ordemServico);
 }
 
+function atualizarTipoDaOrdemServico(id, tipoOrdemServico) {
+  return api.put(`/os/${id}/tipo`, tipoOrdemServico);
+}
+
 function finalizarOrdemServico(id) {
   return api.patch(`/os/${id}/finalizar`);
 }
@@ -46,6 +50,7 @@ export {
   buscarOrdemServicoPorId,
   deletarOrdemServico,
   atualizarDescricaoOrdemServico,
+  atualizarTipoDaOrdemServico,
   finalizarOrdemServico,
   cancelarOrdemServico,
   gerarPdfOrdemServico,

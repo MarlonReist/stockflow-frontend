@@ -161,6 +161,9 @@ const MainLayout = () => {
               <NavLink to="/gerenciamento/almoxarifados">Almoxarifados</NavLink>
               <NavLink to="/gerenciamento/colaboradores">Colaboradores</NavLink>
               <NavLink to="/gerenciamento/fornecedores">Fornecedores</NavLink>
+              {usuarioAdmin && (
+                <NavLink to="/gerenciamento/tipos-os">Tipos de OS</NavLink>
+              )}
             </div>
           )}
 

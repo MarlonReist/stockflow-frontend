@@ -10,6 +10,7 @@ import Almoxarifado from "./pages/Cadastro/Almoxarifado";
 import Fornecedor from "./pages/Cadastro/Fornecedor";
 import Colaborador from "./pages/Cadastro/Colaborador";
 import Produto from "./pages/Cadastro/Produto";
+import TipoOrdemServico from "./pages/Cadastro/TipoOrdemServico";
 
 import GerenciamentoClientes from "./pages/Gerenciamento/Clientes";
 import GerenciamentoCategorias from "./pages/Gerenciamento/Categorias";
@@ -17,6 +18,7 @@ import GerenciamentoAlmoxarifados from "./pages/Gerenciamento/Almoxarifados";
 import GerenciamentoFornecedores from "./pages/Gerenciamento/Fornecedores";
 import GerenciamentoColaboradores from "./pages/Gerenciamento/Colaboradores";
 import GerenciamentoProdutos from "./pages/Gerenciamento/Produtos";
+import TiposOrdemServico from "./pages/Gerenciamento/TiposOrdemServico";
 
 import CadastroEntrada from "./pages/Entrada/Cadastro";
 import ItensEntrada from "./pages/Entrada/Itens";
@@ -52,7 +54,8 @@ function App() {
   const location = useLocation();
   const token = localStorage.getItem("stockflow_token");
   const rotasPublicas = ["/login", "/ativar-conta", "/redefinir-senha"];
-  const rotaPublica = rotasPublicas.includes(location.pathname) || location.pathname === "/";
+  const rotaPublica =
+    rotasPublicas.includes(location.pathname) || location.pathname === "/";
 
   return (
     <div className="app-container">
@@ -65,9 +68,7 @@ function App() {
           <Route path="/redefinir-senha" element={<RedefinirSenha />} />
           <Route
             path="/"
-            element={
-              <Navigate to={token ? "/dashboard" : "/login"} replace />
-            }
+            element={<Navigate to={token ? "/dashboard" : "/login"} replace />}
           />
 
           <Route element={<PrivateRoute />}>
@@ -136,11 +137,18 @@ function App() {
               path="/relatorios/historico-movimentacoes"
               element={<HistoricoMovimentacoes />}
             />
-            
           </Route>
 
           <Route element={<PrivateRoute perfisPermitidos={["ADMIN"]} />}>
             <Route path="/acessos" element={<Acessos />} />
+            <Route path="/tipos-os" element={<TipoOrdemServico />} />
+
+            <Route path="/tipos-os/editar/:id" element={<TipoOrdemServico />} />
+
+            <Route
+              path="/gerenciamento/tipos-os"
+              element={<TiposOrdemServico />}
+            />
           </Route>
         </Routes>
       </div>

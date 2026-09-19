@@ -20,7 +20,9 @@ import {
   atualizarDescricaoOrdemServico,
   gerarPdfOrdemServico,
   gerarPdfProdutosOrdemServico,
+  atualizarTipoDaOrdemServico,
 } from "../../services/ordemServicoService";
+import { listarTiposOrdemServicoAtivos } from "../../services/tipoOrdemServicoService";
 import "./CadastroOS.css";
 import AnexosOSTab from "./components/AnexosOSTab";
 import ProdutosOSTab from "./components/ProdutosOSTab";
@@ -31,6 +33,8 @@ const ordemInicial = {
   clienteNome: "",
   colaboradorId: "",
   colaboradorNome: "",
+  tipoOrdemServicoId: "",
+  tipoOrdemServicoNome: "",
   descricao: "",
   status: "",
 };
@@ -41,16 +45,24 @@ const CadastroOrdemServico = () => {
   const [abaAtiva, setAbaAtiva] = useState("principal");
   const [clientes, setClientes] = useState([]);
   const [colaboradores, setColaboradores] = useState([]);
+  const [tiposOrdemServico, setTiposOrdemServico] = useState([]);
   const [mensagens, setMensagens] = useState([]);
   const [seletorClienteAberto, setSeletorClienteAberto] = useState(false);
   const [seletorColaboradorAberto, setSeletorColaboradorAberto] =
     useState(false);
+  const [seletorTipoOrdemServicoAberto, setSeletorTipoOrdemServicoAberto] =
+    useState(false);
   const [clienteSelecionado, setClienteSelecionado] = useState(null);
   const [colaboradorSelecionado, setColaboradorSelecionado] = useState(null);
+  const [tipoOrdemServicoSelecionado, setTipoOrdemServicoSelecionado] =
+    useState(null);
   const [buscaCliente, setBuscaCliente] = useState("");
   const [buscaColaborador, setBuscaColaborador] = useState("");
+  const [buscaTipoOrdemServico, setBuscaTipoOrdemServico] = useState("");
   const [paginaClienteAtual, setPaginaClienteAtual] = useState(1);
   const [paginaColaboradorAtual, setPaginaColaboradorAtual] = useState(1);
+  const [paginaTipoOrdemServicoAtual, setPaginaTipoOrdemServicoAtual] =
+    useState(1);
   const [camposInvalidos, setCamposInvalidos] = useState({});
   const [ordenacaoCliente, setOrdenacaoCliente] = useState({
     coluna: "id",
@@ -60,16 +72,24 @@ const CadastroOrdemServico = () => {
     coluna: "id",
     direcao: "asc",
   });
+  const [ordenacaoTipoOrdemServico, setOrdenacaoTipoOrdemServico] = useState({
+    coluna: "nome",
+    direcao: "asc",
+  });
   const navigate = useNavigate();
   const clienteIdInputRef = useRef(null);
   const colaboradorIdInputRef = useRef(null);
+  const tipoOrdemServicoIdInputRef = useRef(null);
   const descricaoTextareaRef = useRef(null);
+  const tipoOrdemServicoOriginalIdRef = useRef("");
   const { id } = useParams();
   const modoEdicao = Boolean(id);
   const ordemEncerrada =
     ordem.status === "FINALIZADA" || ordem.status === "CANCELADA";
   const dadosPrincipaisBloqueados = ordemSalva || modoEdicao;
   const descricaoBloqueada = (ordemSalva && !modoEdicao) || ordemEncerrada;
+  const tipoOrdemServicoBloqueado =
+    ordemSalva || (modoEdicao && ordem.status !== "ABERTA");
   const itensPorPagina = 10;
 
   const mostrarMensagem = (texto, tipo) => {
@@ -114,6 +134,23 @@ const CadastroOrdemServico = () => {
   }, []);
 
   useEffect(() => {
+    const carregarTiposOrdemServico = async () => {
+      try {
+        const response = await listarTiposOrdemServicoAtivos();
+        setTiposOrdemServico(response.data);
+      } catch (error) {
+        mostrarMensagem(
+          error.response?.data?.message ||
+            "Erro ao carregar tipos de ordem de serviço.",
+          "erro",
+        );
+      }
+    };
+
+    carregarTiposOrdemServico();
+  }, []);
+
+  useEffect(() => {
     if (!modoEdicao) {
       return;
     }
@@ -122,6 +159,10 @@ const CadastroOrdemServico = () => {
       try {
         const response = await buscarOrdemServicoPorId(id);
 
+        tipoOrdemServicoOriginalIdRef.current = String(
+          response.data.tipoOrdemServicoId ?? "",
+        );
+
         setOrdem({
           id: String(response.data.id ?? ""),
           status: response.data.status ?? "",
@@ -129,6 +170,8 @@ const CadastroOrdemServico = () => {
           clienteNome: response.data.clienteNome ?? "",
           colaboradorId: String(response.data.colaboradorId ?? ""),
           colaboradorNome: response.data.colaboradorNome ?? "",
+          tipoOrdemServicoId: String(response.data.tipoOrdemServicoId ?? ""),
+          tipoOrdemServicoNome: response.data.tipoOrdemServicoNome ?? "",
           descricao: response.data.descricao ?? "",
         });
 
@@ -163,6 +206,17 @@ const CadastroOrdemServico = () => {
     );
   });
 
+  const tiposOrdemServicoFiltrados = tiposOrdemServico.filter((tipo) => {
+    const buscaFormatada = buscaTipoOrdemServico.toLowerCase();
+
+    return (
+      String(tipo.id).includes(buscaFormatada) ||
+      String(tipo.nome || "")
+        .toLowerCase()
+        .includes(buscaFormatada)
+    );
+  });
+
   const handleOrdenarCliente = (coluna) => {
     setOrdenacaoCliente((ordenacaoAtual) => {
       if (ordenacaoAtual.coluna === coluna) {
@@ -181,6 +235,22 @@ const CadastroOrdemServico = () => {
 
   const handleOrdenarColaborador = (coluna) => {
     setOrdenacaoColaborador((ordenacaoAtual) => {
+      if (ordenacaoAtual.coluna === coluna) {
+        return {
+          coluna,
+          direcao: ordenacaoAtual.direcao === "asc" ? "desc" : "asc",
+        };
+      }
+
+      return {
+        coluna,
+        direcao: "asc",
+      };
+    });
+  };
+
+  const handleOrdenarTipoOrdemServico = (coluna) => {
+    setOrdenacaoTipoOrdemServico((ordenacaoAtual) => {
       if (ordenacaoAtual.coluna === coluna) {
         return {
           coluna,
@@ -241,6 +311,31 @@ const CadastroOrdemServico = () => {
     return 0;
   });
 
+  const tiposOrdemServicoOrdenados = [...tiposOrdemServicoFiltrados].sort(
+    (a, b) => {
+      let valorA = a[ordenacaoTipoOrdemServico.coluna];
+      let valorB = b[ordenacaoTipoOrdemServico.coluna];
+
+      if (ordenacaoTipoOrdemServico.coluna === "id") {
+        valorA = Number(valorA);
+        valorB = Number(valorB);
+      } else {
+        valorA = String(valorA ?? "").toLowerCase();
+        valorB = String(valorB ?? "").toLowerCase();
+      }
+
+      if (valorA < valorB) {
+        return ordenacaoTipoOrdemServico.direcao === "asc" ? -1 : 1;
+      }
+
+      if (valorA > valorB) {
+        return ordenacaoTipoOrdemServico.direcao === "asc" ? 1 : -1;
+      }
+
+      return 0;
+    },
+  );
+
   const indiceInicialCliente = (paginaClienteAtual - 1) * itensPorPagina;
   const indiceFinalCliente = indiceInicialCliente + itensPorPagina;
   const clientesPaginados = clientesOrdenados.slice(
@@ -274,6 +369,31 @@ const CadastroOrdemServico = () => {
     colaboradoresOrdenados.length,
   );
 
+  const indiceInicialTipoOrdemServico =
+    (paginaTipoOrdemServicoAtual - 1) * itensPorPagina;
+
+  const indiceFinalTipoOrdemServico =
+    indiceInicialTipoOrdemServico + itensPorPagina;
+
+  const tiposOrdemServicoPaginados = tiposOrdemServicoOrdenados.slice(
+    indiceInicialTipoOrdemServico,
+    indiceFinalTipoOrdemServico,
+  );
+
+  const totalPaginasTipoOrdemServico = Math.ceil(
+    tiposOrdemServicoOrdenados.length / itensPorPagina,
+  );
+
+  const inicioExibidoTipoOrdemServico =
+    tiposOrdemServicoOrdenados.length > 0
+      ? indiceInicialTipoOrdemServico + 1
+      : 0;
+
+  const fimExibidoTipoOrdemServico = Math.min(
+    indiceFinalTipoOrdemServico,
+    tiposOrdemServicoOrdenados.length,
+  );
+
   const renderIconeOrdenacaoCliente = (coluna) => {
     if (ordenacaoCliente.coluna !== coluna) {
       return null;
@@ -292,6 +412,18 @@ const CadastroOrdemServico = () => {
     }
 
     return ordenacaoColaborador.direcao === "asc" ? (
+      <FiChevronUp />
+    ) : (
+      <FiChevronDown />
+    );
+  };
+
+  const renderIconeOrdenacaoTipoOrdemServico = (coluna) => {
+    if (ordenacaoTipoOrdemServico.coluna !== coluna) {
+      return null;
+    }
+
+    return ordenacaoTipoOrdemServico.direcao === "asc" ? (
       <FiChevronUp />
     ) : (
       <FiChevronDown />
@@ -354,6 +486,27 @@ const CadastroOrdemServico = () => {
     }
   };
 
+  const handleTipoOrdemServicoIdChange = (e) => {
+    const valorDigitado = e.target.value;
+
+    const tipoEncontrado = tiposOrdemServico.find(
+      (tipo) => String(tipo.id) === valorDigitado,
+    );
+
+    setOrdem((ordemAtual) => ({
+      ...ordemAtual,
+      tipoOrdemServicoId: valorDigitado,
+      tipoOrdemServicoNome: tipoEncontrado ? tipoEncontrado.nome : "",
+    }));
+
+    if (camposInvalidos.tipoOrdemServicoId) {
+      setCamposInvalidos((camposAtuais) => ({
+        ...camposAtuais,
+        tipoOrdemServicoId: false,
+      }));
+    }
+  };
+
   const confirmarCliente = (cliente) => {
     setOrdem((ordemAtual) => ({
       ...ordemAtual,
@@ -386,6 +539,23 @@ const CadastroOrdemServico = () => {
     setSeletorColaboradorAberto(false);
     setColaboradorSelecionado(null);
     setBuscaColaborador("");
+  };
+
+  const confirmarTipoOrdemServico = (tipoOrdemServico) => {
+    setOrdem((ordemAtual) => ({
+      ...ordemAtual,
+      tipoOrdemServicoId: String(tipoOrdemServico.id),
+      tipoOrdemServicoNome: tipoOrdemServico.nome,
+    }));
+
+    setCamposInvalidos((camposAtuais) => ({
+      ...camposAtuais,
+      tipoOrdemServicoId: false,
+    }));
+
+    setSeletorTipoOrdemServicoAberto(false);
+    setTipoOrdemServicoSelecionado(null);
+    setBuscaTipoOrdemServico("");
   };
 
   const handleImprimirOS = async () => {
@@ -488,6 +658,11 @@ const CadastroOrdemServico = () => {
     const camposComErro = {};
 
     if (modoEdicao) {
+      if (!ordem.tipoOrdemServicoId || !ordem.tipoOrdemServicoNome) {
+        camposComErro.tipoOrdemServicoId = true;
+        erros.push("Selecione um tipo de ordem de serviço válido.");
+      }
+
       if (!ordem.descricao.trim()) {
         camposComErro.descricao = true;
         erros.push("Descricao e obrigatoria.");
@@ -505,6 +680,11 @@ const CadastroOrdemServico = () => {
     if (!ordem.colaboradorId || !ordem.colaboradorNome) {
       camposComErro.colaboradorId = true;
       erros.push("Selecione um colaborador valido.");
+    }
+
+    if (!ordem.tipoOrdemServicoId || !ordem.tipoOrdemServicoNome) {
+      camposComErro.tipoOrdemServicoId = true;
+      erros.push("Selecione um tipo de ordem de serviço válido.");
     }
 
     if (!ordem.descricao.trim()) {
@@ -537,6 +717,10 @@ const CadastroOrdemServico = () => {
         (!ordem.colaboradorId || !ordem.colaboradorNome)
       ) {
         colaboradorIdInputRef.current?.focus();
+      } else if (
+        (!ordem.tipoOrdemServicoId || !ordem.tipoOrdemServicoNome)
+      ) {
+        tipoOrdemServicoIdInputRef.current?.focus();
       } else if (!ordem.descricao.trim()) {
         descricaoTextareaRef.current?.focus();
       }
@@ -547,20 +731,66 @@ const CadastroOrdemServico = () => {
     try {
       if (modoEdicao) {
         const ordemAtualizada = {
-          clienteId: Number(ordem.clienteId),
-          colaboradorId: Number(ordem.colaboradorId),
           descricao: ordem.descricao.trim(),
         };
 
-        const response = await atualizarDescricaoOrdemServico(
+        const responseDescricao = await atualizarDescricaoOrdemServico(
           id,
           ordemAtualizada,
         );
 
+        const tipoAlterado =
+          String(ordem.tipoOrdemServicoId) !==
+          tipoOrdemServicoOriginalIdRef.current;
+
+        let responseTipo = null;
+
+        if (tipoAlterado) {
+          try {
+            responseTipo = await atualizarTipoDaOrdemServico(id, {
+              tipoOrdemServicoId: Number(ordem.tipoOrdemServicoId),
+            });
+          } catch (error) {
+            setOrdem((ordemAtual) => ({
+              ...ordemAtual,
+              descricao:
+                responseDescricao.data.descricao ?? ordem.descricao.trim(),
+            }));
+
+            const mensagemTipo =
+              error.response?.data?.message ||
+              "Erro ao atualizar tipo da ordem de serviço.";
+
+            mostrarMensagem(
+              `Descrição atualizada, mas o tipo não foi alterado: ${mensagemTipo}`,
+              "erro",
+            );
+            return;
+          }
+        }
+
         setOrdem((ordemAtual) => ({
           ...ordemAtual,
-          descricao: response.data.descricao ?? ordem.descricao.trim(),
+          descricao:
+            responseDescricao.data.descricao ?? ordem.descricao.trim(),
+          tipoOrdemServicoId: responseTipo
+            ? String(
+                responseTipo.data.tipoOrdemServicoId ??
+                  ordemAtual.tipoOrdemServicoId,
+              )
+            : ordemAtual.tipoOrdemServicoId,
+          tipoOrdemServicoNome: responseTipo
+            ? (responseTipo.data.tipoOrdemServicoNome ??
+              ordemAtual.tipoOrdemServicoNome)
+            : ordemAtual.tipoOrdemServicoNome,
         }));
+
+        if (responseTipo) {
+          tipoOrdemServicoOriginalIdRef.current = String(
+            responseTipo.data.tipoOrdemServicoId ??
+              ordem.tipoOrdemServicoId,
+          );
+        }
 
         mostrarMensagem("Ordem de serviço atualizada com sucesso.", "sucesso");
         return;
@@ -569,10 +799,15 @@ const CadastroOrdemServico = () => {
       const ordemParaEnviar = {
         clienteId: Number(ordem.clienteId),
         colaboradorId: Number(ordem.colaboradorId),
+        tipoOrdemServicoId: Number(ordem.tipoOrdemServicoId),
         descricao: ordem.descricao.trim(),
       };
 
       const response = await cadastrarOrdemServico(ordemParaEnviar);
+
+      tipoOrdemServicoOriginalIdRef.current = String(
+        response.data.tipoOrdemServicoId ?? "",
+      );
 
       setOrdem({
         id: String(response.data.id ?? ""),
@@ -581,6 +816,8 @@ const CadastroOrdemServico = () => {
         clienteNome: response.data.clienteNome ?? "",
         colaboradorId: String(response.data.colaboradorId ?? ""),
         colaboradorNome: response.data.colaboradorNome ?? "",
+        tipoOrdemServicoId: String(response.data.tipoOrdemServicoId ?? ""),
+        tipoOrdemServicoNome: response.data.tipoOrdemServicoNome ?? "",
         descricao: response.data.descricao ?? "",
       });
 
@@ -616,6 +853,17 @@ const CadastroOrdemServico = () => {
     setBuscaColaborador("");
     setPaginaColaboradorAtual(1);
     setColaboradorSelecionado(null);
+  };
+
+  const abrirSeletorTipoOrdemServico = () => {
+    if (tipoOrdemServicoBloqueado) {
+      return;
+    }
+
+    setSeletorTipoOrdemServicoAberto(true);
+    setBuscaTipoOrdemServico("");
+    setPaginaTipoOrdemServicoAtual(1);
+    setTipoOrdemServicoSelecionado(null);
   };
 
   return (
@@ -774,9 +1022,7 @@ const CadastroOrdemServico = () => {
                   value={ordem.colaboradorId}
                   onChange={handleColaboradorIdChange}
                   readOnly={dadosPrincipaisBloqueados}
-                  className={
-                    camposInvalidos.colaboradorId ? "input-error" : ""
-                  }
+                  className={camposInvalidos.colaboradorId ? "input-error" : ""}
                 />
                 <input
                   type="text"
@@ -799,7 +1045,59 @@ const CadastroOrdemServico = () => {
                 </button>
               </div>
             </div>
+            <div className="form-group">
+              <label>Tipo</label>
 
+              <div
+                className={`lookup-field ${
+                  tipoOrdemServicoBloqueado ? "" : "lookup-field-clickable"
+                }`}
+                onClick={(event) => {
+                  if (
+                    event.target.tagName === "INPUT" &&
+                    !event.target.readOnly
+                  ) {
+                    return;
+                  }
+
+                  abrirSeletorTipoOrdemServico();
+                }}
+              >
+                <input
+                  ref={tipoOrdemServicoIdInputRef}
+                  type="text"
+                  name="tipoOrdemServicoId"
+                  placeholder="ID"
+                  value={ordem.tipoOrdemServicoId}
+                  onChange={handleTipoOrdemServicoIdChange}
+                  readOnly={tipoOrdemServicoBloqueado}
+                  className={
+                    camposInvalidos.tipoOrdemServicoId ? "input-error" : ""
+                  }
+                />
+
+                <input
+                  type="text"
+                  name="tipoOrdemServicoNome"
+                  placeholder="Tipo da ordem de serviço"
+                  value={ordem.tipoOrdemServicoNome}
+                  readOnly
+                />
+
+                <button
+                  type="button"
+                  aria-label="Pesquisar tipo de ordem de serviço"
+                  title="Pesquisar tipo de ordem de serviço"
+                  disabled={tipoOrdemServicoBloqueado}
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    abrirSeletorTipoOrdemServico();
+                  }}
+                >
+                  <FiSearch />
+                </button>
+              </div>
+            </div>
             <div className="form-group form-group-full">
               <label>Descricao</label>
               <textarea
@@ -1129,6 +1427,179 @@ const CadastroOrdemServico = () => {
                   }
 
                   mostrarMensagem("Selecione um colaborador", "erro");
+                }}
+              >
+                Selecionar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {seletorTipoOrdemServicoAberto && (
+        <div className="selector-overlay">
+          <div className="selector-box">
+            <div className="selector-header">
+              <h2>Tipos de Ordem de Serviço</h2>
+
+              <button
+                type="button"
+                className="close-modal-btn"
+                onClick={() => setSeletorTipoOrdemServicoAberto(false)}
+                aria-label="Fechar seleção de tipo"
+              >
+                X
+              </button>
+            </div>
+
+            <div className="selector-actions">
+              <input
+                type="text"
+                placeholder="Buscar por ID ou Nome..."
+                value={buscaTipoOrdemServico}
+                onChange={(e) => {
+                  setBuscaTipoOrdemServico(e.target.value);
+                  setPaginaTipoOrdemServicoAtual(1);
+                }}
+              />
+
+              <div className="pagination-controls selector-pagination-controls">
+                <button
+                  type="button"
+                  title="Primeira página"
+                  aria-label="Primeira página"
+                  onClick={() => setPaginaTipoOrdemServicoAtual(1)}
+                  disabled={paginaTipoOrdemServicoAtual === 1}
+                >
+                  <FiChevronsLeft />
+                </button>
+
+                <button
+                  type="button"
+                  title="Página anterior"
+                  aria-label="Página anterior"
+                  onClick={() =>
+                    setPaginaTipoOrdemServicoAtual((paginaAtual) =>
+                      Math.max(paginaAtual - 1, 1),
+                    )
+                  }
+                  disabled={paginaTipoOrdemServicoAtual === 1}
+                >
+                  <FiChevronLeft />
+                </button>
+
+                <button
+                  type="button"
+                  title="Limpar busca"
+                  aria-label="Limpar busca"
+                  onClick={() => {
+                    setBuscaTipoOrdemServico("");
+                    setTipoOrdemServicoSelecionado(null);
+                    setPaginaTipoOrdemServicoAtual(1);
+                  }}
+                >
+                  <FiRefreshCw />
+                </button>
+
+                <button
+                  type="button"
+                  title="Próxima página"
+                  aria-label="Próxima página"
+                  onClick={() =>
+                    setPaginaTipoOrdemServicoAtual((paginaAtual) =>
+                      Math.min(paginaAtual + 1, totalPaginasTipoOrdemServico),
+                    )
+                  }
+                  disabled={
+                    totalPaginasTipoOrdemServico === 0 ||
+                    paginaTipoOrdemServicoAtual === totalPaginasTipoOrdemServico
+                  }
+                >
+                  <FiChevronRight />
+                </button>
+
+                <button
+                  type="button"
+                  title="Última página"
+                  aria-label="Última página"
+                  onClick={() =>
+                    setPaginaTipoOrdemServicoAtual(totalPaginasTipoOrdemServico)
+                  }
+                  disabled={
+                    totalPaginasTipoOrdemServico === 0 ||
+                    paginaTipoOrdemServicoAtual === totalPaginasTipoOrdemServico
+                  }
+                >
+                  <FiChevronsRight />
+                </button>
+
+                <span className="total-itens">
+                  {`${inicioExibidoTipoOrdemServico} - ${fimExibidoTipoOrdemServico} / ${tiposOrdemServicoOrdenados.length}`}
+                </span>
+              </div>
+            </div>
+
+            <div className="selector-table-wrapper">
+              <table className="selector-table">
+                <thead>
+                  <tr>
+                    <th onClick={() => handleOrdenarTipoOrdemServico("id")}>
+                      <span className="sortable-header">
+                        ID
+                        {renderIconeOrdenacaoTipoOrdemServico("id")}
+                      </span>
+                    </th>
+
+                    <th onClick={() => handleOrdenarTipoOrdemServico("nome")}>
+                      <span className="sortable-header">
+                        Nome
+                        {renderIconeOrdenacaoTipoOrdemServico("nome")}
+                      </span>
+                    </th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  {tiposOrdemServicoPaginados.map((tipo) => (
+                    <tr
+                      key={tipo.id}
+                      className={
+                        tipoOrdemServicoSelecionado?.id === tipo.id
+                          ? "selected-row"
+                          : ""
+                      }
+                      onClick={() => setTipoOrdemServicoSelecionado(tipo)}
+                      onDoubleClick={() => confirmarTipoOrdemServico(tipo)}
+                    >
+                      <td>{tipo.id}</td>
+                      <td>{tipo.nome}</td>
+                    </tr>
+                  ))}
+
+                  {tiposOrdemServicoPaginados.length === 0 && (
+                    <tr>
+                      <td colSpan="2" className="empty-state-cell">
+                        Nenhum tipo ativo encontrado.
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+
+            <div className="selector-footer">
+              <button
+                type="button"
+                onClick={() => {
+                  if (tipoOrdemServicoSelecionado) {
+                    confirmarTipoOrdemServico(tipoOrdemServicoSelecionado);
+                    return;
+                  }
+
+                  mostrarMensagem(
+                    "Selecione um tipo de ordem de serviço.",
+                    "erro",
+                  );
                 }}
               >
                 Selecionar

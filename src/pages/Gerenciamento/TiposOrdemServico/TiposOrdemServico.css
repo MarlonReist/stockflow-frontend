@@ -1,0 +1,276 @@
+.gerenciamento-tipos-os-page {
+  width: 100%;
+  padding: 24px 32px;
+}
+
+.gerenciamento-tipos-os-header,
+.gerenciamento-tipos-os-actions,
+.gerenciamento-tipos-os-card {
+  width: min(100%, 1280px);
+}
+
+.gerenciamento-tipos-os-header {
+  margin-bottom: 24px;
+}
+
+.gerenciamento-tipos-os-header h1 {
+  margin: 0 0 8px;
+  color: var(--text-primary);
+  font-size: 28px;
+  font-weight: 700;
+}
+
+.gerenciamento-tipos-os-header p {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.gerenciamento-tipos-os-actions {
+  margin-bottom: 18px;
+  padding: 18px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border: 1px solid var(--border-purple-subtle);
+  border-radius: var(--radius-xl);
+  background-color: var(--bg-card);
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.16);
+}
+
+.gerenciamento-tipos-os-actions > input {
+  flex: 1;
+  height: 46px;
+  min-width: 0;
+  padding: 0 16px;
+  border: 1px solid var(--border-purple-soft);
+  border-radius: var(--radius-lg);
+  background-color: var(--bg-input);
+  color: var(--text-primary);
+  font-size: 14px;
+}
+
+.gerenciamento-tipos-os-actions > input:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(147, 51, 234, 0.25);
+}
+
+.gerenciamento-tipos-os-actions > button {
+  height: 46px;
+  padding: 0 24px;
+  border: none;
+  border-radius: var(--radius-lg);
+  background: linear-gradient(to right, var(--primary), var(--accent));
+  color: #ffffff;
+  box-shadow: 0 4px 6px rgba(124, 58, 237, 0.35);
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.gerenciamento-tipos-os-actions .pagination-controls {
+  margin-left: auto;
+  min-height: 54px;
+  padding: 0 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid var(--border-purple-subtle);
+  border-radius: var(--radius-lg);
+  background-color: rgba(255, 255, 255, 0.04);
+}
+
+.gerenciamento-tipos-os-actions .pagination-controls button {
+  width: 36px;
+  height: 36px;
+  min-width: 36px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+
+.gerenciamento-tipos-os-actions .pagination-controls button:hover:not(:disabled) {
+  border-color: rgba(167, 139, 250, 0.35);
+  background-color: rgba(255, 255, 255, 0.06);
+  color: var(--text-primary);
+}
+
+.gerenciamento-tipos-os-actions .pagination-controls button:disabled {
+  cursor: not-allowed;
+  opacity: 0.42;
+}
+
+.gerenciamento-tipos-os-actions .total-itens {
+  margin-left: 6px;
+  padding-left: 12px;
+  border-left: 1px solid rgba(148, 163, 184, 0.18);
+  color: var(--text-primary);
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.gerenciamento-tipos-os-card {
+  overflow-x: auto;
+  border: 1px solid var(--border-purple-subtle);
+  border-radius: var(--radius-xl);
+  background-color: var(--bg-card);
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2);
+}
+
+.gerenciamento-tipos-os-table {
+  width: 100%;
+  min-width: 600px;
+  border-collapse: collapse;
+  table-layout: auto;
+}
+
+.gerenciamento-tipos-os-table th,
+.gerenciamento-tipos-os-table td {
+  padding: 18px 20px;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.08);
+  color: var(--text-secondary);
+  font-size: 14px;
+  text-align: left;
+  vertical-align: middle;
+}
+
+.gerenciamento-tipos-os-table th {
+  color: var(--text-primary);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.gerenciamento-tipos-os-table th[onClick] {
+  cursor: pointer;
+  user-select: none;
+}
+
+.gerenciamento-tipos-os-table th:nth-child(1),
+.gerenciamento-tipos-os-table td:nth-child(1) {
+  width: 78px;
+}
+
+.gerenciamento-tipos-os-table th:nth-child(3),
+.gerenciamento-tipos-os-table td:nth-child(3) {
+  width: 140px;
+  text-align: center;
+}
+
+.gerenciamento-tipos-os-table th:nth-child(4),
+.gerenciamento-tipos-os-table td:nth-child(4) {
+  width: 150px;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.gerenciamento-tipos-os-table td:nth-child(1) {
+  color: #c084fc;
+  font-weight: 700;
+}
+
+.gerenciamento-tipos-os-table td:nth-child(2) {
+  color: var(--text-primary);
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+.gerenciamento-tipos-os-table tbody tr:hover {
+  background-color: rgba(255, 255, 255, 0.03);
+}
+
+.gerenciamento-tipos-os-table tr:last-child td {
+  border-bottom: none;
+}
+
+.gerenciamento-tipos-os-table .tipo-status {
+  min-width: 76px;
+  padding: 5px 10px;
+  display: inline-flex;
+  justify-content: center;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.gerenciamento-tipos-os-table .tipo-status-active {
+  border-color: rgba(34, 197, 94, 0.4);
+  background-color: rgba(34, 197, 94, 0.12);
+  color: #86efac;
+}
+
+.gerenciamento-tipos-os-table .tipo-status-inactive {
+  border-color: rgba(148, 163, 184, 0.35);
+  background-color: rgba(148, 163, 184, 0.1);
+  color: #cbd5e1;
+}
+
+.gerenciamento-tipos-os-table .action-button {
+  width: 34px;
+  height: 34px;
+  margin-right: 10px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background-color: transparent;
+  cursor: pointer;
+}
+
+.gerenciamento-tipos-os-table .action-button:last-child {
+  margin-right: 0;
+}
+
+.gerenciamento-tipos-os-table .edit-button {
+  border-color: rgba(37, 99, 235, 0.35);
+  color: #93c5fd;
+}
+
+.gerenciamento-tipos-os-table .deactivate-button {
+  border-color: rgba(239, 68, 68, 0.35);
+  color: #fca5a5;
+}
+
+.gerenciamento-tipos-os-table .activate-button {
+  border-color: rgba(34, 197, 94, 0.4);
+  color: #86efac;
+}
+
+.gerenciamento-tipos-os-table .empty-state-cell {
+  padding: 30px 18px;
+  color: var(--text-muted);
+  text-align: center;
+}
+
+@media (max-width: 768px) {
+  .gerenciamento-tipos-os-page {
+    padding: 20px;
+  }
+
+  .gerenciamento-tipos-os-table th,
+  .gerenciamento-tipos-os-table td {
+    padding: 14px 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .gerenciamento-tipos-os-page {
+    padding: 16px;
+  }
+
+  .gerenciamento-tipos-os-header h1 {
+    font-size: 24px;
+  }
+}

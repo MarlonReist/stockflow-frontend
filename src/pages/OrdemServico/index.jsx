@@ -80,6 +80,9 @@ const OrdemServico = () => {
       String(ordem.id).includes(buscaFormatada) ||
       String(ordem.clienteNome || "")
         .toLowerCase()
+        .includes(buscaFormatada) ||
+      String(ordem.tipoOrdemServicoNome || "")
+        .toLowerCase()
         .includes(buscaFormatada)
     );
   });
@@ -249,7 +252,7 @@ const OrdemServico = () => {
       <div className="os-actions">
         <input
           type="text"
-          placeholder="Buscar por ID ou Nome do Cliente..."
+          placeholder="Buscar por ID, Cliente ou Tipo..."
           value={busca}
           onChange={(e) => {
             setBusca(e.target.value);
@@ -333,6 +336,9 @@ const OrdemServico = () => {
             <tr>
               <th onClick={() => handleOrdenar("id")}>ID</th>
               <th onClick={() => handleOrdenar("clienteNome")}>Cliente</th>
+              <th onClick={() => handleOrdenar("tipoOrdemServicoNome")}>
+                Tipo
+              </th>
               <th onClick={() => handleOrdenar("dataAbertura")}>
                 Data Abertura
               </th>
@@ -356,6 +362,9 @@ const OrdemServico = () => {
               >
                 <td>{ordem.id}</td>
                 <td>{ordem.clienteNome}</td>
+                <td className="os-tipo-cell">
+                  {ordem.tipoOrdemServicoNome || "Não informado"}
+                </td>
                 <td>{formatarData(ordem.dataAbertura)}</td>
                 <td>{formatarValor(ordem.valorTotal)}</td>
                 <td>

@@ -1,0 +1,147 @@
+.tipo-os-page {
+  padding: 24px;
+}
+
+.tipo-os-header {
+  margin-bottom: 24px;
+}
+
+.tipo-os-header h1 {
+  margin: 0 0 8px;
+  color: var(--text-primary);
+  font-size: 28px;
+  font-weight: 700;
+}
+
+.tipo-os-header p {
+  margin: 0;
+  max-width: 720px;
+  color: var(--text-secondary);
+  font-size: 15px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.tipo-os-card {
+  width: 100%;
+  max-width: 896px;
+  padding: 32px;
+  border: 1px solid var(--border-purple-subtle);
+  border-radius: 16px;
+  background-color: var(--bg-card);
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2);
+}
+
+.tipo-os-form {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.tipo-os-form .form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.tipo-os-form .form-group label {
+  color: #d1d5db;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.tipo-os-form input {
+  width: 100%;
+  height: 46px;
+  min-width: 0;
+  padding: 0 12px;
+  border: 1px solid var(--border-purple-soft);
+  border-radius: 12px;
+  background-color: var(--bg-input);
+  color: var(--text-primary);
+  box-sizing: border-box;
+}
+
+.tipo-os-form input::placeholder {
+  color: var(--text-muted);
+}
+
+.tipo-os-form input:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.3);
+}
+
+.tipo-os-form input.input-error {
+  border-color: rgba(239, 68, 68, 0.78);
+  background-color: rgba(127, 29, 29, 0.14);
+}
+
+.tipo-os-form input.input-error:focus {
+  border-color: #ef4444;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.18);
+}
+
+.tipo-os-form .form-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding-top: 12px;
+}
+
+.tipo-os-form .form-actions button {
+  min-height: 44px;
+  padding: 10px 32px;
+  border: none;
+  border-radius: 12px;
+  font-family: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.tipo-os-form .form-actions button[type="submit"] {
+  background: linear-gradient(to right, var(--primary), var(--accent));
+  box-shadow: 0 4px 6px rgba(124, 58, 237, 0.4);
+  color: #ffffff;
+}
+
+.tipo-os-form .form-actions button[type="button"] {
+  border: 1px solid var(--border-purple-soft);
+  background: transparent;
+  color: #d1d5db;
+}
+
+@media (max-width: 768px) {
+  .tipo-os-page {
+    padding: 20px;
+  }
+
+  .tipo-os-card {
+    padding: 24px;
+  }
+
+  .tipo-os-form input,
+  .tipo-os-form .form-actions button {
+    min-height: 48px;
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .tipo-os-page {
+    padding: 16px;
+  }
+
+  .tipo-os-card {
+    padding: 20px 16px;
+  }
+
+  .tipo-os-form .form-actions {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .tipo-os-form .form-actions button {
+    width: 100%;
+  }
+}
