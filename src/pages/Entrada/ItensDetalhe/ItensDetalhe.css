@@ -28,6 +28,106 @@
   font-size: 15px;
 }
 
+.entrada-resumo-contexto {
+  width: min(100%, 1380px);
+  margin-bottom: 18px;
+  padding: 16px 20px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 16px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-purple-subtle);
+  border-radius: var(--radius-xl);
+}
+
+.entrada-resumo-contexto div {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.entrada-resumo-contexto span {
+  color: var(--text-muted);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.entrada-resumo-contexto strong {
+  overflow: hidden;
+  color: var(--text-primary);
+  font-size: 14px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.entrada-resumo-financeiro {
+  width: min(100%, 1380px);
+  margin-bottom: 18px;
+  padding: 18px 20px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-purple-subtle);
+  border-radius: var(--radius-xl);
+}
+
+.entrada-resumo-financeiro-header h2 {
+  margin: 0 0 16px;
+  color: var(--text-primary);
+  font-size: 18px;
+}
+
+.entrada-resumo-financeiro-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.entrada-resumo-financeiro-grid div {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 0;
+}
+
+.entrada-resumo-financeiro-grid span {
+  color: var(--text-muted);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.entrada-resumo-financeiro-grid strong {
+  color: var(--text-primary);
+  font-size: 16px;
+}
+
+.entrada-resumo-diferenca {
+  margin: 16px 0 0;
+  padding: 10px 12px;
+  border: 1px solid rgba(245, 158, 11, 0.28);
+  border-radius: var(--radius-lg);
+  color: #fcd34d;
+  background: rgba(245, 158, 11, 0.08);
+  font-size: 13px;
+}
+
+@media (max-width: 600px) {
+  .entrada-resumo-financeiro {
+    padding: 16px;
+  }
+
+  .entrada-resumo-financeiro-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+}
+
+@media (max-width: 600px) {
+  .entrada-resumo-contexto {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    padding: 14px 16px;
+  }
+}
+
 .back-button {
   width: 42px;
   height: 42px;

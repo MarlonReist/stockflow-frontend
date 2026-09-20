@@ -59,7 +59,7 @@ const ItensEntrada = () => {
         const response = await listarEntradas();
         setEntradas(response.data);
       } catch (error) {
-        mostrarMensagem("Erro ao carregar entradas", "erro");
+        mostrarMensagem("Erro ao carregar compras", "erro");
       }
     };
     buscarEntradas();
@@ -72,12 +72,12 @@ const ItensEntrada = () => {
         entradasAtuais.filter((entrada) => entrada.id !== id),
       );
 
-      mostrarMensagem("Entrada excluida com sucesso", "sucesso");
+      mostrarMensagem("Compra excluída com sucesso", "sucesso");
       setEntradaSelecionada(null);
       setAcaoConfirmacao("");
     } catch (error) {
       const mensagemErro =
-        error.response?.data?.message || "Erro ao excluir entrada.";
+        error.response?.data?.message || "Erro ao excluir compra.";
 
       mostrarMensagem(mensagemErro, "erro");
       setEntradaSelecionada(null);
@@ -95,12 +95,12 @@ const ItensEntrada = () => {
             : entradaAtual,
         ),
       );
-      mostrarMensagem("Entrada finalizada com sucesso", "sucesso");
+      mostrarMensagem("Compra finalizada com sucesso", "sucesso");
       setEntradaSelecionada(null);
       setAcaoConfirmacao("");
     } catch (error) {
       const mensagemErro =
-        error.response?.data?.message || "Erro ao finalizar entrada.";
+        error.response?.data?.message || "Erro ao finalizar compra.";
       mostrarMensagem(mensagemErro, "erro");
       setEntradaSelecionada(null);
       setAcaoConfirmacao("");
@@ -117,12 +117,12 @@ const ItensEntrada = () => {
             : entradaAtual,
         ),
       );
-      mostrarMensagem("Entrada cancelada com sucesso", "sucesso");
+      mostrarMensagem("Compra cancelada com sucesso", "sucesso");
       setEntradaSelecionada(null);
       setAcaoConfirmacao("");
     } catch (error) {
       const mensagemErro =
-        error.response?.data?.message || "Erro ao cancelar entrada.";
+        error.response?.data?.message || "Erro ao cancelar compra.";
       mostrarMensagem(mensagemErro, "erro");
       setEntradaSelecionada(null);
       setAcaoConfirmacao("");
@@ -169,7 +169,11 @@ const ItensEntrada = () => {
     let valorA = a[ordenacao.coluna];
     let valorB = b[ordenacao.coluna];
 
-    if (ordenacao.coluna === "id" || ordenacao.coluna === "valorTotal") {
+    if (
+      ordenacao.coluna === "id" ||
+      ordenacao.coluna === "valorTotal" ||
+      ordenacao.coluna === "valorTotalNotaFiscal"
+    ) {
       valorA = Number(valorA);
       valorB = Number(valorB);
     } else if (ordenacao.coluna === "dataEntrada") {
@@ -229,8 +233,8 @@ const ItensEntrada = () => {
   return (
     <div className="gerenciamento-itens-page movimentacao-page">
       <div className="gerenciamento-itens-header">
-        <h1>Itens da Entrada</h1>
-        <p>Gerencie os itens das entradas cadastradas</p>
+        <h1>Compras</h1>
+        <p>Consulte e gerencie suas compras de estoque</p>
       </div>
       <div className="gerenciamento-itens-actions">
         <input
@@ -264,7 +268,7 @@ const ItensEntrada = () => {
           </button>
         </div>
         <button type="button" onClick={() => navigate("/entrada/cadastro")}>
-          + Nova Entrada
+          + Nova Compra
         </button>
         <div className="pagination-controls">
           <button
@@ -303,7 +307,12 @@ const ItensEntrada = () => {
           </span>
         </div>
       </div>
-      <div className="gerenciamento-itens-card" role="region" aria-label="Movimentações de estoque" tabIndex={0}>
+      <div
+        className="gerenciamento-itens-card"
+        role="region"
+        aria-label="Movimentações de estoque"
+        tabIndex={0}
+      >
         <table className="gerenciamento-itens-table">
           <thead>
             <tr>
@@ -340,10 +349,10 @@ const ItensEntrada = () => {
                     ))}
                 </span>
               </th>
-              <th onClick={() => handleOrdenar("dataEntrada")}>
+              <th onClick={() => handleOrdenar("numeroNotaFiscal")}>
                 <span className="sortable-header">
-                  Data
-                  {ordenacao.coluna === "dataEntrada" &&
+                  NF
+                  {ordenacao.coluna === "numeroNotaFiscal" &&
                     (ordenacao.direcao === "asc" ? (
                       <FiChevronUp />
                     ) : (
@@ -351,10 +360,21 @@ const ItensEntrada = () => {
                     ))}
                 </span>
               </th>
-              <th onClick={() => handleOrdenar("valorTotal")}>
+              <th onClick={() => handleOrdenar("valorTotalNotaFiscal")}>
                 <span className="sortable-header">
-                  Valor Total
-                  {ordenacao.coluna === "valorTotal" &&
+                  Valor da NF
+                  {ordenacao.coluna === "valorTotalNotaFiscal" &&
+                    (ordenacao.direcao === "asc" ? (
+                      <FiChevronUp />
+                    ) : (
+                      <FiChevronDown />
+                    ))}
+                </span>
+              </th>
+              <th onClick={() => handleOrdenar("dataEntrada")}>
+                <span className="sortable-header">
+                  Data
+                  {ordenacao.coluna === "dataEntrada" &&
                     (ordenacao.direcao === "asc" ? (
                       <FiChevronUp />
                     ) : (
@@ -382,10 +402,13 @@ const ItensEntrada = () => {
                 <td>{entrada.id}</td>
                 <td>{entrada.fornecedorNome}</td>
                 <td>{entrada.almoxarifadoNome}</td>
-                <td>{entrada.dataEntrada}</td>
+                <td>{entrada.numeroNotaFiscal || "-"}</td>
                 <td className="entrada-total-value">
-                  {formatarMoeda(entrada.valorTotal)}
+                  {entrada.valorTotalNotaFiscal == null
+                    ? "-"
+                    : formatarMoeda(entrada.valorTotalNotaFiscal)}
                 </td>
+                <td>{entrada.dataEntrada}</td>
                 <td>
                   <span
                     className={`entrada-status ${entrada.status === "ABERTA" ? "entrada-status-open" : entrada.status === "FINALIZADA" ? "entrada-status-finished" : "entrada-status-canceled"}`}
@@ -402,32 +425,34 @@ const ItensEntrada = () => {
                     type="button"
                     className="action-button edit-button"
                     onClick={() => navigate(`/entrada/itens/${entrada.id}`)}
-                    title="Gerenciar itens da entrada"
-                    aria-label="Gerenciar itens da entrada"
+                    title="Gerenciar itens da compra"
+                    aria-label="Gerenciar itens da compra"
                   >
                     <FiBox />
                   </button>
                   <button
                     type="button"
                     className="action-button finish-button"
+                    disabled={entrada.status !== "ABERTA"}
                     onClick={() => {
                       setEntradaSelecionada(entrada);
                       setAcaoConfirmacao("finalizar");
                     }}
-                    title="Finalizar Entrada"
-                    aria-label="Finalizar Entrada"
+                    title="Finalizar Compra"
+                    aria-label="Finalizar Compra"
                   >
                     <FiCheckCircle />
                   </button>
                   <button
                     type="button"
                     className="action-button finish-cancel"
+                    disabled={entrada.status !== "ABERTA"}
                     onClick={() => {
                       setEntradaSelecionada(entrada);
                       setAcaoConfirmacao("cancelar");
                     }}
-                    title="Cancelar Entrada"
-                    aria-label="Cancelar Entrada"
+                    title="Cancelar Compra"
+                    aria-label="Cancelar Compra"
                   >
                     <FiSlash />
                   </button>
@@ -435,12 +460,13 @@ const ItensEntrada = () => {
                   <button
                     type="button"
                     className="action-button delete-button"
+                    disabled={entrada.status !== "ABERTA"}
                     onClick={() => {
                       setEntradaSelecionada(entrada);
                       setAcaoConfirmacao("excluir");
                     }}
-                    title="Excluir entrada"
-                    aria-label="Excluir entrada"
+                    title="Excluir compra"
+                    aria-label="Excluir compra"
                   >
                     <FiTrash2 />
                   </button>
@@ -454,11 +480,11 @@ const ItensEntrada = () => {
         <div className="modal-overlay">
           <div className="confirm-modal">
             {acaoConfirmacao === "finalizar" ? (
-              <h2>Finalizar entrada</h2>
+              <h2>Finalizar compra</h2>
             ) : acaoConfirmacao === "cancelar" ? (
-              <h2>Cancelar entrada</h2>
+              <h2>Cancelar compra</h2>
             ) : (
-              <h2>Excluir entrada</h2>
+              <h2>Excluir compra</h2>
             )}
             {acaoConfirmacao === "finalizar" ? (
               <p>

@@ -358,6 +358,16 @@
     color 0.2s ease;
 }
 
+.gerenciamento-itens-table .action-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.35;
+}
+
+.gerenciamento-itens-table .action-button:disabled:hover {
+  background-color: transparent;
+  border-color: transparent;
+}
+
 .gerenciamento-itens-table .action-button svg {
   width: 16px;
   height: 16px;

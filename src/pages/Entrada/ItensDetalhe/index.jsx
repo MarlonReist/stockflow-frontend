@@ -21,6 +21,7 @@ import {
   deletarEntradaItem,
   atualizarEntradaItem,
 } from "../../../services/entradaItemService";
+import { buscarEntradaPorId } from "../../../services/entradaEstoqueService";
 
 const movimentacaoInicial = {
   idMov: "",
@@ -34,6 +35,7 @@ const movimentacaoInicial = {
 
 const ItensDetalhe = () => {
   const [itemSelecionado, setItemSelecionado] = useState(null);
+  const [entrada, setEntrada] = useState(null);
   const [mensagens, setMensagens] = useState([]);
   const [modalAberto, setModalAberto] = useState(false);
   const [movimentacao, setMovimentacao] = useState({ ...movimentacaoInicial });
@@ -76,9 +78,21 @@ const ItensDetalhe = () => {
     });
   };
 
+  const carregarEntrada = async () => {
+    try {
+      const response = await buscarEntradaPorId(id);
+      setEntrada(response.data);
+    } catch (error) {
+      mostrarMensagem(
+        error.response?.data?.message || "Erro ao carregar os dados da Compra.",
+        "erro",
+      );
+    }
+  };
+
   useEffect(() => {
-    carregarEntradaItens();
-  }, [id]);
+  carregarEntrada();
+}, [id]);
 
   const carregarEntradaItens = async () => {
     try {
@@ -88,7 +102,7 @@ const ItensDetalhe = () => {
       });
       setEntradaItens(itensDaEntrada);
     } catch (error) {
-      mostrarMensagem("Erro ao listar Entrada Itens", "erro");
+      mostrarMensagem("Erro ao listar itens da compra", "erro");
     }
   };
 
@@ -179,6 +193,7 @@ const ItensDetalhe = () => {
       setMovimentacaoSalva(true);
       mostrarMensagem("Item salvo com sucesso", "sucesso");
       carregarEntradaItens();
+      carregarEntrada();
     } catch (error) {
       mostrarMensagem(error.response?.data?.message, "erro");
     }
@@ -214,6 +229,7 @@ const ItensDetalhe = () => {
         entradaItensAtuais.filter((entradaItem) => entradaItem.id !== id),
       );
 
+      carregarEntrada();
       mostrarMensagem("Item excluido com sucesso", "sucesso");
       setItemSelecionado(null);
     } catch (error) {
@@ -292,7 +308,10 @@ const ItensDetalhe = () => {
     let valorA = a[ordenacaoProduto.coluna];
     let valorB = b[ordenacaoProduto.coluna];
 
-    if (ordenacaoProduto.coluna === "id" || ordenacaoProduto.coluna === "preco") {
+    if (
+      ordenacaoProduto.coluna === "id" ||
+      ordenacaoProduto.coluna === "preco"
+    ) {
       valorA = Number(valorA);
       valorB = Number(valorB);
     } else {
@@ -431,15 +450,93 @@ const ItensDetalhe = () => {
             type="button"
             className="back-button"
             onClick={() => navigate("/entrada/itens")}
-            aria-label="Voltar para entradas"
-            title="Voltar"
+            aria-label="Voltar para compras"
+            title="Voltar para compras"
           >
             <FiArrowLeft />
           </button>
-          <h1>Itens da Entrada</h1>
+          <h1>Itens da Compra</h1>
         </div>
-        <p>Gerencie os itens vinculados a esta entrada</p>
+        <p>Adicione e gerencie os produtos desta compra</p>
       </div>
+      {entrada && (
+        <div className="entrada-resumo-contexto">
+          <div>
+            <span>Fornecedor</span>
+            <strong>{entrada.fornecedorNome}</strong>
+          </div>
+
+          <div>
+            <span>Almoxarifado</span>
+            <strong>{entrada.almoxarifadoNome}</strong>
+          </div>
+
+          {entrada.numeroNotaFiscal && (
+            <div>
+              <span>Nota fiscal</span>
+              <strong>{entrada.numeroNotaFiscal}</strong>
+            </div>
+          )}
+
+          {entrada.dataNotaFiscal && (
+            <div>
+              <span>Data da NF</span>
+              <strong>
+                {entrada.dataNotaFiscal.split("-").reverse().join("/")}
+              </strong>
+            </div>
+          )}
+
+          {entrada.dataRecebimento && (
+            <div>
+              <span>Recebimento</span>
+              <strong>
+                {entrada.dataRecebimento.split("-").reverse().join("/")}
+              </strong>
+            </div>
+          )}
+        </div>
+      )}
+      {entrada && (
+        <section className="entrada-resumo-financeiro">
+          <div className="entrada-resumo-financeiro-header">
+            <h2>Resumo da Compra</h2>
+          </div>
+
+          <div className="entrada-resumo-financeiro-grid">
+            <div>
+              <span>Valor informado da NF</span>
+              <strong>
+                {entrada.valorTotalNotaFiscal == null
+                  ? "Não informado"
+                  : formatarMoeda(entrada.valorTotalNotaFiscal)}
+              </strong>
+            </div>
+
+            <div>
+              <span>Total calculado dos itens</span>
+              <strong>{formatarMoeda(entrada.totalCalculadoItens)}</strong>
+            </div>
+
+            <div>
+              <span>Diferença</span>
+              <strong>
+                {entrada.diferencaValor == null
+                  ? "Não comparável"
+                  : formatarMoeda(entrada.diferencaValor)}
+              </strong>
+            </div>
+          </div>
+
+          {entrada.diferencaValor != null && entrada.diferencaValor !== 0 && (
+            <p className="entrada-resumo-diferenca">
+              Existe uma diferença de{" "}
+              <strong>{formatarMoeda(entrada.diferencaValor)}</strong> entre o
+              valor informado da nota fiscal e o total dos itens.
+            </p>
+          )}
+        </section>
+      )}
       <div className="entrada-itens-actions">
         <button
           type="button"
@@ -512,7 +609,12 @@ const ItensDetalhe = () => {
         </div>
       </div>
       <div className="entrada-itens-card">
-        <div className="entrada-itens-table-wrapper" role="region" aria-label="Itens da movimentação" tabIndex={0}>
+        <div
+          className="entrada-itens-table-wrapper"
+          role="region"
+          aria-label="Itens da movimentação"
+          tabIndex={0}
+        >
           <table className="entrada-itens-table">
             <thead>
               <tr>
@@ -596,7 +698,12 @@ const ItensDetalhe = () => {
               </tr>
             </thead>
             <tbody>
-              {entradaItensPaginados.map((item) => (
+              {entradaItensPaginados.length === 0 ? (
+                <tr>
+                  <td colSpan={7}>Nenhum item adicionado a esta compra.</td>
+                </tr>
+              ) : (
+                entradaItensPaginados.map((item) => (
                 <tr
                   key={item.id}
                   className={
@@ -615,7 +722,8 @@ const ItensDetalhe = () => {
                   <td>{formatarMoeda(item.valorUnitario)}</td>
                   <td>{formatarMoeda(item.valorTotal)}</td>
                 </tr>
-              ))}
+                ))
+              )}
             </tbody>
           </table>
         </div>
@@ -834,7 +942,12 @@ const ItensDetalhe = () => {
                 </span>
               </div>
             </div>
-            <div className="produto-table-wrapper" role="region" aria-label="Produtos disponíveis" tabIndex={0}>
+            <div
+              className="produto-table-wrapper"
+              role="region"
+              aria-label="Produtos disponíveis"
+              tabIndex={0}
+            >
               <table className="produto-table">
                 <thead>
                   <tr>

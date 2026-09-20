@@ -397,6 +397,7 @@ const ItensSaida = () => {
                   <button
                     type="button"
                     className="action-button finish-button"
+                    disabled={saida.status !== "ABERTA"}
                     onClick={() => {
                       setSaidaSelecionada(saida);
                       setAcaoConfirmacao("finalizar");
@@ -409,6 +410,7 @@ const ItensSaida = () => {
                   <button
                     type="button"
                     className="action-button finish-cancel"
+                    disabled={saida.status !== "ABERTA"}
                     onClick={() => {
                       setSaidaSelecionada(saida);
                       setAcaoConfirmacao("cancelar");
@@ -422,6 +424,7 @@ const ItensSaida = () => {
                   <button
                     type="button"
                     className="action-button delete-button"
+                    disabled={saida.status !== "ABERTA"}
                     onClick={() => {
                       setSaidaSelecionada(saida);
                       setAcaoConfirmacao("excluir");

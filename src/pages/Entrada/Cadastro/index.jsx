@@ -1,8 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import "./Cadastro.css";
-import {
-  cadastrarEntrada,
-} from "../../../services/entradaEstoqueService";
+import { cadastrarEntrada } from "../../../services/entradaEstoqueService";
 import { listarFornecedores } from "../../../services/fornecedorService";
 import { listarAlmoxarifados } from "../../../services/almoxarifadoService";
 import { useNavigate } from "react-router-dom";
@@ -10,6 +8,10 @@ import { useNavigate } from "react-router-dom";
 const entradaInicial = {
   fornecedorId: "",
   almoxarifadoId: "",
+  numeroNotaFiscal: "",
+  dataNotaFiscal: "",
+  dataRecebimento: "",
+  valorTotalNotaFiscal: "",
 };
 
 const CadastroEntrada = () => {
@@ -85,6 +87,13 @@ const CadastroEntrada = () => {
       camposComErro.almoxarifadoId = true;
       erros.push("Almoxarifado é obrigatório");
     }
+    if (
+      entrada.valorTotalNotaFiscal !== "" &&
+      Number(entrada.valorTotalNotaFiscal) < 0
+    ) {
+      camposComErro.valorTotalNotaFiscal = true;
+      erros.push("Valor total da nota fiscal não pode ser negativo");
+    }
 
     setCamposInvalidos(camposComErro);
     return erros;
@@ -108,10 +117,26 @@ const CadastroEntrada = () => {
       return;
     }
 
+    const entradaParaEnviar = {
+      fornecedorId: Number(entrada.fornecedorId),
+      almoxarifadoId: Number(entrada.almoxarifadoId),
+      numeroNotaFiscal: entrada.numeroNotaFiscal.trim() || null,
+      dataNotaFiscal: entrada.dataNotaFiscal || null,
+      dataRecebimento: entrada.dataRecebimento || null,
+      valorTotalNotaFiscal:
+        entrada.valorTotalNotaFiscal === ""
+          ? null
+          : Number(entrada.valorTotalNotaFiscal),
+    };
+
     try {
-      await cadastrarEntrada(entrada);
-      mostrarMensagem("Entrada cadastrada com sucesso", "sucesso");
-      handleClear();
+      const response = await cadastrarEntrada(entradaParaEnviar);
+
+      mostrarMensagem("Compra cadastrada com sucesso", "sucesso");
+
+      setTimeout(() => {
+        navigate(`/entrada/itens/${response.data.id}`);
+      }, 700);
     } catch (error) {
       const mensagemPadrao = "Erro ao cadastrar entrada.";
       const mensagemErro = error.response?.data?.message || mensagemPadrao;
@@ -128,8 +153,8 @@ const CadastroEntrada = () => {
   return (
     <div className="cadastro-page movimentacao-page">
       <div className="cadastro-header">
-        <h1>Cadastro de Entrada</h1>
-        <p>Registre novas entradas de produtos no estoque</p>
+        <h1>Nova Compra</h1>
+        <p>Registre uma nova compra de produtos para o estoque</p>
       </div>
       <div className="cadastro-card">
         <form className="cadastro-form" onSubmit={handleSubmit}>
@@ -166,6 +191,56 @@ const CadastroEntrada = () => {
                 </option>
               ))}
             </select>
+          </div>
+          <div className="form-row">
+            <div className="form-group">
+              <label>Número da Nota Fiscal</label>
+              <input
+                type="text"
+                name="numeroNotaFiscal"
+                placeholder="Digite o número da nota fiscal"
+                value={entrada.numeroNotaFiscal}
+                onChange={handleChange}
+              />
+            </div>
+
+            <div className="form-group">
+              <label>Valor total da Nota Fiscal</label>
+              <input
+                type="number"
+                name="valorTotalNotaFiscal"
+                min="0"
+                step="0.01"
+                placeholder="Opcional"
+                value={entrada.valorTotalNotaFiscal}
+                onChange={handleChange}
+                className={
+                  camposInvalidos.valorTotalNotaFiscal ? "input-error" : ""
+                }
+              />
+            </div>
+          </div>
+
+          <div className="form-row">
+            <div className="form-group">
+              <label>Data da Nota Fiscal</label>
+              <input
+                type="date"
+                name="dataNotaFiscal"
+                value={entrada.dataNotaFiscal}
+                onChange={handleChange}
+              />
+            </div>
+
+            <div className="form-group">
+              <label>Data de Recebimento</label>
+              <input
+                type="date"
+                name="dataRecebimento"
+                value={entrada.dataRecebimento}
+                onChange={handleChange}
+              />
+            </div>
           </div>
           <div className="form-actions">
             <button type="submit">Salvar</button>

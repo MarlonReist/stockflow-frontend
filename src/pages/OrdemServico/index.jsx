@@ -400,6 +400,7 @@ const OrdemServico = () => {
                   <button
                     type="button"
                     className="action-button"
+                    disabled={ordem.status !== "ABERTA"}
                     title="Finalizar ordem"
                     aria-label="Finalizar ordem"
                     onClick={(e) => {
@@ -423,6 +424,7 @@ const OrdemServico = () => {
                   <button
                     type="button"
                     className="action-button"
+                    disabled={ordem.status !== "ABERTA"}
                     title="Cancelar ordem"
                     aria-label="Cancelar ordem"
                     onClick={(e) => {

@@ -322,6 +322,17 @@
     transform 0.2s ease;
 }
 
+.os-table .action-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.35;
+  transform: none;
+}
+
+.os-table .action-button:disabled:hover {
+  background-color: transparent;
+  border-color: transparent;
+}
+
 .os-table .action-button:last-child {
   margin-right: 0;
 }

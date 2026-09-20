@@ -6,7 +6,7 @@ import {
   FiLogOut,
   FiUser,
   FiClipboard,
-  FiDownload,
+  FiShoppingCart,
   FiFileText,
   FiGrid,
   FiSettings,
@@ -173,16 +173,16 @@ const MainLayout = () => {
             onClick={() => setEntradaAberto(!entradaAberto)}
           >
             <span className="sidebar-item-content">
-              <FiDownload />
-              <span>Entrada</span>
+              <FiShoppingCart />
+              <span>Compras</span>
             </span>
             <FiChevronDown className="sidebar-chevron" />
           </button>
 
           {entradaAberto && (
             <div className="sidebar-submenu">
-              <NavLink to="/entrada/cadastro">Cadastro de Entrada</NavLink>
-              <NavLink to="/entrada/itens">Itens da entrada</NavLink>
+              <NavLink to="/entrada/cadastro">Nova Compra</NavLink>
+              <NavLink to="/entrada/itens">Compras</NavLink>
             </div>
           )}
 

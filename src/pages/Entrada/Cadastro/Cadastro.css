@@ -132,6 +132,10 @@
   -webkit-appearance: none;
 }
 
+.cadastro-form input[type="date"] {
+  color-scheme: dark;
+}
+
 .form-row {
   display: flex;
   gap: 24px;
