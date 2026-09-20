@@ -1,14 +1,19 @@
 import React, { useEffect, useState } from "react";
-import { FiArchive, FiBox, FiClipboard, FiRepeat } from "react-icons/fi";
+import { FiAlertTriangle, FiBox, FiClipboard, FiRepeat } from "react-icons/fi";
 import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
+import { useNavigate } from "react-router-dom";
 import {
   buscarMovimentacoesRecentesDashboard,
   buscarOsPorStatusDashboard,
   buscarResumoDashboard,
 } from "../../services/dashboardService";
+import { listarEstoquesBaixos } from "../../services/almoxarifadoEstoqueService";
 import "./Dashboard.css";
 
 const Dashboard = () => {
+  const navigate = useNavigate();
+  const [estoquesBaixos, setEstoquesBaixos] = useState([]);
+  const [erroEstoqueBaixo, setErroEstoqueBaixo] = useState("");
   const [resumo, setResumo] = useState({
     totalProdutos: 0,
     almoxarifadosAtivos: 0,
@@ -105,6 +110,24 @@ const Dashboard = () => {
       dataFim: formatarDataParametro(dataFim),
     };
   };
+
+  useEffect(() => {
+    const carregarEstoquesBaixos = async () => {
+      try {
+        const response = await listarEstoquesBaixos();
+        setEstoquesBaixos(response.data);
+        setErroEstoqueBaixo("");
+      } catch (error) {
+        setEstoquesBaixos([]);
+        setErroEstoqueBaixo(
+          error.response?.data?.message ||
+            "Não foi possível consultar o estoque baixo.",
+        );
+      }
+    };
+
+    carregarEstoquesBaixos();
+  }, []);
 
   useEffect(() => {
     const carregarDadosDashboard = async () => {
@@ -241,10 +264,10 @@ const Dashboard = () => {
       cor: "purple",
     },
     {
-      titulo: "Almoxarifados Ativos",
-      valor: resumo.almoxarifadosAtivos,
-      icone: FiArchive,
-      cor: "blue",
+      titulo: "Produtos com estoque baixo",
+      valor: estoquesBaixos.length,
+      icone: FiAlertTriangle,
+      cor: "red",
     },
     {
       titulo: "OS Abertas",
@@ -256,7 +279,7 @@ const Dashboard = () => {
       titulo: "Movimentações no Período",
       valor: resumo.movimentacoesNoPeriodo,
       icone: FiRepeat,
-      cor: "red",
+      cor: "blue",
     },
   ];
 
@@ -327,7 +350,9 @@ const Dashboard = () => {
           )}
 
           {erroPeriodo && (
-            <p className="dashboard-period-error" role="alert">{erroPeriodo}</p>
+            <p className="dashboard-period-error" role="alert">
+              {erroPeriodo}
+            </p>
           )}
         </div>
       </div>
@@ -337,7 +362,27 @@ const Dashboard = () => {
           const Icone = card.icone;
 
           return (
-            <div key={card.titulo} className="dashboard-summary-card">
+            <div
+              key={card.titulo}
+              className={`dashboard-summary-card ${
+                card.titulo === "Produtos com estoque baixo"
+                  ? "dashboard-summary-card-clickable"
+                  : ""
+              }`}
+              onClick={() => {
+                if (card.titulo === "Produtos com estoque baixo") {
+                  navigate("/estoque/baixo");
+                }
+              }}
+              role={
+                card.titulo === "Produtos com estoque baixo"
+                  ? "button"
+                  : undefined
+              }
+              tabIndex={
+                card.titulo === "Produtos com estoque baixo" ? 0 : undefined
+              }
+            >
               <div
                 className={`dashboard-summary-icon dashboard-summary-icon-${card.cor}`}
               >
@@ -346,6 +391,18 @@ const Dashboard = () => {
 
               <strong>{card.valor}</strong>
               <span>{card.titulo}</span>
+              {card.titulo === "Produtos com estoque baixo" && (
+                <button
+                  type="button"
+                  className="dashboard-summary-link"
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    navigate("/estoque/baixo");
+                  }}
+                >
+                  Ver detalhes
+                </button>
+              )}
             </div>
           );
         })}

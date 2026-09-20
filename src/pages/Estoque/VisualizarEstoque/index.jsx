@@ -151,8 +151,11 @@ const VisualizarEstoque = () => {
     indiceFinal,
   );
 
-  const totalPaginas = Math.ceil(almoxarifadosOrdenados.length / itensPorPagina);
-  const inicioExibido = almoxarifadosOrdenados.length > 0 ? indiceInicial + 1 : 0;
+  const totalPaginas = Math.ceil(
+    almoxarifadosOrdenados.length / itensPorPagina,
+  );
+  const inicioExibido =
+    almoxarifadosOrdenados.length > 0 ? indiceInicial + 1 : 0;
   const fimExibido = Math.min(indiceFinal, almoxarifadosOrdenados.length);
 
   const handlePrimeiraPagina = () => {
@@ -275,14 +278,19 @@ const VisualizarEstoque = () => {
   };
 
   const produtosExibidos = somenteComSaldo
-  ? produtosFiltrados.filter((item) => (item.saldo ?? item.quantidade ?? 0) > 0)
-  : produtosFiltrados;
+    ? produtosFiltrados.filter(
+        (item) => (item.saldo ?? item.quantidade ?? 0) > 0,
+      )
+    : produtosFiltrados;
 
   const produtosOrdenados = [...produtosExibidos].sort((a, b) => {
     let valorA;
     let valorB;
 
-    if (ordenacaoProduto.coluna === "id" || ordenacaoProduto.coluna === "produtoId") {
+    if (
+      ordenacaoProduto.coluna === "id" ||
+      ordenacaoProduto.coluna === "produtoId"
+    ) {
       valorA = Number(a.produtoId || a.id);
       valorB = Number(b.produtoId || b.id);
     } else if (ordenacaoProduto.coluna === "saldo") {
@@ -356,7 +364,6 @@ const VisualizarEstoque = () => {
         <h1>Visualizar Estoque</h1>
         <p>Visualize os almoxarifados vinculados ao sistema</p>
       </div>
-
       <div className="estoque-view-actions">
         <input
           type="text"
@@ -581,7 +588,9 @@ const VisualizarEstoque = () => {
                           ))}
                       </span>
                     </th>
-                    <th onClick={() => handleOrdenarProduto("unidadeFormatada")}>
+                    <th
+                      onClick={() => handleOrdenarProduto("unidadeFormatada")}
+                    >
                       <span className="sortable-header">
                         Unidade
                         {ordenacaoProduto.coluna === "unidadeFormatada" &&

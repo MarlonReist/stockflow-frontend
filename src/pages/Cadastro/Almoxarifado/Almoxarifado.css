@@ -53,6 +53,65 @@
   font-weight: 600;
 }
 
+.almoxarifado-page .almoxarifado-principal-group {
+  gap: 8px;
+}
+
+.almoxarifado-page .toggle-option {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+}
+
+.almoxarifado-page .toggle-option input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.almoxarifado-page .toggle-control {
+  position: relative;
+  width: 42px;
+  height: 24px;
+  flex: 0 0 auto;
+  border-radius: 999px;
+  background: var(--border-purple-soft);
+  transition: background 0.2s ease;
+}
+
+.almoxarifado-page .toggle-thumb {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #e5e7eb;
+  transition: transform 0.2s ease;
+}
+
+.almoxarifado-page .toggle-option input:checked + .toggle-control {
+  background: var(--primary);
+}
+
+.almoxarifado-page .toggle-option input:checked + .toggle-control .toggle-thumb {
+  transform: translateX(18px);
+  background: #ffffff;
+}
+
+.almoxarifado-page .toggle-option input:focus-visible + .toggle-control {
+  outline: 3px solid rgba(124, 58, 237, 0.3);
+  outline-offset: 2px;
+}
+
+.almoxarifado-page .toggle-text {
+  color: #d1d5db;
+  font-size: 14px;
+  font-weight: 600;
+}
+
 .almoxarifado-form input {
   width: 100%;
   height: 46px;

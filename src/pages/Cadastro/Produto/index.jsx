@@ -14,6 +14,7 @@ const produtoInicial = {
   preco: "",
   categoriaId: "",
   unidadeMedida: "",
+  estoqueMinimo: "",
 };
 
 const Produto = () => {
@@ -42,6 +43,11 @@ const Produto = () => {
           preco: String(response.data.preco.toFixed(2).replace(".", ",")),
           categoriaId: String(response.data.categoriaId),
           unidadeMedida: response.data.unidadeMedida,
+          estoqueMinimo:
+            response.data.estoqueMinimo === null ||
+            response.data.estoqueMinimo === undefined
+              ? ""
+              : String(response.data.estoqueMinimo),
         });
       } catch (error) {
         mostrarMensagem("Erro ao carregar produto", "erro");
@@ -137,6 +143,8 @@ const Produto = () => {
     const produtoParaEnviar = {
       ...produto,
       preco: Number(produto.preco.replace(/\./g, "").replace(",", ".")),
+      estoqueMinimo:
+        produto.estoqueMinimo === "" ? null : Number(produto.estoqueMinimo),
     };
 
     const erros = validarProduto();
@@ -238,6 +246,20 @@ const Produto = () => {
                 onAccept={(value) => handleMaskedChange("preco", value)}
                 className={camposInvalidos.preco ? "input-error" : ""}
               />
+            </div>
+            <div className="form-group">
+              <label htmlFor="estoqueMinimo">Estoque mínimo</label>
+              <input
+                id="estoqueMinimo"
+                type="number"
+                name="estoqueMinimo"
+                min="0"
+                step="1"
+                placeholder="Opcional"
+                value={produto.estoqueMinimo}
+                onChange={handleChange}
+              />
+              <small>Deixe em branco para não monitorar estoque mínimo.</small>
             </div>
             <div className="form-group">
               <label>Categoria</label>

@@ -29,6 +29,7 @@ import ItensSaida from "./pages/Saida/Itens";
 import ItensDetalheSaida from "./pages/Saida/ItensDetalhe";
 
 import VisualizarEstoque from "./pages/Estoque/VisualizarEstoque";
+import ProdutosEstoqueBaixo from "./pages/Estoque/ProdutosEstoqueBaixo";
 import Transferencia from "./pages/Estoque/Transferencia";
 
 import OrdemServico from "./pages/OrdemServico";
@@ -126,6 +127,7 @@ function App() {
             <Route path="/saida/itens/:id" element={<ItensDetalheSaida />} />
 
             <Route path="/estoque/visualizar" element={<VisualizarEstoque />} />
+            <Route path="/estoque/baixo" element={<ProdutosEstoqueBaixo />} />
             <Route path="/estoque/transferencia" element={<Transferencia />} />
 
             <Route path="/os" element={<OrdemServico />} />

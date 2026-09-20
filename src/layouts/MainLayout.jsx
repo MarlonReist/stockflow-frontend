@@ -220,6 +220,7 @@ const MainLayout = () => {
           {estoqueAberto && (
             <div className="sidebar-submenu">
               <NavLink to="/estoque/visualizar">Visualizar Estoque</NavLink>
+              <NavLink to="/estoque/baixo">Produtos com estoque baixo</NavLink>
               <NavLink to="/estoque/transferencia">
                 Transferência entre Almoxarifados
               </NavLink>

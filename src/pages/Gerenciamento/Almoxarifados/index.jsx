@@ -213,7 +213,12 @@ const GerenciamentoAlmoxarifados = () => {
           >
             <FiChevronLeft />
           </button>
-          <button className="refresh" onClick={handleRecarregar} title="Recarregar" aria-label="Recarregar">
+          <button
+            className="refresh"
+            onClick={handleRecarregar}
+            title="Recarregar"
+            aria-label="Recarregar"
+          >
             <FiRefreshCw />
           </button>
           <button
@@ -239,10 +244,12 @@ const GerenciamentoAlmoxarifados = () => {
           </span>
         </div>
       </div>
-      <div className="gerenciamento-almoxarifados-card gerenciamento-base-table-wrapper"
+      <div
+        className="gerenciamento-almoxarifados-card gerenciamento-base-table-wrapper"
         role="region"
         aria-label="Lista de almoxarifados"
-        tabIndex={0}>
+        tabIndex={0}
+      >
         <table className="gerenciamento-almoxarifados-table gerenciamento-base-table">
           <thead>
             <tr>
@@ -275,7 +282,17 @@ const GerenciamentoAlmoxarifados = () => {
             {almoxarifadosPaginados.map((almoxarifado) => (
               <tr key={almoxarifado.id}>
                 <td>{almoxarifado.id}</td>
-                <td>{almoxarifado.nome}</td>
+                <td>
+                  <div className="almoxarifado-nome-cell">
+                    <span>{almoxarifado.nome}</span>
+
+                    {almoxarifado.principal && (
+                      <span className="almoxarifado-principal-badge">
+                        Principal
+                      </span>
+                    )}
+                  </div>
+                </td>
                 <td>
                   <button
                     type="button"

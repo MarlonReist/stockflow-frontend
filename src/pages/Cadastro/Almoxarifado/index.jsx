@@ -9,6 +9,7 @@ import { useNavigate, useParams } from "react-router-dom";
 
 const almoxarifadoInicial = {
   nome: "",
+  principal: false,
 };
 
 const Almoxarifado = () => {
@@ -159,6 +160,25 @@ const Almoxarifado = () => {
               onChange={handleChange}
               className={camposInvalidos.nome ? "input-error" : ""}
             />
+          </div>
+          <div className="form-group almoxarifado-principal-group">
+            <label className="toggle-option">
+              <input
+                type="checkbox"
+                name="principal"
+                checked={almoxarifado.principal}
+                onChange={(e) =>
+                  setAlmoxarifado({
+                    ...almoxarifado,
+                    principal: e.target.checked,
+                  })
+                }
+              />
+              <span className="toggle-control" aria-hidden="true">
+                <span className="toggle-thumb" />
+              </span>
+              <span className="toggle-text">Almoxarifado principal</span>
+            </label>
           </div>
           <div className="form-actions">
             <button type="submit">{modoEdicao ? "Atualizar" : "Salvar"}</button>

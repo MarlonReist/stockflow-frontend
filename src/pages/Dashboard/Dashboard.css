@@ -200,6 +200,37 @@
   font-weight: 500;
 }
 
+.dashboard-summary-card-clickable {
+  cursor: pointer;
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.dashboard-summary-card-clickable:hover {
+  border-color: rgba(239, 68, 68, 0.55);
+  transform: translateY(-2px);
+}
+
+.dashboard-summary-card-clickable:focus-visible {
+  outline: 3px solid rgba(239, 68, 68, 0.35);
+  outline-offset: 3px;
+}
+
+.dashboard-summary-link {
+  width: fit-content;
+  padding: 0;
+  border: 0;
+  color: #fca5a5;
+  background: transparent;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.dashboard-summary-link:hover {
+  color: #fecaca;
+  text-decoration: underline;
+}
+
 .dashboard-admin-metrics {
   width: min(100%, 1380px);
   margin-top: 24px;

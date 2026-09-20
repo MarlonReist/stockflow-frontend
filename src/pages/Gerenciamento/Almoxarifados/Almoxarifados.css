@@ -26,6 +26,28 @@
   width: min(100%, 1280px);
 }
 
+.gerenciamento-almoxarifados-page .almoxarifado-nome-cell {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.gerenciamento-almoxarifados-page .almoxarifado-principal-badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  padding: 3px 9px;
+  border: 1px solid rgba(167, 139, 250, 0.35);
+  border-radius: 999px;
+  color: #ddd6fe;
+  background: rgba(124, 58, 237, 0.16);
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+  white-space: nowrap;
+}
+
 .gerenciamento-almoxarifados-actions {
   margin-bottom: 18px;
   padding: 18px;
