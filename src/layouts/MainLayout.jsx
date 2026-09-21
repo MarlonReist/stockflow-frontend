@@ -10,7 +10,6 @@ import {
   FiFileText,
   FiGrid,
   FiSettings,
-  FiUpload,
   FiUserPlus,
   FiShield,
   FiUserCheck,
@@ -23,7 +22,6 @@ const MainLayout = () => {
   const [cadastroAberto, setCadastroAberto] = useState(false);
   const [gerenciamentoAberto, setGerenciamentoAberto] = useState(false);
   const [entradaAberto, setEntradaAberto] = useState(false);
-  const [saidaAberto, setSaidaAberto] = useState(false);
   const [estoqueAberto, setEstoqueAberto] = useState(false);
   const navigate = useNavigate();
 
@@ -188,25 +186,6 @@ const MainLayout = () => {
 
           <button
             type="button"
-            className={`sidebar-toggle ${saidaAberto ? "open" : ""}`}
-            onClick={() => setSaidaAberto(!saidaAberto)}
-          >
-            <span className="sidebar-item-content">
-              <FiUpload />
-              <span>Saída</span>
-            </span>
-            <FiChevronDown className="sidebar-chevron" />
-          </button>
-
-          {saidaAberto && (
-            <div className="sidebar-submenu">
-              <NavLink to="/saida/cadastro">Cadastro de Saída</NavLink>
-              <NavLink to="/saida/itens">Itens da saída</NavLink>
-            </div>
-          )}
-
-          <button
-            type="button"
             className={`sidebar-toggle ${estoqueAberto ? "open" : ""}`}
             onClick={() => setEstoqueAberto(!estoqueAberto)}
           >
@@ -224,6 +203,16 @@ const MainLayout = () => {
               <NavLink to="/estoque/transferencia">
                 Transferência entre Almoxarifados
               </NavLink>
+              {usuarioAdmin && (
+                <NavLink to="/estoque/conferencias">
+                  Conferência de Estoque
+                </NavLink>
+              )}
+              {usuarioAdmin && (
+                <NavLink to="/estoque/ajustes">
+                  Ajustes de Estoque
+                </NavLink>
+              )}
             </div>
           )}
 

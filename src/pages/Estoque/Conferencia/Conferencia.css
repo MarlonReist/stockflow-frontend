@@ -1,0 +1,144 @@
+.conferencia-page {
+  width: 100%;
+  padding: 24px 32px;
+}
+
+.conferencia-header,
+.conferencia-card {
+  width: min(100%, 1380px);
+}
+
+.conferencia-header {
+  margin-bottom: 24px;
+}
+
+.conferencia-header h1 {
+  margin: 0 0 8px;
+  color: var(--text-primary);
+  font-size: 28px;
+}
+
+.conferencia-header p {
+  margin: 0;
+  color: var(--text-secondary);
+}
+
+.conferencia-card {
+  margin-bottom: 20px;
+  padding: 22px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-purple-subtle);
+  border-radius: var(--radius-xl);
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.16);
+}
+
+.conferencia-card h2 {
+  margin: 0 0 16px;
+  color: var(--text-primary);
+  font-size: 18px;
+}
+
+.conferencia-form {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.conferencia-form select {
+  flex: 1;
+  height: 46px;
+  padding: 0 14px;
+  border: 1px solid var(--border-purple-soft);
+  border-radius: var(--radius-lg);
+  color: var(--text-primary);
+  background: var(--bg-input);
+}
+
+.conferencia-form button,
+.conferencia-table button {
+  min-height: 42px;
+  padding: 0 18px;
+  border: 0;
+  border-radius: var(--radius-lg);
+  color: #ffffff;
+  background: linear-gradient(to right, var(--primary), var(--accent));
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.conferencia-form button:disabled {
+  cursor: wait;
+  opacity: 0.6;
+}
+
+.conferencia-table-wrapper {
+  overflow-x: auto;
+}
+
+.conferencia-table {
+  width: 100%;
+  min-width: 680px;
+  border-collapse: collapse;
+}
+
+.conferencia-table th,
+.conferencia-table td {
+  padding: 14px 16px;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.12);
+  text-align: left;
+  white-space: nowrap;
+}
+
+.conferencia-table th {
+  color: var(--text-primary);
+  background: rgba(124, 58, 237, 0.08);
+  font-size: 13px;
+}
+
+.conferencia-table th[onClick] { cursor: pointer; user-select: none; }
+
+.conferencia-list-toolbar { display: flex; gap: 10px; margin-bottom: 16px; }
+.conferencia-list-toolbar input { height: 42px; padding: 0 12px; border: 1px solid var(--border-purple-soft); border-radius: var(--radius-lg); color: var(--text-primary); background: var(--bg-input); color-scheme: dark; }
+.conferencia-list-toolbar button, .conferencia-pagination button { width: 38px; min-height: 38px; display: inline-flex; align-items: center; justify-content: center; border: 1px solid var(--border-purple-soft); border-radius: 8px; color: var(--text-primary); background: transparent; cursor: pointer; }
+.conferencia-pagination { display: flex; align-items: center; justify-content: flex-end; gap: 8px; margin-top: 16px; }
+.conferencia-pagination button:disabled { cursor: not-allowed; opacity: 0.35; }
+.conferencia-pagination span { color: var(--text-secondary); font-size: 13px; font-weight: 600; }
+
+.conferencia-table td {
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+
+.conferencia-message {
+  width: min(100%, 1380px);
+  padding: 14px 16px;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: var(--radius-lg);
+  color: #fecaca;
+  background: rgba(239, 68, 68, 0.1);
+}
+
+@media (max-width: 700px) {
+  .conferencia-page {
+    padding: 20px;
+  }
+
+  .conferencia-form {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .conferencia-form button {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .conferencia-page {
+    padding: 16px;
+  }
+
+  .conferencia-card {
+    padding: 16px;
+  }
+}

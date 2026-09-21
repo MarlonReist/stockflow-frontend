@@ -89,6 +89,13 @@ const HistoricoMovimentacoes = () => {
       };
     }
 
+    if (movimentacao.ajusteEstoqueId) {
+      return {
+        origem: "Ajuste",
+        idOrigem: movimentacao.ajusteEstoqueId,
+      };
+    }
+
     return {
       origem: "-",
       idOrigem: "-",
@@ -125,12 +132,12 @@ const HistoricoMovimentacoes = () => {
       const janelaPdf = window.open(pdfUrl, "_blank");
 
       if (!janelaPdf) {
-        mostrarMensagem("Permita pop-ups para abrir o relatÃ³rio.", "erro");
+        mostrarMensagem("Permita pop-ups para abrir o relatório.", "erro");
       }
 
       setTimeout(() => URL.revokeObjectURL(pdfUrl), 1000);
     } catch (error) {
-      mostrarMensagem("Erro ao gerar relatÃ³rio em PDF.", "erro");
+      mostrarMensagem("Erro ao gerar relatório em PDF.", "erro");
     }
   };
 
@@ -154,15 +161,15 @@ const HistoricoMovimentacoes = () => {
       const passouNaOrigem =
         !filtros.origem || origem.origem === filtros.origem;
 
-      const passouNoTipo =
-        !filtros.tipo || movimentacao.tipo === filtros.tipo;
+      const passouNoTipo = !filtros.tipo || movimentacao.tipo === filtros.tipo;
 
       const passouNaDataInicial =
         !filtros.dataInicial ||
         movimentacao.dataMovimentacao >= filtros.dataInicial;
 
       const passouNaDataFinal =
-        !filtros.dataFinal || movimentacao.dataMovimentacao <= filtros.dataFinal;
+        !filtros.dataFinal ||
+        movimentacao.dataMovimentacao <= filtros.dataFinal;
 
       return (
         passouNaBusca &&
@@ -196,9 +203,7 @@ const HistoricoMovimentacoes = () => {
       const valorB = getValorOrdenacao(movimentacaoB, ordenacao.campo);
 
       if (typeof valorA === "number" && typeof valorB === "number") {
-        return ordenacao.direcao === "asc"
-          ? valorA - valorB
-          : valorB - valorA;
+        return ordenacao.direcao === "asc" ? valorA - valorB : valorB - valorA;
       }
 
       return ordenacao.direcao === "asc"
@@ -307,6 +312,7 @@ const HistoricoMovimentacoes = () => {
               <option value="Saída">Saída</option>
               <option value="Transferência">Transferência</option>
               <option value="Ordem de Serviço">Ordem de Serviço</option>
+              <option value="Ajuste">Ajuste</option>
             </select>
           </div>
 
@@ -321,6 +327,8 @@ const HistoricoMovimentacoes = () => {
               <option value="">Todos</option>
               <option value="ENTRADA">Entrada</option>
               <option value="SAIDA">Saída</option>
+              <option value="AJUSTE_ENTRADA">Ajuste de Entrada</option>
+              <option value="AJUSTE_SAIDA">Ajuste de Saída</option>
             </select>
           </div>
 
@@ -355,7 +363,12 @@ const HistoricoMovimentacoes = () => {
           </button>
         </div>
 
-        <div className="historico-table-wrapper" role="region" aria-label="Histórico de movimentações" tabIndex={0}>
+        <div
+          className="historico-table-wrapper"
+          role="region"
+          aria-label="Histórico de movimentações"
+          tabIndex={0}
+        >
           <table className="historico-table">
             <thead>
               <tr>
@@ -465,15 +478,20 @@ const HistoricoMovimentacoes = () => {
               <FiChevronRight />
             </button>
             <span className="total-itens" aria-live="polite">
-              {movimentacoesOrdenadas.length === 0 ? 0 : (paginaAtual - 1) * itensPorPagina + 1}
+              {movimentacoesOrdenadas.length === 0
+                ? 0
+                : (paginaAtual - 1) * itensPorPagina + 1}
               {" - "}
-              {Math.min(paginaAtual * itensPorPagina, movimentacoesOrdenadas.length)}
-              {" / "}{movimentacoesOrdenadas.length}
+              {Math.min(
+                paginaAtual * itensPorPagina,
+                movimentacoesOrdenadas.length,
+              )}
+              {" / "}
+              {movimentacoesOrdenadas.length}
             </span>
           </div>
         </div>
       </div>
-
     </div>
   );
 };

@@ -1,0 +1,307 @@
+.detalhe-conferencia-page {
+  width: 100%;
+  padding: 24px 32px;
+}
+
+.detalhe-conferencia-header,
+.detalhe-conferencia-card,
+.detalhe-conferencia-summary {
+  width: min(100%, 1380px);
+}
+
+.detalhe-conferencia-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 18px;
+  margin-bottom: 18px;
+}
+
+.detalhe-conferencia-header button {
+  min-height: 40px;
+  padding: 0 14px;
+  border: 1px solid var(--border-purple-soft);
+  border-radius: var(--radius-lg);
+  color: var(--text-primary);
+  background: transparent;
+  cursor: pointer;
+}
+
+.detalhe-conferencia-header h1 {
+  margin: 0 0 6px;
+  color: var(--text-primary);
+  font-size: 28px;
+}
+
+.detalhe-conferencia-header p {
+  margin: 0;
+  color: var(--text-secondary);
+}
+
+.detalhe-conferencia-summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 22px;
+  margin-bottom: 18px;
+  padding: 16px 20px;
+  border: 1px solid var(--border-purple-subtle);
+  border-radius: var(--radius-xl);
+  color: var(--text-secondary);
+  background: var(--bg-card);
+}
+
+.detalhe-conferencia-summary strong {
+  color: var(--text-primary);
+}
+
+.detalhe-conferencia-card {
+  padding: 20px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-purple-subtle);
+  border-radius: var(--radius-xl);
+}
+
+.detalhe-conferencia-table-wrapper {
+  overflow-x: auto;
+}
+
+.detalhe-conferencia-table {
+  width: 100%;
+  min-width: 1020px;
+  border-collapse: collapse;
+}
+
+.detalhe-conferencia-table th,
+.detalhe-conferencia-table td {
+  padding: 14px 16px;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.12);
+  text-align: left;
+  white-space: nowrap;
+}
+
+.detalhe-conferencia-table th[onClick] {
+  cursor: pointer;
+  user-select: none;
+}
+
+.detalhe-conferencia-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.detalhe-conferencia-pagination button {
+  width: 34px;
+  height: 34px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border-purple-soft);
+  border-radius: 8px;
+  color: var(--text-primary);
+  background: transparent;
+  cursor: pointer;
+}
+
+.detalhe-conferencia-pagination button:disabled {
+  cursor: not-allowed;
+  opacity: 0.35;
+}
+
+.detalhe-conferencia-pagination span {
+  color: var(--text-secondary);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.detalhe-conferencia-table th {
+  color: var(--text-primary);
+  background: rgba(124, 58, 237, 0.08);
+  font-size: 13px;
+}
+
+.detalhe-conferencia-table td {
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+
+.detalhe-conferencia-table input {
+  width: 100px;
+  height: 38px;
+  padding: 0 10px;
+  border: 1px solid var(--border-purple-soft);
+  border-radius: var(--radius-lg);
+  color: var(--text-primary);
+  background: var(--bg-input);
+}
+
+.detalhe-conferencia-table button,
+.detalhe-conferencia-finalizar {
+  min-height: 38px;
+  padding: 0 14px;
+  border: 0;
+  border-radius: var(--radius-lg);
+  color: #ffffff;
+  background: linear-gradient(to right, var(--primary), var(--accent));
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.detalhe-conferencia-finalizar {
+  min-height: 44px;
+}
+
+.detalhe-conferencia-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.detalhe-conferencia-salvar-todas {
+  min-height: 44px;
+  padding: 0 16px;
+  border: 1px solid var(--border-purple-soft);
+  border-radius: var(--radius-lg);
+  color: var(--text-primary);
+  background: transparent;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.detalhe-conferencia-salvar-todas:hover {
+  background: rgba(124, 58, 237, 0.12);
+}
+
+.detalhe-conferencia-salvar-todas:disabled {
+  cursor: wait;
+  opacity: 0.55;
+}
+
+.detalhe-conferencia-finalizar:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+.ajuste-conferencia-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.detalhe-conferencia-table .ajuste-conferencia-actions input {
+  width: 220px;
+  min-width: 180px;
+}
+
+.ajuste-conferencia-actions button {
+  white-space: nowrap;
+}
+
+.ajuste-conferencia-actions button:disabled {
+  cursor: wait;
+  opacity: 0.55;
+}
+
+.ajuste-status {
+  display: inline-flex;
+  padding: 5px 9px;
+  border: 1px solid;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.ajuste-status.sem-divergencia {
+  border-color: rgba(148, 163, 184, 0.3);
+  color: var(--text-secondary);
+  background: rgba(148, 163, 184, 0.08);
+}
+
+.ajuste-status.ajustado {
+  border-color: rgba(34, 197, 94, 0.35);
+  color: #86efac;
+  background: rgba(34, 197, 94, 0.1);
+}
+
+.divergencia-badge {
+  display: inline-flex;
+  min-width: 38px;
+  justify-content: center;
+  padding: 5px 9px;
+  border: 1px solid;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.divergencia-positiva {
+  border-color: rgba(245, 158, 11, 0.35);
+  color: #fcd34d;
+  background: rgba(245, 158, 11, 0.1);
+}
+
+.divergencia-negativa {
+  border-color: rgba(239, 68, 68, 0.35);
+  color: #fca5a5;
+  background: rgba(239, 68, 68, 0.1);
+}
+
+.divergencia-zero {
+  border-color: rgba(148, 163, 184, 0.3);
+  color: var(--text-secondary);
+  background: rgba(148, 163, 184, 0.08);
+}
+
+.detalhe-conferencia-message {
+  width: min(100%, 1380px);
+  padding: 14px 16px;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: var(--radius-lg);
+  color: #fecaca;
+  background: rgba(239, 68, 68, 0.1);
+}
+
+@media (max-width: 600px) {
+  .detalhe-conferencia-page {
+    padding: 20px;
+  }
+
+  .detalhe-conferencia-header {
+    flex-direction: column;
+  }
+
+  .detalhe-conferencia-header button {
+    width: 100%;
+  }
+
+  .detalhe-conferencia-actions {
+    flex-direction: column;
+  }
+
+  .detalhe-conferencia-actions button {
+    width: 100%;
+  }
+
+  .ajuste-conferencia-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .detalhe-conferencia-table .ajuste-conferencia-actions input,
+  .ajuste-conferencia-actions button {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .detalhe-conferencia-page {
+    padding: 16px;
+  }
+
+  .detalhe-conferencia-card {
+    padding: 14px;
+  }
+}

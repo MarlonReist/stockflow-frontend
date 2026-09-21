@@ -24,13 +24,13 @@ import CadastroEntrada from "./pages/Entrada/Cadastro";
 import ItensEntrada from "./pages/Entrada/Itens";
 import ItensDetalhe from "./pages/Entrada/ItensDetalhe";
 
-import CadastroSaida from "./pages/Saida/Cadastro";
-import ItensSaida from "./pages/Saida/Itens";
-import ItensDetalheSaida from "./pages/Saida/ItensDetalhe";
 
 import VisualizarEstoque from "./pages/Estoque/VisualizarEstoque";
 import ProdutosEstoqueBaixo from "./pages/Estoque/ProdutosEstoqueBaixo";
 import Transferencia from "./pages/Estoque/Transferencia";
+import Conferencia from "./pages/Estoque/Conferencia";
+import DetalheConferencia from "./pages/Estoque/Conferencia/Detalhe";
+import Ajustes from "./pages/Estoque/Ajustes";
 
 import OrdemServico from "./pages/OrdemServico";
 import CadastroOrdemServico from "./pages/OrdemServico/Cadastro";
@@ -122,9 +122,10 @@ function App() {
             <Route path="/entrada/itens" element={<ItensEntrada />} />
             <Route path="/entrada/itens/:id" element={<ItensDetalhe />} />
 
-            <Route path="/saida/cadastro" element={<CadastroSaida />} />
-            <Route path="/saida/itens" element={<ItensSaida />} />
-            <Route path="/saida/itens/:id" element={<ItensDetalheSaida />} />
+            <Route
+              path="/saida/*"
+              element={<Navigate to="/relatorios/historico-movimentacoes" replace />}
+            />
 
             <Route path="/estoque/visualizar" element={<VisualizarEstoque />} />
             <Route path="/estoque/baixo" element={<ProdutosEstoqueBaixo />} />
@@ -144,12 +145,16 @@ function App() {
           <Route element={<PrivateRoute perfisPermitidos={["ADMIN"]} />}>
             <Route path="/acessos" element={<Acessos />} />
             <Route path="/tipos-os" element={<TipoOrdemServico />} />
-
             <Route path="/tipos-os/editar/:id" element={<TipoOrdemServico />} />
-
             <Route
               path="/gerenciamento/tipos-os"
               element={<TiposOrdemServico />}
+            />
+            <Route path="/estoque/conferencias" element={<Conferencia />} />
+            <Route path="/estoque/ajustes" element={<Ajustes />} />
+            <Route
+              path="/estoque/conferencias/:id"
+              element={<DetalheConferencia />}
             />
           </Route>
         </Routes>
