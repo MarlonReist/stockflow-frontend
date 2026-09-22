@@ -20,10 +20,20 @@ function reenviarConviteUsuario(id) {
   return api.post(`/usuarios/${id}/reenviar-convite`);
 }
 
+function buscarUsuarioPorId(id) {
+  return api.get(`/usuarios/${id}`);
+}
+
+function atualizarUsuario(id, usuario) {
+  return api.put(`/usuarios/${id}`, usuario);
+}
+
 export {
   listarUsuarios,
   convidarUsuario,
   reenviarConviteUsuario,
   bloquearUsuario,
   desbloquearUsuario,
+  buscarUsuarioPorId,
+  atualizarUsuario,
 };

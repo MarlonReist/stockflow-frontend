@@ -206,6 +206,13 @@ const Perfil = () => {
                 <strong>{perfil.perfil}</strong>
               </div>
 
+              {perfil.colaboradorNome && (
+                <div className="perfil-info-item">
+                  <span>Colaborador vinculado</span>
+                  <strong>{perfil.colaboradorNome}</strong>
+                </div>
+              )}
+
               <div className="perfil-info-item">
                 <span>Status</span>
                 <strong>{perfil.status}</strong>
@@ -251,9 +258,13 @@ const Perfil = () => {
                 <button
                   type="button"
                   className="perfil-password-toggle"
-                  onClick={() => setMostrarSenhaAtual((valorAtual) => !valorAtual)}
+                  onClick={() =>
+                    setMostrarSenhaAtual((valorAtual) => !valorAtual)
+                  }
                   aria-label={
-                    mostrarSenhaAtual ? "Ocultar senha atual" : "Mostrar senha atual"
+                    mostrarSenhaAtual
+                      ? "Ocultar senha atual"
+                      : "Mostrar senha atual"
                   }
                 >
                   {mostrarSenhaAtual ? <FiEyeOff /> : <FiEye />}
@@ -277,9 +288,13 @@ const Perfil = () => {
                 <button
                   type="button"
                   className="perfil-password-toggle"
-                  onClick={() => setMostrarNovaSenha((valorAtual) => !valorAtual)}
+                  onClick={() =>
+                    setMostrarNovaSenha((valorAtual) => !valorAtual)
+                  }
                   aria-label={
-                    mostrarNovaSenha ? "Ocultar nova senha" : "Mostrar nova senha"
+                    mostrarNovaSenha
+                      ? "Ocultar nova senha"
+                      : "Mostrar nova senha"
                   }
                 >
                   {mostrarNovaSenha ? <FiEyeOff /> : <FiEye />}
@@ -321,7 +336,10 @@ const Perfil = () => {
           </div>
 
           <div className="perfil-password-rules">
-            <span>A senha deve ter no mínimo 8 caracteres, letra maiúscula, letra minúscula, número e caractere especial.</span>
+            <span>
+              A senha deve ter no mínimo 8 caracteres, letra maiúscula, letra
+              minúscula, número e caractere especial.
+            </span>
           </div>
 
           <div className="perfil-actions">
