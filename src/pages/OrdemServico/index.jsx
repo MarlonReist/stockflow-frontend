@@ -68,6 +68,51 @@ const OrdemServico = () => {
     return String(data).split("-").reverse().join("/");
   };
 
+  const formatarDataHora = (dataHora) => {
+    if (!dataHora) {
+      return "-";
+    }
+
+    const [data, horario = ""] = String(dataHora).split("T");
+    const [ano, mes, dia] = data.split("-");
+
+    if (!ano || !mes || !dia) {
+      return "-";
+    }
+
+    const horaMinuto = horario.slice(0, 5);
+
+    return horaMinuto
+      ? `${dia}/${mes}/${ano} ${horaMinuto}`
+      : `${dia}/${mes}/${ano}`;
+  };
+
+  const formatarStatus = (status) => {
+    const nomes = {
+      ABERTA: "Aberta",
+      AGENDADA: "Agendada",
+      EM_ATENDIMENTO: "Em atendimento",
+      AGUARDANDO_CONFERENCIA: "Aguardando conferência",
+      FINALIZADA: "Finalizada",
+      CANCELADA: "Cancelada",
+    };
+
+    return nomes[status] ?? status ?? "-";
+  };
+
+  const classeStatus = (status) => {
+    const classes = {
+      ABERTA: "os-status-open",
+      AGENDADA: "os-status-scheduled",
+      EM_ATENDIMENTO: "os-status-in-progress",
+      AGUARDANDO_CONFERENCIA: "os-status-awaiting",
+      FINALIZADA: "os-status-finished",
+      CANCELADA: "os-status-canceled",
+    };
+
+    return classes[status] ?? "";
+  };
+
   const formatarValor = (valor) => {
     const valorNumerico = Number(valor || 0);
     return `R$ ${valorNumerico.toFixed(2).replace(".", ",")}`;
@@ -369,20 +414,12 @@ const OrdemServico = () => {
                 <td>{formatarValor(ordem.valorTotal)}</td>
                 <td>
                   <span
-                    className={`os-status ${
-                      ordem.status === "ABERTA"
-                        ? "os-status-open"
-                        : ordem.status === "FINALIZADA"
-                          ? "os-status-finished"
-                          : ordem.status === "CANCELADA"
-                            ? "os-status-canceled"
-                            : ""
-                    }`}
+                    className={`os-status ${classeStatus(ordem.status)}`}
                   >
-                    {ordem.status}
+                    {formatarStatus(ordem.status)}
                   </span>
                 </td>
-                <td>{formatarData(ordem.dataFechamento)}</td>
+                <td>{formatarDataHora(ordem.dataFechamento)}</td>
                 <td>
                   <button
                     type="button"
@@ -400,15 +437,15 @@ const OrdemServico = () => {
                   <button
                     type="button"
                     className="action-button"
-                    disabled={ordem.status !== "ABERTA"}
+                    disabled={ordem.status !== "AGUARDANDO_CONFERENCIA"}
                     title="Finalizar ordem"
                     aria-label="Finalizar ordem"
                     onClick={(e) => {
                       e.stopPropagation();
 
-                      if (ordem.status !== "ABERTA") {
+                      if (ordem.status !== "AGUARDANDO_CONFERENCIA") {
                         mostrarMensagem(
-                          "Apenas ordens abertas podem ser finalizadas.",
+                          "Apenas ordens aguardando conferência podem ser finalizadas.",
                           "erro",
                         );
                         return;
@@ -424,15 +461,15 @@ const OrdemServico = () => {
                   <button
                     type="button"
                     className="action-button"
-                    disabled={ordem.status !== "ABERTA"}
+                    disabled={!["ABERTA", "AGENDADA"].includes(ordem.status)}
                     title="Cancelar ordem"
                     aria-label="Cancelar ordem"
                     onClick={(e) => {
                       e.stopPropagation();
 
-                      if (ordem.status !== "ABERTA") {
+                      if (!["ABERTA", "AGENDADA"].includes(ordem.status)) {
                         mostrarMensagem(
-                          "Apenas ordens abertas podem ser canceladas.",
+                          "Apenas ordens abertas ou agendadas podem ser canceladas.",
                           "erro",
                         );
                         return;

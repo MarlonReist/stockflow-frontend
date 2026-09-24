@@ -24,6 +24,18 @@ function atualizarTipoDaOrdemServico(id, tipoOrdemServico) {
   return api.put(`/os/${id}/tipo`, tipoOrdemServico);
 }
 
+function agendarOrdemServico(id, agendamento) {
+  return api.patch(`/os/${id}/agendar`, agendamento);
+}
+
+function iniciarAtendimentoOrdemServico(id) {
+  return api.patch(`/os/${id}/iniciar`);
+}
+
+function concluirAtendimentoOrdemServico(id, conclusao) {
+  return api.patch(`/os/${id}/concluir-atendimento`, conclusao);
+}
+
 function finalizarOrdemServico(id) {
   return api.patch(`/os/${id}/finalizar`);
 }
@@ -51,6 +63,9 @@ export {
   deletarOrdemServico,
   atualizarDescricaoOrdemServico,
   atualizarTipoDaOrdemServico,
+  agendarOrdemServico,
+  iniciarAtendimentoOrdemServico,
+  concluirAtendimentoOrdemServico,
   finalizarOrdemServico,
   cancelarOrdemServico,
   gerarPdfOrdemServico,

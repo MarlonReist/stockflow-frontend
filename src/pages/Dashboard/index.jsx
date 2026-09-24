@@ -8,6 +8,7 @@ import {
   buscarResumoDashboard,
 } from "../../services/dashboardService";
 import { listarEstoquesBaixos } from "../../services/almoxarifadoEstoqueService";
+import { listarOrdensServico } from "../../services/ordemServicoService";
 import "./Dashboard.css";
 
 const Dashboard = () => {
@@ -29,6 +30,7 @@ const Dashboard = () => {
   const [dataInicioPersonalizada, setDataInicioPersonalizada] = useState("");
   const [dataFimPersonalizada, setDataFimPersonalizada] = useState("");
   const [erroPeriodo, setErroPeriodo] = useState("");
+  const [ordensServicoDashboard, setOrdensServicoDashboard] = useState([]);
 
   const usuarioLogado = JSON.parse(
     localStorage.getItem("stockflow_usuario") || "{}",
@@ -169,6 +171,19 @@ const Dashboard = () => {
     carregarDadosDashboard();
   }, [periodoSelecionado, dataInicioPersonalizada, dataFimPersonalizada]);
 
+  useEffect(() => {
+    const carregarOrdensServicoDashboard = async () => {
+      try {
+        const response = await listarOrdensServico();
+        setOrdensServicoDashboard(response.data);
+      } catch (error) {
+        setOrdensServicoDashboard([]);
+      }
+    };
+
+    carregarOrdensServicoDashboard();
+  }, []);
+
   const formatarData = (data) => {
     if (!data) {
       return "-";
@@ -189,45 +204,19 @@ const Dashboard = () => {
     return tipo || "-";
   };
 
-  const formatarStatus = (status) => {
-    if (status === "ABERTA") {
-      return "Abertas";
-    }
+  const quantidadePorStatus = (status) =>
+    Number(osPorStatus.find((item) => item.status === status)?.quantidade ?? 0);
 
-    if (status === "FINALIZADA") {
-      return "Finalizadas";
-    }
+  const quantidadeEmAberto =
+    quantidadePorStatus("ABERTA") +
+    quantidadePorStatus("EM_ATENDIMENTO") +
+    quantidadePorStatus("AGUARDANDO_CONFERENCIA");
 
-    if (status === "CANCELADA") {
-      return "Canceladas";
-    }
+  const quantidadeAgendadas = quantidadePorStatus("AGENDADA");
+  const osFinalizadas = quantidadePorStatus("FINALIZADA");
 
-    return status || "-";
-  };
-
-  const getCorStatus = (status) => {
-    if (status === "ABERTA") {
-      return "#22c55e";
-    }
-
-    if (status === "FINALIZADA") {
-      return "#3b82f6";
-    }
-
-    if (status === "CANCELADA") {
-      return "#ef4444";
-    }
-
-    return "#94a3b8";
-  };
-
-  const totalOsPorStatus = osPorStatus.reduce(
-    (total, item) => total + item.quantidade,
-    0,
-  );
-
-  const osFinalizadas =
-    osPorStatus.find((item) => item.status === "FINALIZADA")?.quantidade || 0;
+  const totalOsPorStatus =
+    quantidadeEmAberto + quantidadeAgendadas + osFinalizadas;
 
   const taxaConclusao =
     totalOsPorStatus > 0 ? (osFinalizadas / totalOsPorStatus) * 100 : 0;
@@ -237,17 +226,49 @@ const Dashboard = () => {
       ? `${osFinalizadas} de ${totalOsPorStatus} ordens foram finalizadas`
       : "Nenhuma ordem de serviço registrada";
 
-  const osPorStatusFormatado = osPorStatus.map((item) => {
-    const porcentagem =
-      totalOsPorStatus > 0 ? (item.quantidade / totalOsPorStatus) * 100 : 0;
+  const periodoAtendimentos = calcularPeriodoDashboard();
 
-    return {
+  const atendimentosConcluidosNoPeriodo = periodoAtendimentos
+    ? ordensServicoDashboard.filter((ordem) => {
+        if (!ordem.fimAtendimento) {
+          return false;
+        }
+
+        const dataFimAtendimento = String(ordem.fimAtendimento).slice(0, 10);
+
+        return (
+          dataFimAtendimento >= periodoAtendimentos.dataInicio &&
+          dataFimAtendimento <= periodoAtendimentos.dataFim
+        );
+      }).length
+    : 0;
+
+  const osPorStatusFormatado = [
+    {
+      status: "EM_ABERTO",
+      label: "Em aberto",
+      quantidade: quantidadeEmAberto,
+      cor: "#f97316",
+    },
+    {
+      status: "AGENDADA",
+      label: "Agendadas",
+      quantidade: quantidadeAgendadas,
+      cor: "#3b82f6",
+    },
+    {
+      status: "FINALIZADA",
+      label: "Finalizadas",
+      quantidade: osFinalizadas,
+      cor: "#22c55e",
+    },
+  ]
+    .filter((item) => item.quantidade > 0)
+    .map((item) => ({
       ...item,
-      label: formatarStatus(item.status),
-      cor: getCorStatus(item.status),
-      porcentagem,
-    };
-  });
+      porcentagem:
+        totalOsPorStatus > 0 ? (item.quantidade / totalOsPorStatus) * 100 : 0,
+    }));
 
   const dadosGraficoOs = osPorStatusFormatado.map((item) => ({
     name: item.label,
@@ -543,6 +564,17 @@ const Dashboard = () => {
             </div>
 
             <p>{textoTaxaConclusao}</p>
+          </div>
+
+          <div className="dashboard-daily-completions">
+            <div>
+              <strong>Atendimentos concluídos no período</strong>
+              <span>OS com trabalho técnico encerrado no período selecionado.</span>
+            </div>
+
+            <strong className="dashboard-daily-completions-value">
+              {atendimentosConcluidosNoPeriodo}
+            </strong>
           </div>
         </section>
       </div>
