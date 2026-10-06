@@ -27,7 +27,7 @@ const itemOSInicial = {
   quantidade: "",
 };
 
-const ProdutosOSTab = ({ ordemId, ordemEncerrada, mostrarMensagem }) => {
+const ProdutosOSTab = ({ ordemId, edicaoBloqueada, mostrarMensagem }) => {
   const [produtosOS, setProdutosOS] = useState([]);
   const [produtoSelecionado, setProdutoSelecionado] = useState(null);
   const [modalAberto, setModalAberto] = useState(false);
@@ -123,7 +123,9 @@ const ProdutosOSTab = ({ ordemId, ordemEncerrada, mostrarMensagem }) => {
   };
 
   const calcularSaldoDisponivel = (estoqueItem) => {
-    const saldoEstoque = Number(estoqueItem.saldo ?? estoqueItem.quantidade ?? 0);
+    const saldoEstoque = Number(
+      estoqueItem.saldo ?? estoqueItem.quantidade ?? 0,
+    );
     const produtoId = Number(
       estoqueItem.produtoId ?? estoqueItem.produto?.id ?? estoqueItem.id,
     );
@@ -162,7 +164,6 @@ const ProdutosOSTab = ({ ordemId, ordemEncerrada, mostrarMensagem }) => {
         produto.saldo > 0
       );
     });
-
 
   const produtosFiltrados = produtosDoAlmoxarifado.filter((produto) => {
     const busca = buscaProduto.toLowerCase();
@@ -541,13 +542,10 @@ const ProdutosOSTab = ({ ordemId, ordemEncerrada, mostrarMensagem }) => {
       className="produtos-os-tab"
       onClick={() => setProdutoSelecionado(null)}
     >
-      <div
-        className="produtos-os-actions"
-        onClick={(e) => e.stopPropagation()}
-      >
+      <div className="produtos-os-actions" onClick={(e) => e.stopPropagation()}>
         <button
           type="button"
-          disabled={ordemEncerrada}
+          disabled={edicaoBloqueada}
           onClick={() => {
             setItemEditando(null);
             setItemOS({ ...itemOSInicial });
@@ -559,7 +557,7 @@ const ProdutosOSTab = ({ ordemId, ordemEncerrada, mostrarMensagem }) => {
 
         <button
           type="button"
-          disabled={ordemEncerrada}
+          disabled={edicaoBloqueada}
           onClick={handleEditarProduto}
         >
           Editar
@@ -567,7 +565,7 @@ const ProdutosOSTab = ({ ordemId, ordemEncerrada, mostrarMensagem }) => {
 
         <button
           type="button"
-          disabled={ordemEncerrada}
+          disabled={edicaoBloqueada}
           onClick={handleDeletarProduto}
         >
           Deletar
@@ -623,7 +621,9 @@ const ProdutosOSTab = ({ ordemId, ordemEncerrada, mostrarMensagem }) => {
           <div className="modal-content produtos-os-modal">
             <div className="modal-header">
               <h2>
-                {itemEditando ? "Editar produto da OS" : "Adicionar produto na OS"}
+                {itemEditando
+                  ? "Editar produto da OS"
+                  : "Adicionar produto na OS"}
               </h2>
               <button type="button" onClick={handleFecharModal}>
                 X

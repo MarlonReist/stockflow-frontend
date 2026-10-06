@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import {
-  FiCheckCircle,
   FiChevronLeft,
   FiChevronRight,
   FiChevronsLeft,
@@ -13,7 +12,6 @@ import { useNavigate } from "react-router-dom";
 import {
   cancelarOrdemServico,
   deletarOrdemServico,
-  finalizarOrdemServico,
   listarOrdensServico,
 } from "../../services/ordemServicoService";
 import "./OrdemDeServico.css";
@@ -22,6 +20,7 @@ const OrdemServico = () => {
   const [ordensServico, setOrdensServico] = useState([]);
   const [mensagens, setMensagens] = useState([]);
   const [busca, setBusca] = useState("");
+  const [filtroStatus, setFiltroStatus] = useState("TODAS");
   const [ordemSelecionada, setOrdemSelecionada] = useState(null);
   const [acaoConfirmacao, setAcaoConfirmacao] = useState("");
   const [paginaAtual, setPaginaAtual] = useState(1);
@@ -118,18 +117,26 @@ const OrdemServico = () => {
     return `R$ ${valorNumerico.toFixed(2).replace(".", ",")}`;
   };
 
+  const quantidadeAguardandoConferencia = ordensServico.filter(
+    (ordem) => ordem.status === "AGUARDANDO_CONFERENCIA",
+  ).length;
+
   const ordensServicoFiltradas = ordensServico.filter((ordem) => {
     const buscaFormatada = busca.toLowerCase();
 
-    return (
+    const correspondeBusca =
       String(ordem.id).includes(buscaFormatada) ||
       String(ordem.clienteNome || "")
         .toLowerCase()
         .includes(buscaFormatada) ||
       String(ordem.tipoOrdemServicoNome || "")
         .toLowerCase()
-        .includes(buscaFormatada)
-    );
+        .includes(buscaFormatada);
+
+    const correspondeStatus =
+      filtroStatus === "TODAS" || ordem.status === filtroStatus;
+
+    return correspondeBusca && correspondeStatus;
   });
 
   const handleOrdenar = (coluna) => {
@@ -243,28 +250,6 @@ const OrdemServico = () => {
     }
   };
 
-  const handleFinalizarOrdem = async (ordem) => {
-    try {
-      const response = await finalizarOrdemServico(ordem.id);
-
-      if (response.data?.id) {
-        atualizarOrdemNaLista(response.data);
-      } else {
-        await carregarOrdensServico();
-      }
-
-      mostrarMensagem("Ordem finalizada com sucesso.", "sucesso");
-      setOrdemSelecionada(null);
-      setAcaoConfirmacao("");
-    } catch (error) {
-      const mensagemErro =
-        error.response?.data?.message || "Erro ao finalizar ordem.";
-
-      mostrarMensagem(mensagemErro, "erro");
-      setAcaoConfirmacao("");
-    }
-  };
-
   const handleCancelarOrdem = async (ordem) => {
     try {
       const response = await cancelarOrdemServico(ordem.id);
@@ -304,7 +289,26 @@ const OrdemServico = () => {
             setPaginaAtual(1);
           }}
         />
-
+        <label className="os-conference-toggle">
+          <input
+            type="checkbox"
+            checked={filtroStatus === "AGUARDANDO_CONFERENCIA"}
+            onChange={(event) => {
+              setFiltroStatus(
+                event.target.checked ? "AGUARDANDO_CONFERENCIA" : "TODAS",
+              );
+              setPaginaAtual(1);
+              setOrdemSelecionada(null);
+            }}
+          />
+          <span className="os-conference-toggle-track" aria-hidden="true">
+            <span className="os-conference-toggle-thumb" />
+          </span>
+          <span className="os-conference-toggle-label">
+            Aguardando conferência
+            <strong>{quantidadeAguardandoConferencia}</strong>
+          </span>
+        </label>
         <div className="os-buttons">
           <button
             type="button"
@@ -413,9 +417,7 @@ const OrdemServico = () => {
                 <td>{formatarData(ordem.dataAbertura)}</td>
                 <td>{formatarValor(ordem.valorTotal)}</td>
                 <td>
-                  <span
-                    className={`os-status ${classeStatus(ordem.status)}`}
-                  >
+                  <span className={`os-status ${classeStatus(ordem.status)}`}>
                     {formatarStatus(ordem.status)}
                   </span>
                 </td>
@@ -432,30 +434,6 @@ const OrdemServico = () => {
                     }}
                   >
                     <FiEdit2 />
-                  </button>
-
-                  <button
-                    type="button"
-                    className="action-button"
-                    disabled={ordem.status !== "AGUARDANDO_CONFERENCIA"}
-                    title="Finalizar ordem"
-                    aria-label="Finalizar ordem"
-                    onClick={(e) => {
-                      e.stopPropagation();
-
-                      if (ordem.status !== "AGUARDANDO_CONFERENCIA") {
-                        mostrarMensagem(
-                          "Apenas ordens aguardando conferência podem ser finalizadas.",
-                          "erro",
-                        );
-                        return;
-                      }
-
-                      setOrdemSelecionada(ordem);
-                      setAcaoConfirmacao("finalizar");
-                    }}
-                  >
-                    <FiCheckCircle />
                   </button>
 
                   <button
@@ -491,15 +469,10 @@ const OrdemServico = () => {
       {ordemSelecionada && acaoConfirmacao && (
         <div className="modal-overlay" onClick={() => setAcaoConfirmacao("")}>
           <div className="confirm-modal" onClick={(e) => e.stopPropagation()}>
-            <h2>
-              {acaoConfirmacao === "finalizar"
-                ? "Finalizar ordem"
-                : "Cancelar ordem"}
-            </h2>
+            <h2>Cancelar ordem</h2>
             <p>
-              Tem certeza que deseja{" "}
-              {acaoConfirmacao === "finalizar" ? "finalizar" : "cancelar"} a
-              ordem <strong>{ordemSelecionada.id}</strong>?
+              Tem certeza que deseja cancelar a ordem{" "}
+              <strong>{ordemSelecionada.id}</strong>?
             </p>
             <div className="confirm-modal-actions">
               <button
@@ -516,16 +489,7 @@ const OrdemServico = () => {
               <button
                 type="button"
                 className="danger-button"
-                onClick={() => {
-                  if (acaoConfirmacao === "finalizar") {
-                    handleFinalizarOrdem(ordemSelecionada);
-                    return;
-                  }
-
-                  if (acaoConfirmacao === "cancelar") {
-                    handleCancelarOrdem(ordemSelecionada);
-                  }
-                }}
+                onClick={() => handleCancelarOrdem(ordemSelecionada)}
               >
                 Confirmar
               </button>

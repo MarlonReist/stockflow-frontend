@@ -59,6 +59,94 @@
   box-shadow: 0 0 0 3px rgba(147, 51, 234, 0.25);
 }
 
+.os-conference-toggle {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 4px;
+  color: var(--text-primary);
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+  user-select: none;
+}
+
+.os-conference-toggle input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.os-conference-toggle-track {
+  width: 38px;
+  height: 22px;
+  padding: 2px;
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid rgba(245, 158, 11, 0.38);
+  border-radius: 999px;
+  background-color: rgba(255, 255, 255, 0.06);
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.os-conference-toggle-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 999px;
+  background-color: #d8def0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.28);
+  transform: translateX(0);
+  transition:
+    transform 0.2s ease,
+    background-color 0.2s ease;
+}
+
+.os-conference-toggle:hover .os-conference-toggle-track {
+  border-color: rgba(251, 191, 36, 0.7);
+}
+
+.os-conference-toggle input:checked + .os-conference-toggle-track {
+  background-color: rgba(217, 119, 6, 0.78);
+  border-color: rgba(245, 158, 11, 0.9);
+  box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.12);
+}
+
+.os-conference-toggle input:checked + .os-conference-toggle-track .os-conference-toggle-thumb {
+  transform: translateX(16px);
+  background-color: #ffffff;
+}
+
+.os-conference-toggle input:focus-visible + .os-conference-toggle-track {
+  box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.22);
+}
+
+.os-conference-toggle-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  line-height: 1;
+}
+
+.os-conference-toggle-label strong {
+  min-width: 22px;
+  height: 22px;
+  padding: 0 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(245, 158, 11, 0.36);
+  border-radius: 999px;
+  background-color: rgba(245, 158, 11, 0.1);
+  color: #fbbf24;
+  font-size: 11px;
+}
+
 .os-buttons {
   flex: 0 0 auto;
   display: flex;
@@ -387,18 +475,6 @@
   background-color: rgba(37, 99, 235, 0.16);
 }
 
-.os-table .action-button[aria-label="Finalizar ordem"] {
-  color: #22c55e;
-  border-color: rgba(34, 197, 94, 0.4);
-  background-color: rgba(34, 197, 94, 0.08);
-}
-
-.os-table .action-button[aria-label="Finalizar ordem"]:hover {
-  color: #bbf7d0;
-  border-color: rgba(74, 222, 128, 0.7);
-  background-color: rgba(34, 197, 94, 0.18);
-}
-
 .os-table .action-button[aria-label="Cancelar ordem"] {
   color: #f59e0b;
   border-color: rgba(249, 115, 22, 0.4);
@@ -503,6 +579,16 @@
 
   .os-actions button {
     width: 100%;
+  }
+
+  .os-conference-toggle {
+    width: 100%;
+    min-height: 42px;
+    justify-content: center;
+    padding: 8px 10px;
+    border: 1px solid rgba(148, 163, 184, 0.12);
+    border-radius: var(--radius-lg);
+    background-color: rgba(255, 255, 255, 0.025);
   }
 
   .pagination-controls {

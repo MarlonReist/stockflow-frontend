@@ -1,16 +1,28 @@
 import React, { useEffect, useRef, useState } from "react";
-import { FiDownload, FiEye, FiFile, FiTrash2, FiUpload } from "react-icons/fi";
+import {
+  FiDownload,
+  FiEdit2,
+  FiEye,
+  FiFile,
+  FiTrash2,
+  FiUpload,
+  FiX,
+} from "react-icons/fi";
 import {
   buscarArquivoAnexoOrdemServico,
   enviarAnexoOrdemServico,
   excluirAnexoOrdemServico,
   listarAnexosOrdemServico,
+  renomearAnexoOrdemServico,
 } from "../../../services/ordemServicoAnexoService";
 
-const AnexosOSTab = ({ ordemId, mostrarMensagem }) => {
+const AnexosOSTab = ({ ordemId, edicaoBloqueada, mostrarMensagem }) => {
   const [anexos, setAnexos] = useState([]);
   const [arquivoSelecionado, setArquivoSelecionado] = useState(null);
   const [enviando, setEnviando] = useState(false);
+  const [anexoRenomeando, setAnexoRenomeando] = useState(null);
+  const [novoNomeAnexo, setNovoNomeAnexo] = useState("");
+  const [renomeando, setRenomeando] = useState(false);
   const fileInputRef = useRef(null);
   const tamanhoMaximoArquivo = 10 * 1024 * 1024;
 
@@ -206,6 +218,66 @@ const AnexosOSTab = ({ ordemId, mostrarMensagem }) => {
     }
   };
 
+  const abrirRenomeacao = (anexo) => {
+    if (edicaoBloqueada) {
+      return;
+    }
+
+    setAnexoRenomeando(anexo);
+    setNovoNomeAnexo(getNomeArquivo(anexo));
+  };
+
+  const fecharRenomeacao = () => {
+    if (renomeando) {
+      return;
+    }
+
+    setAnexoRenomeando(null);
+    setNovoNomeAnexo("");
+  };
+
+  const handleRenomearAnexo = async (event) => {
+    event.preventDefault();
+
+    const nome = novoNomeAnexo.trim();
+
+    if (!nome) {
+      mostrarMensagem("Informe o novo nome do arquivo.", "erro");
+      return;
+    }
+
+    if (nome.length > 120) {
+      mostrarMensagem("O nome do arquivo deve ter no maximo 120 caracteres.", "erro");
+      return;
+    }
+
+    try {
+      setRenomeando(true);
+      const response = await renomearAnexoOrdemServico(
+        anexoRenomeando.id,
+        nome,
+      );
+
+      setAnexos((anexosAtuais) =>
+        anexosAtuais.map((anexo) =>
+          anexo.id === anexoRenomeando.id ? response.data : anexo,
+        ),
+      );
+      mostrarMensagem("Anexo renomeado com sucesso.", "sucesso");
+      setAnexoRenomeando(null);
+      setNovoNomeAnexo("");
+    } catch (error) {
+      const mensagemErro = extrairMensagemErro(
+        error,
+        "Erro ao renomear anexo da OS.",
+      );
+
+      mostrarMensagem(mensagemErro, "erro");
+    } finally {
+      setRenomeando(false);
+    }
+  };
+
   return (
     <div className="anexos-os-tab">
       <div className="anexos-os-upload">
@@ -215,7 +287,11 @@ const AnexosOSTab = ({ ordemId, mostrarMensagem }) => {
         </div>
 
         <div className="anexos-os-upload-controls">
-          <label className="anexos-os-file-button">
+          <label
+            className={`anexos-os-file-button ${
+              edicaoBloqueada ? "anexos-os-file-button-disabled" : ""
+            }`}
+          >
             <FiFile />
             <span>
               {arquivoSelecionado
@@ -225,6 +301,7 @@ const AnexosOSTab = ({ ordemId, mostrarMensagem }) => {
             <input
               ref={fileInputRef}
               type="file"
+              disabled={edicaoBloqueada}
               accept="image/jpeg,image/png,application/pdf"
               capture="environment"
               onChange={handleSelecionarArquivo}
@@ -235,7 +312,7 @@ const AnexosOSTab = ({ ordemId, mostrarMensagem }) => {
             type="button"
             className="anexos-os-send-button"
             onClick={handleEnviarAnexo}
-            disabled={!arquivoSelecionado || enviando}
+            disabled={edicaoBloqueada || !arquivoSelecionado || enviando}
           >
             <FiUpload />
             {enviando ? "Enviando..." : "Enviar"}
@@ -280,9 +357,19 @@ const AnexosOSTab = ({ ordemId, mostrarMensagem }) => {
                       </button>
                       <button
                         type="button"
+                        onClick={() => abrirRenomeacao(anexo)}
+                        title="Renomear"
+                        aria-label="Renomear anexo"
+                        disabled={edicaoBloqueada}
+                      >
+                        <FiEdit2 />
+                      </button>
+                      <button
+                        type="button"
                         onClick={() => handleExcluirAnexo(anexo)}
                         title="Excluir"
                         aria-label="Excluir anexo"
+                        disabled={edicaoBloqueada}
                       >
                         <FiTrash2 />
                       </button>
@@ -300,6 +387,51 @@ const AnexosOSTab = ({ ordemId, mostrarMensagem }) => {
           </tbody>
         </table>
       </div>
+
+      {anexoRenomeando && (
+        <div className="modal-overlay" onMouseDown={fecharRenomeacao}>
+          <form
+            className="modal-content anexos-os-rename-modal"
+            onSubmit={handleRenomearAnexo}
+            onMouseDown={(event) => event.stopPropagation()}
+          >
+            <div className="modal-header">
+              <h2>Renomear anexo</h2>
+              <button
+                type="button"
+                onClick={fecharRenomeacao}
+                aria-label="Fechar"
+                disabled={renomeando}
+              >
+                <FiX />
+              </button>
+            </div>
+
+            <div className="modal-body anexos-os-rename-body">
+              <label htmlFor="novo-nome-anexo">Nome do arquivo</label>
+              <input
+                id="novo-nome-anexo"
+                type="text"
+                value={novoNomeAnexo}
+                onChange={(event) => setNovoNomeAnexo(event.target.value)}
+                maxLength={120}
+                autoFocus
+                disabled={renomeando}
+              />
+              <span>{novoNomeAnexo.length}/120 caracteres</span>
+            </div>
+
+            <div className="modal-actions">
+              <button type="button" onClick={fecharRenomeacao} disabled={renomeando}>
+                Cancelar
+              </button>
+              <button type="submit" disabled={renomeando || !novoNomeAnexo.trim()}>
+                {renomeando ? "Renomeando..." : "Renomear"}
+              </button>
+            </div>
+          </form>
+        </div>
+      )}
     </div>
   );
 };

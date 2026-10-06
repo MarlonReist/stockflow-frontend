@@ -21,9 +21,14 @@ function excluirAnexoOrdemServico(anexoId) {
   return api.delete(`/os/anexos/${anexoId}`);
 }
 
+function renomearAnexoOrdemServico(anexoId, nome) {
+  return api.patch(`/os/anexos/${anexoId}/nome`, { nome });
+}
+
 export {
   listarAnexosOrdemServico,
   enviarAnexoOrdemServico,
   buscarArquivoAnexoOrdemServico,
   excluirAnexoOrdemServico,
+  renomearAnexoOrdemServico,
 };

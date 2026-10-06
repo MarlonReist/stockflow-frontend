@@ -22,13 +22,13 @@ import {
   gerarPdfProdutosOrdemServico,
   atualizarTipoDaOrdemServico,
   agendarOrdemServico,
-  iniciarAtendimentoOrdemServico,
-  concluirAtendimentoOrdemServico,
+  finalizarOrdemServico,
 } from "../../services/ordemServicoService";
 import { listarTiposOrdemServicoAtivos } from "../../services/tipoOrdemServicoService";
 import "./CadastroOS.css";
 import AnexosOSTab from "./components/AnexosOSTab";
 import ProdutosOSTab from "./components/ProdutosOSTab";
+import ConferenciaOSTab from "./components/ConferenciaOSTab";
 
 const formatarDataHoraParaInput = (valor) => {
   if (!valor) {
@@ -72,10 +72,13 @@ const formatarStatusOrdem = (status) => {
 
 const ordemInicial = {
   id: "",
+  dataAbertura: "",
   clienteId: "",
   clienteNome: "",
   colaboradorId: "",
   colaboradorNome: "",
+  ajudanteId: "",
+  ajudanteNome: "",
   tipoOrdemServicoId: "",
   tipoOrdemServicoNome: "",
   descricao: "",
@@ -132,8 +135,9 @@ const CadastroOrdemServico = () => {
   const tipoOrdemServicoOriginalIdRef = useRef("");
   const dataAgendadaInputRef = useRef(null);
   const [agendando, setAgendando] = useState(false);
-  const [iniciandoAtendimento, setIniciandoAtendimento] = useState(false);
-  const [confirmacaoInicioAberta, setConfirmacaoInicioAberta] = useState(false);
+  const [finalizando, setFinalizando] = useState(false);
+  const [confirmacaoFinalizacaoAberta, setConfirmacaoFinalizacaoAberta] =
+    useState(false);
   const { id } = useParams();
   const modoEdicao = Boolean(id);
   const ordemEncerrada =
@@ -141,16 +145,23 @@ const CadastroOrdemServico = () => {
   const ordemAguardandoConferencia = ordem.status === "AGUARDANDO_CONFERENCIA";
 
   const ordemSomenteLeitura = ordemEncerrada || ordemAguardandoConferencia;
+  const edicaoProdutosBloqueada = ![
+    "ABERTA",
+    "AGUARDANDO_CONFERENCIA",
+  ].includes(ordem.status);
+  const edicaoAnexosBloqueada = !["ABERTA", "AGUARDANDO_CONFERENCIA"].includes(
+    ordem.status,
+  );
   const clienteBloqueado = ordemSalva || modoEdicao;
   const colaboradorBloqueado =
     ordemSalva || (modoEdicao && ordem.status !== "ABERTA");
   const descricaoBloqueada = (ordemSalva && !modoEdicao) || ordemSomenteLeitura;
   const tipoOrdemServicoBloqueado =
     ordemSalva || (modoEdicao && ordem.status !== "ABERTA");
-  const [conclusaoAberta, setConclusaoAberta] = useState(false);
-  const [concluindoAtendimento, setConcluindoAtendimento] = useState(false);
-  const [observacaoConclusao, setObservacaoConclusao] = useState("");
   const itensPorPagina = 10;
+  const clienteDaOrdem = clientes.find(
+    (cliente) => String(cliente.id) === String(ordem.clienteId),
+  );
 
   const mostrarMensagem = (texto, tipo) => {
     const id = `${Date.now()}-${Math.random()}`;
@@ -225,11 +236,14 @@ const CadastroOrdemServico = () => {
 
         setOrdem({
           id: String(response.data.id ?? ""),
+          dataAbertura: response.data.dataAbertura ?? "",
           status: response.data.status ?? "",
           clienteId: String(response.data.clienteId ?? ""),
           clienteNome: response.data.clienteNome ?? "",
           colaboradorId: String(response.data.colaboradorId ?? ""),
           colaboradorNome: response.data.colaboradorNome ?? "",
+          ajudanteId: String(response.data.ajudanteId ?? ""),
+          ajudanteNome: response.data.ajudanteNome ?? "",
           tipoOrdemServicoId: String(response.data.tipoOrdemServicoId ?? ""),
           tipoOrdemServicoNome: response.data.tipoOrdemServicoNome ?? "",
           descricao: response.data.descricao ?? "",
@@ -248,6 +262,12 @@ const CadastroOrdemServico = () => {
 
     carregarOrdemServico();
   }, [id, modoEdicao]);
+
+  useEffect(() => {
+    if (ordem.status === "AGUARDANDO_CONFERENCIA") {
+      setAbaAtiva("conferencia");
+    }
+  }, [ordem.status]);
 
   const clientesFiltrados = clientes.filter((cliente) => {
     const buscaFormatada = buscaCliente.toLowerCase();
@@ -826,92 +846,6 @@ const CadastroOrdemServico = () => {
     }
   };
 
-  const handleIniciarAtendimento = async () => {
-    if (!modoEdicao || ordem.status !== "AGENDADA") {
-      mostrarMensagem(
-        "Apenas ordens agendadas podem iniciar atendimento.",
-        "erro",
-      );
-      return;
-    }
-
-    try {
-      setIniciandoAtendimento(true);
-
-      const response = await iniciarAtendimentoOrdemServico(ordem.id);
-
-      setOrdem((ordemAtual) => ({
-        ...ordemAtual,
-        status: response.data.status ?? "EM_ATENDIMENTO",
-        inicioAtendimento:
-          response.data.inicioAtendimento ?? ordemAtual.inicioAtendimento,
-      }));
-
-      setConfirmacaoInicioAberta(false);
-
-      mostrarMensagem("Atendimento iniciado com sucesso.", "sucesso");
-    } catch (error) {
-      mostrarMensagem(
-        error.response?.data?.message ||
-          "Não foi possível iniciar o atendimento.",
-        "erro",
-      );
-    } finally {
-      setIniciandoAtendimento(false);
-    }
-  };
-
-  const abrirConclusaoAtendimento = () => {
-    if (!modoEdicao || ordem.status !== "EM_ATENDIMENTO") {
-      mostrarMensagem(
-        "Apenas ordens em atendimento podem ser concluídas.",
-        "erro",
-      );
-      return;
-    }
-
-    setObservacaoConclusao(ordem.observacaoConclusao ?? "");
-    setConclusaoAberta(true);
-  };
-
-  const handleConcluirAtendimento = async () => {
-    if (!modoEdicao || ordem.status !== "EM_ATENDIMENTO") {
-      mostrarMensagem(
-        "Apenas ordens em atendimento podem ser concluídas.",
-        "erro",
-      );
-      return;
-    }
-
-    try {
-      setConcluindoAtendimento(true);
-
-      const response = await concluirAtendimentoOrdemServico(ordem.id, {
-        observacaoConclusao: observacaoConclusao.trim(),
-      });
-
-      setOrdem((ordemAtual) => ({
-        ...ordemAtual,
-        status: response.data.status ?? "AGUARDANDO_CONFERENCIA",
-        fimAtendimento:
-          response.data.fimAtendimento ?? ordemAtual.fimAtendimento,
-        observacaoConclusao:
-          response.data.observacaoConclusao ?? observacaoConclusao.trim(),
-      }));
-
-      setConclusaoAberta(false);
-      mostrarMensagem("Atendimento concluído com sucesso.", "sucesso");
-    } catch (error) {
-      mostrarMensagem(
-        error.response?.data?.message ||
-          "Não foi possível concluir o atendimento.",
-        "erro",
-      );
-    } finally {
-      setConcluindoAtendimento(false);
-    }
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -1018,11 +952,14 @@ const CadastroOrdemServico = () => {
 
       setOrdem({
         id: String(response.data.id ?? ""),
+        dataAbertura: response.data.dataAbertura ?? "",
         status: response.data.status ?? "",
         clienteId: String(response.data.clienteId ?? ""),
         clienteNome: response.data.clienteNome ?? "",
         colaboradorId: String(response.data.colaboradorId ?? ""),
         colaboradorNome: response.data.colaboradorNome ?? "",
+        ajudanteId: String(response.data.ajudanteId ?? ""),
+        ajudanteNome: response.data.ajudanteNome ?? "",
         tipoOrdemServicoId: String(response.data.tipoOrdemServicoId ?? ""),
         tipoOrdemServicoNome: response.data.tipoOrdemServicoNome ?? "",
         descricao: response.data.descricao ?? "",
@@ -1085,6 +1022,39 @@ const CadastroOrdemServico = () => {
     setTipoOrdemServicoSelecionado(null);
   };
 
+  const handleFinalizarOrdem = async () => {
+    if (ordem.status !== "AGUARDANDO_CONFERENCIA") {
+      mostrarMensagem(
+        "Apenas ordens aguardando conferência podem ser finalizadas.",
+        "erro",
+      );
+      return;
+    }
+
+    try {
+      setFinalizando(true);
+      const response = await finalizarOrdemServico(ordem.id);
+
+      setOrdem((ordemAtual) => ({
+        ...ordemAtual,
+        status: response.data.status ?? "FINALIZADA",
+        dataFechamento:
+          response.data.dataFechamento ?? ordemAtual.dataFechamento,
+      }));
+
+      setConfirmacaoFinalizacaoAberta(false);
+      setAbaAtiva("principal");
+      mostrarMensagem("Ordem finalizada com sucesso.", "sucesso");
+    } catch (error) {
+      mostrarMensagem(
+        error.response?.data?.message || "Erro ao finalizar ordem.",
+        "erro",
+      );
+    } finally {
+      setFinalizando(false);
+    }
+  };
+
   return (
     <div className="cadastro-os-page">
       <div className="cadastro-os-header">
@@ -1121,7 +1091,15 @@ const CadastroOrdemServico = () => {
             >
               Principal
             </button>
-
+            {ordem.status === "AGUARDANDO_CONFERENCIA" && (
+              <button
+                type="button"
+                className={abaAtiva === "conferencia" ? "active-tab" : ""}
+                onClick={() => setAbaAtiva("conferencia")}
+              >
+                Conferência
+              </button>
+            )}
             <button
               type="button"
               className={abaAtiva === "produtos" ? "active-tab" : ""}
@@ -1140,7 +1118,6 @@ const CadastroOrdemServico = () => {
               Anexos
             </button>
           </div>
-
           {abaAtiva === "principal" && (
             <button
               type="button"
@@ -1164,6 +1141,16 @@ const CadastroOrdemServico = () => {
             </button>
           )}
         </div>
+        {abaAtiva === "conferencia" && (
+          <ConferenciaOSTab
+            ordem={ordem}
+            cliente={clienteDaOrdem}
+            abrirProdutos={() => setAbaAtiva("produtos")}
+            abrirAnexos={() => setAbaAtiva("anexos")}
+            solicitarFinalizacao={() => setConfirmacaoFinalizacaoAberta(true)}
+            finalizando={finalizando}
+          />
+        )}
         {abaAtiva === "principal" && (
           <form className="cadastro-os-form" onSubmit={handleSubmit}>
             <div className="form-group os-id-field">
@@ -1219,7 +1206,7 @@ const CadastroOrdemServico = () => {
             </div>
 
             <div className="form-group">
-              <label>Colaborador (opcional)</label>
+              <label>Técnico responsável</label>
               <div
                 className={`lookup-field ${colaboradorBloqueado ? "" : "lookup-field-clickable"}`}
                 onClick={(event) => {
@@ -1264,6 +1251,27 @@ const CadastroOrdemServico = () => {
                 </button>
               </div>
             </div>
+
+            {modoEdicao && (
+              <div className="form-group">
+                <label>Técnico ajudante</label>
+
+                <div className="lookup-field os-readonly-lookup">
+                  <input
+                    type="text"
+                    value={ordem.ajudanteId}
+                    placeholder="-"
+                    readOnly
+                  />
+
+                  <input
+                    type="text"
+                    value={ordem.ajudanteNome || "Nenhum ajudante definido"}
+                    readOnly
+                  />
+                </div>
+              </div>
+            )}
 
             {modoEdicao && (
               <div className="form-group os-agendamento-field">
@@ -1406,26 +1414,6 @@ const CadastroOrdemServico = () => {
                 </button>
               )}
 
-              {modoEdicao && ordem.status === "AGENDADA" && (
-                <button
-                  type="button"
-                  className="start-service-button"
-                  onClick={() => setConfirmacaoInicioAberta(true)}
-                  disabled={iniciandoAtendimento}
-                >
-                  Iniciar atendimento
-                </button>
-              )}
-              {modoEdicao && ordem.status === "EM_ATENDIMENTO" && (
-                <button
-                  type="button"
-                  className="complete-service-button"
-                  onClick={abrirConclusaoAtendimento}
-                  disabled={concluindoAtendimento}
-                >
-                  Concluir atendimento
-                </button>
-              )}
               <button
                 type="submit"
                 disabled={(ordemSalva && !modoEdicao) || ordemSomenteLeitura}
@@ -1459,84 +1447,57 @@ const CadastroOrdemServico = () => {
         {abaAtiva === "produtos" && (
           <ProdutosOSTab
             ordemId={ordem.id}
-            ordemEncerrada={ordemSomenteLeitura}
+            edicaoBloqueada={edicaoProdutosBloqueada}
             mostrarMensagem={mostrarMensagem}
           />
         )}
         {abaAtiva === "anexos" && (
-          <AnexosOSTab ordemId={ordem.id} mostrarMensagem={mostrarMensagem} />
+          <AnexosOSTab
+            ordemId={ordem.id}
+            edicaoBloqueada={edicaoAnexosBloqueada}
+            mostrarMensagem={mostrarMensagem}
+          />
         )}
       </div>
-      {conclusaoAberta && (
+      {confirmacaoFinalizacaoAberta && (
         <div
           className="modal-overlay"
           onClick={() => {
-            if (!concluindoAtendimento) {
-              setConclusaoAberta(false);
+            if (!finalizando) {
+              setConfirmacaoFinalizacaoAberta(false);
             }
           }}
         >
           <div
-            className="modal-content conclusao-atendimento-modal"
+            className="confirm-modal"
             role="dialog"
             aria-modal="true"
-            aria-labelledby="conclusao-atendimento-titulo"
+            aria-labelledby="finalizar-os-titulo"
             onClick={(event) => event.stopPropagation()}
           >
-            <div className="modal-header">
-              <h2 id="conclusao-atendimento-titulo">Concluir atendimento</h2>
+            <h2 id="finalizar-os-titulo">Finalizar ordem de serviço</h2>
+            <p>
+              Confirma o fechamento administrativo definitivo da OS{" "}
+              <strong>{ordem.id}</strong>?
+            </p>
 
+            <div className="confirm-modal-actions">
               <button
                 type="button"
-                onClick={() => setConclusaoAberta(false)}
-                disabled={concluindoAtendimento}
-                aria-label="Fechar conclusão"
-              >
-                X
-              </button>
-            </div>
-
-            <div className="modal-body">
-              <label htmlFor="observacao-conclusao">
-                Observação da conclusão
-              </label>
-
-              <textarea
-                id="observacao-conclusao"
-                value={observacaoConclusao}
-                onChange={(event) => setObservacaoConclusao(event.target.value)}
-                maxLength={1000}
-                placeholder="Descreva o serviço realizado pelo técnico..."
-                autoFocus
-              />
-
-              <span className="conclusao-contador">
-                {observacaoConclusao.length} / 1000
-              </span>
-
-              <p>
-                Ao confirmar, o término do atendimento será registrado
-                automaticamente e a OS seguirá para conferência.
-              </p>
-            </div>
-
-            <div className="modal-actions">
-              <button
-                type="button"
-                onClick={() => setConclusaoAberta(false)}
-                disabled={concluindoAtendimento}
+                className="cancel-button"
+                onClick={() => setConfirmacaoFinalizacaoAberta(false)}
+                disabled={finalizando}
               >
                 Voltar
               </button>
 
               <button
                 type="button"
-                onClick={handleConcluirAtendimento}
-                disabled={concluindoAtendimento}
+                className="confirm-finalize-button"
+                onClick={handleFinalizarOrdem}
+                disabled={finalizando}
               >
-                {concluindoAtendimento
-                  ? "Concluindo..."
-                  : "Confirmar conclusão"}
+                {finalizando ? "Finalizando..." : "Confirmar finalização"}
               </button>
             </div>
           </div>
@@ -1818,57 +1779,6 @@ const CadastroOrdemServico = () => {
                 }}
               >
                 Selecionar
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-      {confirmacaoInicioAberta && (
-        <div
-          className="modal-overlay"
-          onClick={() => setConfirmacaoInicioAberta(false)}
-        >
-          <div
-            className="modal-content"
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="inicio-atendimento-titulo"
-            onClick={(event) => event.stopPropagation()}
-          >
-            <div className="modal-header">
-              <h2 id="inicio-atendimento-titulo">Iniciar atendimento</h2>
-
-              <button
-                type="button"
-                onClick={() => setConfirmacaoInicioAberta(false)}
-                aria-label="Fechar confirmação"
-              >
-                X
-              </button>
-            </div>
-
-            <div className="modal-body">
-              <p>
-                Deseja iniciar o atendimento da OS <strong>{ordem.id}</strong>?
-              </p>
-              <p>O horário de início será registrado automaticamente.</p>
-            </div>
-
-            <div className="modal-actions">
-              <button
-                type="button"
-                onClick={() => setConfirmacaoInicioAberta(false)}
-                disabled={iniciandoAtendimento}
-              >
-                Voltar
-              </button>
-
-              <button
-                type="button"
-                onClick={handleIniciarAtendimento}
-                disabled={iniciandoAtendimento}
-              >
-                {iniciandoAtendimento ? "Iniciando..." : "Confirmar início"}
               </button>
             </div>
           </div>
