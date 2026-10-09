@@ -1,0 +1,8 @@
+.relatorio-ordenar { padding: 0; display: inline-flex; align-items: center; gap: 6px; border: 0; background: transparent; color: inherit; font: inherit; font-weight: inherit; cursor: pointer; text-align: left; }
+.relatorio-paginacao { padding: 14px 20px; display: flex; align-items: center; justify-content: space-between; gap: 14px; border-top: 1px solid rgba(148,163,184,.1); color: var(--text-muted); font-size: 12px; }
+.relatorio-paginacao > div { display: flex; align-items: center; gap: 7px; }
+.relatorio-paginacao button { width: 34px; height: 34px; display: grid; place-items: center; border: 1px solid rgba(139,92,246,.3); border-radius: 8px; background: rgba(139,92,246,.1); color: var(--text-primary); cursor: pointer; }
+.relatorio-paginacao button:disabled { cursor: not-allowed; opacity: .35; }
+.relatorio-linha-fora-pagina { display: none; }
+@media (max-width: 600px) { .relatorio-paginacao { align-items: stretch; flex-direction: column; } .relatorio-paginacao > div { justify-content: space-between; } }
+@media print { .no-print { display: none !important; } .relatorio-linha-fora-pagina { display: table-row; } }

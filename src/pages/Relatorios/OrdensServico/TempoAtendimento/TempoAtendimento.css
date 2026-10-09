@@ -1,0 +1,225 @@
+.tempo-atendimento-page {
+  width: 100%;
+  min-width: 0;
+  padding: 24px 32px;
+}
+
+.tempo-atendimento-header,
+.tempo-atendimento-filtros,
+.tempo-atendimento-resultado {
+  width: min(100%, 1180px);
+}
+
+.tempo-atendimento-header {
+  margin-bottom: 24px;
+}
+
+.tempo-atendimento-filtros {
+  padding: 20px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  border: 1px solid var(--border-purple-subtle);
+  border-radius: var(--radius-xl);
+  background: var(--bg-card);
+  box-shadow: 0 14px 32px rgba(0, 0, 0, 0.16);
+}
+
+.tempo-atendimento-campo {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.tempo-atendimento-campo label {
+  color: var(--text-primary);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.tempo-atendimento-campo input,
+.tempo-atendimento-campo select {
+  width: 100%;
+  min-width: 0;
+  min-height: 46px;
+  padding: 0 13px;
+  border: 1px solid var(--border-purple-soft);
+  border-radius: 10px;
+  background: var(--bg-input);
+  color: var(--text-primary);
+  font: inherit;
+  color-scheme: dark;
+}
+
+.tempo-atendimento-acoes {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.tempo-atendimento-acoes button {
+  min-height: 46px;
+  padding: 0 20px;
+  border: 1px solid rgba(96, 165, 250, 0.45);
+  border-radius: 10px;
+  background: linear-gradient(135deg, #7c3aed, #2563eb);
+  color: #fff;
+  font: inherit;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.tempo-atendimento-acoes button:disabled,
+.tempo-atendimento-imprimir:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+.tempo-atendimento-erro {
+  grid-column: 1 / -1;
+  margin: 0;
+  color: #fecaca;
+  font-size: 14px;
+}
+
+.tempo-atendimento-resultado {
+  margin-top: 24px;
+  overflow: hidden;
+  border: 1px solid var(--border-purple-subtle);
+  border-radius: var(--radius-xl);
+  background: var(--bg-card);
+  box-shadow: 0 14px 32px rgba(0, 0, 0, 0.16);
+}
+
+.tempo-atendimento-resultado-header {
+  padding: 18px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+}
+
+.tempo-atendimento-resultado-header h2 {
+  margin: 0;
+  color: var(--text-primary);
+  font-size: 19px;
+}
+
+.tempo-atendimento-imprimir {
+  min-height: 42px;
+  padding: 0 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 1px solid rgba(139, 92, 246, 0.42);
+  border-radius: 10px;
+  background: rgba(139, 92, 246, 0.13);
+  color: var(--text-primary);
+  font: inherit;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.tempo-atendimento-table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.tempo-atendimento-table {
+  width: 100%;
+  min-width: 900px;
+  border-collapse: collapse;
+}
+
+.tempo-atendimento-table th,
+.tempo-atendimento-table td {
+  padding: 14px 16px;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.08);
+  color: var(--text-secondary);
+  font-size: 13px;
+  text-align: left;
+}
+
+.tempo-atendimento-table th {
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.tempo-atendimento-table td:first-child,
+.tempo-atendimento-table td:last-child {
+  color: #93c5fd;
+  font-weight: 800;
+}
+
+.tempo-atendimento-vazio {
+  margin: 0;
+  padding: 32px 20px;
+  color: var(--text-muted);
+  text-align: center;
+}
+
+.tempo-atendimento-paginacao {
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  color: var(--text-secondary);
+  font-size: 13px;
+}
+
+.tempo-atendimento-paginacao div {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.tempo-atendimento-paginacao button {
+  min-height: 38px;
+  padding: 0 14px;
+  border: 1px solid var(--border-purple-soft);
+  border-radius: 9px;
+  background: rgba(139, 92, 246, 0.1);
+  color: var(--text-primary);
+  cursor: pointer;
+}
+
+.tempo-atendimento-paginacao button:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+@media (max-width: 1024px) {
+  .tempo-atendimento-page {
+    padding: 0;
+  }
+}
+
+@media (max-width: 600px) {
+  .tempo-atendimento-filtros {
+    grid-template-columns: minmax(0, 1fr);
+    padding: 16px;
+  }
+
+  .tempo-atendimento-acoes {
+    grid-column: auto;
+  }
+
+  .tempo-atendimento-acoes button,
+  .tempo-atendimento-imprimir {
+    width: 100%;
+  }
+
+  .tempo-atendimento-resultado-header,
+  .tempo-atendimento-paginacao {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .tempo-atendimento-paginacao div {
+    justify-content: space-between;
+  }
+}

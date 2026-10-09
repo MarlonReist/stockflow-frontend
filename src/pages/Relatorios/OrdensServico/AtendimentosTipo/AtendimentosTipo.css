@@ -1,0 +1,260 @@
+.atendimentos-tipo-page {
+  width: 100%;
+  min-width: 0;
+  padding: 24px 32px;
+}
+
+.atendimentos-tipo-header,
+.atendimentos-tipo-filtros,
+.atendimentos-tipo-resultado {
+  width: min(100%, 1180px);
+}
+
+.atendimentos-tipo-header {
+  margin-bottom: 24px;
+}
+
+.atendimentos-tipo-filtros {
+  padding: 20px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) auto;
+  align-items: end;
+  gap: 16px;
+  border: 1px solid var(--border-purple-subtle);
+  border-radius: var(--radius-xl);
+  background: var(--bg-card);
+  box-shadow: 0 14px 32px rgba(0, 0, 0, 0.16);
+}
+
+.atendimentos-tipo-campo {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.atendimentos-tipo-campo label {
+  color: var(--text-primary);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.atendimentos-tipo-campo input,
+.atendimentos-tipo-campo select {
+  width: 100%;
+  min-width: 0;
+  min-height: 46px;
+  padding: 0 13px;
+  border: 1px solid var(--border-purple-soft);
+  border-radius: 10px;
+  background: var(--bg-input);
+  color: var(--text-primary);
+  font: inherit;
+  color-scheme: dark;
+}
+
+.atendimentos-tipo-filtros button {
+  min-height: 46px;
+  padding: 0 20px;
+  border: 1px solid rgba(96, 165, 250, 0.45);
+  border-radius: 10px;
+  background: linear-gradient(135deg, #7c3aed, #2563eb);
+  color: #fff;
+  font: inherit;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.atendimentos-tipo-imprimir {
+  min-height: 42px;
+  padding: 0 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  flex-shrink: 0;
+  border: 1px solid rgba(139, 92, 246, 0.42);
+  border-radius: 10px;
+  background: rgba(139, 92, 246, 0.13);
+  color: var(--text-primary);
+  font: inherit;
+  font-weight: 800;
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.atendimentos-tipo-imprimir:hover:not(:disabled) {
+  border-color: rgba(167, 139, 250, 0.7);
+  background: rgba(139, 92, 246, 0.22);
+  transform: translateY(-1px);
+}
+
+.atendimentos-tipo-filtros button:disabled,
+.atendimentos-tipo-imprimir:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+.atendimentos-tipo-mensagem {
+  grid-column: 1 / -1;
+  margin: 0;
+  color: #fecaca;
+  font-size: 14px;
+}
+
+.atendimentos-tipo-resultado {
+  margin-top: 24px;
+  overflow: hidden;
+  border: 1px solid var(--border-purple-subtle);
+  border-radius: var(--radius-xl);
+  background: var(--bg-card);
+  box-shadow: 0 14px 32px rgba(0, 0, 0, 0.16);
+}
+
+.atendimentos-tipo-resultado-header {
+  padding: 18px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+}
+
+.atendimentos-tipo-resultado-header h2 {
+  margin: 0;
+  color: var(--text-primary);
+  font-size: 19px;
+}
+
+.atendimentos-tipo-filtros-impressao,
+.atendimentos-tipo-marca-impressao {
+  display: none;
+}
+
+.atendimentos-tipo-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.atendimentos-tipo-table th,
+.atendimentos-tipo-table td {
+  padding: 15px 20px;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.08);
+  color: var(--text-secondary);
+  text-align: left;
+}
+
+.atendimentos-tipo-table th {
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.02);
+  font-size: 13px;
+}
+
+.atendimentos-tipo-table td:last-child {
+  width: 180px;
+  color: #93c5fd;
+  font-size: 18px;
+  font-weight: 900;
+}
+
+.atendimentos-tipo-vazio {
+  margin: 0;
+  padding: 32px 20px;
+  color: var(--text-muted);
+  text-align: center;
+}
+
+@media (max-width: 1024px) {
+  .atendimentos-tipo-page {
+    padding: 0;
+  }
+
+  .atendimentos-tipo-filtros {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 600px) {
+  .atendimentos-tipo-filtros {
+    grid-template-columns: minmax(0, 1fr);
+    padding: 16px;
+  }
+
+  .atendimentos-tipo-resultado-header {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .atendimentos-tipo-imprimir {
+    width: 100%;
+  }
+}
+
+@media print {
+  @page {
+    margin: 14mm;
+  }
+
+  body * {
+    visibility: hidden;
+  }
+
+  .atendimentos-tipo-resultado,
+  .atendimentos-tipo-resultado * {
+    visibility: visible;
+  }
+
+  .atendimentos-tipo-resultado {
+    position: absolute;
+    inset: 0 auto auto 0;
+    width: 100%;
+    margin: 0;
+    border: 0;
+    border-radius: 0;
+    background: #fff;
+    box-shadow: none;
+  }
+
+  .atendimentos-tipo-imprimir {
+    display: none;
+  }
+
+  .atendimentos-tipo-marca-impressao {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    padding-bottom: 14px;
+    border-bottom: 2px solid #4f46e5;
+    color: #111827;
+  }
+
+  .atendimentos-tipo-marca-impressao strong {
+    color: #4f46e5;
+    font-size: 24px;
+  }
+
+  .atendimentos-tipo-marca-impressao span,
+  .atendimentos-tipo-filtros-impressao {
+    color: #4b5563;
+    font-size: 12px;
+  }
+
+  .atendimentos-tipo-filtros-impressao {
+    display: block;
+    margin: 6px 0 0;
+  }
+
+  .atendimentos-tipo-resultado-header,
+  .atendimentos-tipo-table th,
+  .atendimentos-tipo-table td {
+    color: #111827;
+    border-color: #d1d5db;
+  }
+
+  .atendimentos-tipo-table th {
+    background: #f3f4f6;
+  }
+}

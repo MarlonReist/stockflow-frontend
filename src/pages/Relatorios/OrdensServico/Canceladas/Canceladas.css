@@ -1,0 +1,39 @@
+.canceladas-page { width: 100%; min-width: 0; padding: 24px 32px; }
+.canceladas-header, .canceladas-filtros, .canceladas-resultado { width: min(100%, 1180px); }
+.canceladas-header { margin-bottom: 24px; }
+.canceladas-filtros { padding: 20px; display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 16px; border: 1px solid var(--border-purple-subtle); border-radius: var(--radius-xl); background: var(--bg-card); box-shadow: 0 14px 32px rgba(0,0,0,.16); }
+.canceladas-campo { min-width: 0; display: flex; flex-direction: column; gap: 8px; }
+.canceladas-campo label { color: var(--text-primary); font-size: 13px; font-weight: 800; }
+.canceladas-campo input, .canceladas-campo select { width: 100%; min-width: 0; min-height: 46px; padding: 0 13px; border: 1px solid var(--border-purple-soft); border-radius: 10px; background: var(--bg-input); color: var(--text-primary); font: inherit; color-scheme: dark; }
+.canceladas-acoes { grid-column: 1 / -1; display: flex; justify-content: flex-end; }
+.canceladas-acoes button { min-height: 46px; padding: 0 20px; border: 1px solid rgba(96,165,250,.45); border-radius: 10px; background: linear-gradient(135deg,#7c3aed,#2563eb); color: #fff; font: inherit; font-weight: 800; cursor: pointer; }
+.canceladas-acoes button:disabled, .canceladas-imprimir:disabled { cursor: not-allowed; opacity: .45; }
+.canceladas-erro { grid-column: 1 / -1; margin: 0; color: #fecaca; font-size: 14px; }
+.canceladas-resultado { margin-top: 24px; overflow: hidden; border: 1px solid var(--border-purple-subtle); border-radius: var(--radius-xl); background: var(--bg-card); box-shadow: 0 14px 32px rgba(0,0,0,.16); }
+.canceladas-resultado-header { padding: 18px 20px; display: flex; align-items: center; justify-content: space-between; gap: 16px; border-bottom: 1px solid rgba(148,163,184,.1); }
+.canceladas-resultado-header h2 { margin: 0; color: var(--text-primary); font-size: 19px; }
+.canceladas-imprimir { min-height: 42px; padding: 0 16px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; border: 1px solid rgba(139,92,246,.42); border-radius: 10px; background: rgba(139,92,246,.13); color: var(--text-primary); font: inherit; font-weight: 800; cursor: pointer; }
+.canceladas-filtros-impressao, .canceladas-marca-impressao { display: none; }
+.canceladas-table-wrapper { width: 100%; overflow-x: auto; }
+.canceladas-table { width: 100%; min-width: 860px; border-collapse: collapse; }
+.canceladas-table th, .canceladas-table td { padding: 14px 16px; border-bottom: 1px solid rgba(148,163,184,.08); color: var(--text-secondary); font-size: 13px; text-align: left; }
+.canceladas-table th { color: var(--text-primary); background: rgba(255,255,255,.02); }
+.canceladas-table td:first-child { color: #93c5fd; font-weight: 800; }
+.canceladas-data { color: #fca5a5; font-weight: 800; white-space: nowrap; }
+.canceladas-vazio { margin: 0; padding: 32px 20px; color: var(--text-muted); text-align: center; }
+@media (max-width: 1024px) { .canceladas-page { padding: 0; } }
+@media (max-width: 600px) { .canceladas-filtros { grid-template-columns: minmax(0,1fr); padding: 16px; } .canceladas-acoes { grid-column: auto; } .canceladas-acoes button, .canceladas-imprimir { width: 100%; } .canceladas-resultado-header { align-items: stretch; flex-direction: column; } }
+@media print {
+  @page { margin: 14mm; }
+  body * { visibility: hidden; }
+  .canceladas-resultado, .canceladas-resultado * { visibility: visible; }
+  .canceladas-resultado { position: absolute; inset: 0 auto auto 0; width: 100%; margin: 0; border: 0; border-radius: 0; background: #fff; box-shadow: none; }
+  .canceladas-imprimir { display: none; }
+  .canceladas-marca-impressao { display: flex; justify-content: space-between; align-items: flex-end; padding-bottom: 14px; border-bottom: 2px solid #4f46e5; color: #111827; }
+  .canceladas-marca-impressao strong { color: #4f46e5; font-size: 24px; }
+  .canceladas-marca-impressao span, .canceladas-filtros-impressao { color: #4b5563; font-size: 12px; }
+  .canceladas-filtros-impressao { display: block; margin: 6px 0 0; }
+  .canceladas-resultado-header, .canceladas-table th, .canceladas-table td { color: #111827; border-color: #d1d5db; }
+  .canceladas-table th { background: #f3f4f6; }
+  .canceladas-data { color: #991b1b; }
+}

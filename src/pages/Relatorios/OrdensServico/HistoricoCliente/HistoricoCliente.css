@@ -1,0 +1,38 @@
+.historico-cliente-page { width: 100%; min-width: 0; padding: 24px 32px; }
+.historico-cliente-header, .historico-cliente-filtros, .historico-cliente-resultado { width: min(100%, 1180px); }
+.historico-cliente-header { margin-bottom: 24px; }
+.historico-cliente-filtros { padding: 20px; display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 16px; border: 1px solid var(--border-purple-subtle); border-radius: var(--radius-xl); background: var(--bg-card); box-shadow: 0 14px 32px rgba(0,0,0,.16); }
+.historico-cliente-campo { min-width: 0; display: flex; flex-direction: column; gap: 8px; }
+.historico-cliente-campo label { color: var(--text-primary); font-size: 13px; font-weight: 800; }
+.historico-cliente-campo input, .historico-cliente-campo select { width: 100%; min-width: 0; min-height: 46px; padding: 0 13px; border: 1px solid var(--border-purple-soft); border-radius: 10px; background: var(--bg-input); color: var(--text-primary); font: inherit; color-scheme: dark; }
+.historico-cliente-acoes { grid-column: 1 / -1; display: flex; justify-content: flex-end; }
+.historico-cliente-acoes button { min-height: 46px; padding: 0 20px; border: 1px solid rgba(96,165,250,.45); border-radius: 10px; background: linear-gradient(135deg,#7c3aed,#2563eb); color: #fff; font: inherit; font-weight: 800; cursor: pointer; }
+.historico-cliente-acoes button:disabled, .historico-cliente-imprimir:disabled { cursor: not-allowed; opacity: .45; }
+.historico-cliente-erro { grid-column: 1 / -1; margin: 0; color: #fecaca; font-size: 14px; }
+.historico-cliente-resultado { margin-top: 24px; overflow: hidden; border: 1px solid var(--border-purple-subtle); border-radius: var(--radius-xl); background: var(--bg-card); box-shadow: 0 14px 32px rgba(0,0,0,.16); }
+.historico-cliente-resultado-header { padding: 18px 20px; display: flex; align-items: center; justify-content: space-between; gap: 16px; border-bottom: 1px solid rgba(148,163,184,.1); }
+.historico-cliente-resultado-header h2 { margin: 0; color: var(--text-primary); font-size: 19px; }
+.historico-cliente-imprimir { min-height: 42px; padding: 0 16px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; border: 1px solid rgba(139,92,246,.42); border-radius: 10px; background: rgba(139,92,246,.13); color: var(--text-primary); font: inherit; font-weight: 800; cursor: pointer; }
+.historico-cliente-filtros-impressao, .historico-cliente-marca-impressao { display: none; }
+.historico-cliente-total { padding: 13px 20px; border-bottom: 1px solid rgba(148,163,184,.08); color: var(--text-muted); font-size: 13px; }
+.historico-cliente-table-wrapper { width: 100%; overflow-x: auto; }
+.historico-cliente-table { width: 100%; min-width: 900px; border-collapse: collapse; }
+.historico-cliente-table th, .historico-cliente-table td { padding: 14px 16px; border-bottom: 1px solid rgba(148,163,184,.08); color: var(--text-secondary); font-size: 13px; text-align: left; }
+.historico-cliente-table th { color: var(--text-primary); background: rgba(255,255,255,.02); }
+.historico-cliente-table td:first-child { color: #93c5fd; font-weight: 800; }
+.historico-cliente-vazio { margin: 0; padding: 32px 20px; color: var(--text-muted); text-align: center; }
+@media (max-width: 1024px) { .historico-cliente-page { padding: 0; } }
+@media (max-width: 600px) { .historico-cliente-filtros { grid-template-columns: minmax(0,1fr); padding: 16px; } .historico-cliente-acoes { grid-column: auto; } .historico-cliente-acoes button, .historico-cliente-imprimir { width: 100%; } .historico-cliente-resultado-header { align-items: stretch; flex-direction: column; } }
+@media print {
+  @page { margin: 14mm; }
+  body * { visibility: hidden; }
+  .historico-cliente-resultado, .historico-cliente-resultado * { visibility: visible; }
+  .historico-cliente-resultado { position: absolute; inset: 0 auto auto 0; width: 100%; margin: 0; border: 0; border-radius: 0; background: #fff; box-shadow: none; }
+  .historico-cliente-imprimir { display: none; }
+  .historico-cliente-marca-impressao { display: flex; justify-content: space-between; align-items: flex-end; padding-bottom: 14px; border-bottom: 2px solid #4f46e5; color: #111827; }
+  .historico-cliente-marca-impressao strong { color: #4f46e5; font-size: 24px; }
+  .historico-cliente-marca-impressao span, .historico-cliente-filtros-impressao { color: #4b5563; font-size: 12px; }
+  .historico-cliente-filtros-impressao { display: block; margin: 6px 0 0; }
+  .historico-cliente-resultado-header, .historico-cliente-total, .historico-cliente-table th, .historico-cliente-table td { color: #111827; border-color: #d1d5db; }
+  .historico-cliente-table th { background: #f3f4f6; }
+}

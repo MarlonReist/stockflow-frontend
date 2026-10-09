@@ -1,0 +1,31 @@
+.relatorio-cliente-lookup { min-height: 46px; display: grid; grid-template-columns: 80px minmax(0,1fr) 46px; overflow: hidden; border: 1px solid var(--border-purple-soft); border-radius: 10px; background: var(--bg-input); }
+.relatorio-cliente-lookup:focus-within { border-color: #8b5cf6; box-shadow: 0 0 0 3px rgba(139,92,246,.14); }
+.relatorio-cliente-lookup input { min-width: 0; border: 0 !important; border-right: 1px solid rgba(148,163,184,.14) !important; border-radius: 0 !important; box-shadow: none !important; background: transparent !important; }
+.relatorio-cliente-lookup input[readonly] { color: var(--text-secondary); }
+.relatorio-cliente-lookup > button { border: 0; background: rgba(139,92,246,.12); color: #c4b5fd; cursor: pointer; font-size: 18px; }
+.relatorio-cliente-lookup > button:disabled { cursor: not-allowed; opacity: .45; }
+.relatorio-seletor-overlay { position: fixed; inset: 0; z-index: 1500; padding: 24px; display: grid; place-items: center; background: rgba(2,6,23,.78); backdrop-filter: blur(4px); }
+.relatorio-seletor-box { width: min(720px,100%); max-height: min(720px,calc(100vh - 48px)); display: flex; flex-direction: column; overflow: hidden; border: 1px solid var(--border-purple-soft); border-radius: 16px; background: var(--bg-card); box-shadow: 0 24px 70px rgba(0,0,0,.45); }
+.relatorio-seletor-header { padding: 18px 20px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(148,163,184,.12); }
+.relatorio-seletor-header h2 { margin: 0; color: var(--text-primary); font-size: 20px; }
+.relatorio-seletor-header button { width: 36px; height: 36px; display: grid; place-items: center; border: 0; border-radius: 8px; background: transparent; color: var(--text-muted); cursor: pointer; font-size: 20px; }
+.relatorio-seletor-busca { margin: 18px 20px 10px; min-height: 44px; padding: 0 13px; display: flex; align-items: center; gap: 9px; border: 1px solid var(--border-purple-soft); border-radius: 10px; background: var(--bg-input); color: var(--text-muted); }
+.relatorio-seletor-busca input { width: 100%; border: 0; outline: 0; background: transparent; color: var(--text-primary); font: inherit; }
+.relatorio-seletor-paginacao { padding: 0 20px 12px; display: flex; align-items: center; justify-content: flex-end; gap: 7px; }
+.relatorio-seletor-paginacao button { width: 34px; height: 34px; display: grid; place-items: center; border: 1px solid rgba(139,92,246,.3); border-radius: 8px; background: rgba(139,92,246,.1); color: var(--text-primary); cursor: pointer; }
+.relatorio-seletor-paginacao button:disabled { cursor: not-allowed; opacity: .35; }
+.relatorio-seletor-paginacao span { margin: 0 5px; color: var(--text-muted); font-size: 12px; }
+.relatorio-seletor-table-wrapper { min-height: 240px; overflow: auto; border-block: 1px solid rgba(148,163,184,.1); }
+.relatorio-seletor-table { width: 100%; border-collapse: collapse; }
+.relatorio-seletor-table th, .relatorio-seletor-table td { padding: 13px 20px; border-bottom: 1px solid rgba(148,163,184,.08); color: var(--text-secondary); font-size: 13px; text-align: left; }
+.relatorio-seletor-table th button { display: inline-flex; align-items: center; gap: 6px; border: 0; background: transparent; color: var(--text-primary); font: inherit; font-weight: 800; cursor: pointer; }
+.relatorio-seletor-table tbody tr { cursor: pointer; }
+.relatorio-seletor-table tbody tr:hover { background: rgba(139,92,246,.07); }
+.relatorio-seletor-table tbody tr.selecionado { background: rgba(59,130,246,.16); }
+.relatorio-seletor-table th:first-child, .relatorio-seletor-table td:first-child { width: 110px; }
+.relatorio-seletor-vazio { text-align: center !important; color: var(--text-muted) !important; }
+.relatorio-seletor-footer { padding: 16px 20px; display: flex; justify-content: flex-end; }
+.relatorio-seletor-footer button { min-height: 42px; padding: 0 18px; border: 1px solid rgba(96,165,250,.45); border-radius: 9px; background: linear-gradient(135deg,#7c3aed,#2563eb); color: #fff; font: inherit; font-weight: 800; cursor: pointer; }
+.relatorio-seletor-footer button:disabled { cursor: not-allowed; opacity: .4; }
+@media (max-width: 600px) { .relatorio-seletor-overlay { padding: 10px; } .relatorio-seletor-paginacao { justify-content: center; } }
+@media print { .relatorio-seletor-overlay { display: none !important; } }

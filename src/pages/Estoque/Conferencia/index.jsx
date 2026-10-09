@@ -1,13 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  FiChevronDown,
-  FiChevronLeft,
-  FiChevronRight,
-  FiChevronUp,
-  FiChevronsLeft,
-  FiChevronsRight,
-  FiRefreshCw,
-} from "react-icons/fi";
+import { FiChevronDown, FiChevronLeft, FiChevronRight, FiChevronUp, FiChevronsLeft, FiChevronsRight, FiRefreshCw } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 import {
   iniciarConferencia,
@@ -30,10 +22,8 @@ const Conferencia = () => {
 
   const carregarDados = async () => {
     try {
-      const [conferenciasResponse, almoxarifadosResponse] = await Promise.all([
-        listarConferencias(),
-        listarAlmoxarifados(),
-      ]);
+      const [conferenciasResponse, almoxarifadosResponse] =
+        await Promise.all([listarConferencias(), listarAlmoxarifados()]);
 
       setConferencias(conferenciasResponse.data);
       setAlmoxarifados(almoxarifadosResponse.data);
@@ -83,58 +73,29 @@ const Conferencia = () => {
   };
 
   const handleOrdenar = (coluna) => {
-    setOrdenacao((atual) =>
-      atual.coluna === coluna
-        ? { coluna, direcao: atual.direcao === "asc" ? "desc" : "asc" }
-        : { coluna, direcao: "asc" },
-    );
+    setOrdenacao((atual) => atual.coluna === coluna
+      ? { coluna, direcao: atual.direcao === "asc" ? "desc" : "asc" }
+      : { coluna, direcao: "asc" });
     setPaginaAtual(1);
   };
 
   const conferenciasOrdenadas = [...conferencias]
-    .filter(
-      (conferencia) =>
-        !buscaData ||
-        String(conferencia.dataHoraInicio || "").slice(0, 10) === buscaData,
-    )
+    .filter((conferencia) => !buscaData || String(conferencia.dataHoraInicio || "").slice(0, 10) === buscaData)
     .sort((a, b) => {
       const valorA = a[ordenacao.coluna] ?? "";
       const valorB = b[ordenacao.coluna] ?? "";
-      const resultado =
-        ordenacao.coluna === "id"
-          ? Number(valorA) - Number(valorB)
-          : String(valorA).localeCompare(String(valorB), "pt-BR");
+      const resultado = ordenacao.coluna === "id"
+        ? Number(valorA) - Number(valorB)
+        : String(valorA).localeCompare(String(valorB), "pt-BR");
       return ordenacao.direcao === "asc" ? resultado : -resultado;
     });
-  const totalPaginas = Math.max(
-    1,
-    Math.ceil(conferenciasOrdenadas.length / itensPorPagina),
-  );
+  const totalPaginas = Math.max(1, Math.ceil(conferenciasOrdenadas.length / itensPorPagina));
   const paginaLimitada = Math.min(paginaAtual, totalPaginas);
   const indiceInicial = (paginaLimitada - 1) * itensPorPagina;
-  const conferenciasPaginadas = conferenciasOrdenadas.slice(
-    indiceInicial,
-    indiceInicial + itensPorPagina,
-  );
-  const indicadorOrdenacao = (coluna) =>
-    ordenacao.coluna === coluna ? (
-      ordenacao.direcao === "asc" ? (
-        <FiChevronUp />
-      ) : (
-        <FiChevronDown />
-      )
-    ) : null;
-
-  const getClasseDivergencia = (divergencia) => {
-    if (divergencia > 0) return "divergencia-positiva";
-    if (divergencia < 0) return "divergencia-negativa";
-    return "divergencia-zero";
-  };
-
-  const formatarDivergencia = (divergencia) => {
-    if (divergencia === null || divergencia === undefined) return "-";
-    return divergencia > 0 ? `+${divergencia}` : divergencia;
-  };
+  const conferenciasPaginadas = conferenciasOrdenadas.slice(indiceInicial, indiceInicial + itensPorPagina);
+  const indicadorOrdenacao = (coluna) => ordenacao.coluna === coluna
+    ? (ordenacao.direcao === "asc" ? <FiChevronUp /> : <FiChevronDown />)
+    : null;
 
   return (
     <div className="conferencia-page">
@@ -171,23 +132,8 @@ const Conferencia = () => {
         <h2>Conferências realizadas</h2>
 
         <div className="conferencia-list-toolbar">
-          <input
-            type="date"
-            value={buscaData}
-            onChange={(event) => {
-              setBuscaData(event.target.value);
-              setPaginaAtual(1);
-            }}
-          />
-          <button
-            type="button"
-            onClick={() => {
-              setBuscaData("");
-              setPaginaAtual(1);
-            }}
-          >
-            <FiRefreshCw />
-          </button>
+          <input type="date" value={buscaData} onChange={(event) => { setBuscaData(event.target.value); setPaginaAtual(1); }} />
+          <button type="button" onClick={() => { setBuscaData(""); setPaginaAtual(1); }}><FiRefreshCw /></button>
         </div>
 
         {conferenciasOrdenadas.length === 0 ? (
@@ -197,18 +143,10 @@ const Conferencia = () => {
             <table className="conferencia-table">
               <thead>
                 <tr>
-                  <th onClick={() => handleOrdenar("id")}>
-                    ID {indicadorOrdenacao("id")}
-                  </th>
-                  <th onClick={() => handleOrdenar("almoxarifadoNome")}>
-                    Almoxarifado {indicadorOrdenacao("almoxarifadoNome")}
-                  </th>
-                  <th onClick={() => handleOrdenar("dataHoraInicio")}>
-                    Início {indicadorOrdenacao("dataHoraInicio")}
-                  </th>
-                  <th onClick={() => handleOrdenar("status")}>
-                    Status {indicadorOrdenacao("status")}
-                  </th>
+                  <th onClick={() => handleOrdenar("id")}>ID {indicadorOrdenacao("id")}</th>
+                  <th onClick={() => handleOrdenar("almoxarifadoNome")}>Almoxarifado {indicadorOrdenacao("almoxarifadoNome")}</th>
+                  <th onClick={() => handleOrdenar("dataHoraInicio")}>Início {indicadorOrdenacao("dataHoraInicio")}</th>
+                  <th onClick={() => handleOrdenar("status")}>Status {indicadorOrdenacao("status")}</th>
                   <th>Ação</th>
                 </tr>
               </thead>
@@ -223,7 +161,9 @@ const Conferencia = () => {
                       <button
                         type="button"
                         onClick={() =>
-                          navigate(`/estoque/conferencias/${conferencia.id}`)
+                          navigate(
+                            `/estoque/conferencias/${conferencia.id}`,
+                          )
                         }
                       >
                         Abrir
@@ -237,41 +177,11 @@ const Conferencia = () => {
         )}
 
         <div className="conferencia-pagination">
-          <button
-            type="button"
-            onClick={() => setPaginaAtual(1)}
-            disabled={paginaLimitada === 1}
-          >
-            <FiChevronsLeft />
-          </button>
-          <button
-            type="button"
-            onClick={() => setPaginaAtual((pagina) => Math.max(1, pagina - 1))}
-            disabled={paginaLimitada === 1}
-          >
-            <FiChevronLeft />
-          </button>
-          <button
-            type="button"
-            onClick={() =>
-              setPaginaAtual((pagina) => Math.min(totalPaginas, pagina + 1))
-            }
-            disabled={paginaLimitada === totalPaginas}
-          >
-            <FiChevronRight />
-          </button>
-          <button
-            type="button"
-            onClick={() => setPaginaAtual(totalPaginas)}
-            disabled={paginaLimitada === totalPaginas}
-          >
-            <FiChevronsRight />
-          </button>
-          <span>
-            {conferenciasOrdenadas.length === 0
-              ? "0 - 0 / 0"
-              : `${indiceInicial + 1} - ${Math.min(indiceInicial + itensPorPagina, conferenciasOrdenadas.length)} / ${conferenciasOrdenadas.length}`}
-          </span>
+          <button type="button" onClick={() => setPaginaAtual(1)} disabled={paginaLimitada === 1}><FiChevronsLeft /></button>
+          <button type="button" onClick={() => setPaginaAtual((pagina) => Math.max(1, pagina - 1))} disabled={paginaLimitada === 1}><FiChevronLeft /></button>
+          <button type="button" onClick={() => setPaginaAtual((pagina) => Math.min(totalPaginas, pagina + 1))} disabled={paginaLimitada === totalPaginas}><FiChevronRight /></button>
+          <button type="button" onClick={() => setPaginaAtual(totalPaginas)} disabled={paginaLimitada === totalPaginas}><FiChevronsRight /></button>
+          <span>{conferenciasOrdenadas.length === 0 ? "0 - 0 / 0" : `${indiceInicial + 1} - ${Math.min(indiceInicial + itensPorPagina, conferenciasOrdenadas.length)} / ${conferenciasOrdenadas.length}`}</span>
         </div>
       </div>
     </div>

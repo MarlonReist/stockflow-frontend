@@ -1,0 +1,39 @@
+.aguardando-page { width: 100%; min-width: 0; padding: 24px 32px; }
+.aguardando-header, .aguardando-filtros, .aguardando-resultado { width: min(100%, 1180px); }
+.aguardando-header { margin-bottom: 24px; }
+.aguardando-filtros { padding: 20px; display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 16px; border: 1px solid var(--border-purple-subtle); border-radius: var(--radius-xl); background: var(--bg-card); box-shadow: 0 14px 32px rgba(0,0,0,.16); }
+.aguardando-campo { min-width: 0; display: flex; flex-direction: column; gap: 8px; }
+.aguardando-campo label { color: var(--text-primary); font-size: 13px; font-weight: 800; }
+.aguardando-campo input, .aguardando-campo select { width: 100%; min-width: 0; min-height: 46px; padding: 0 13px; border: 1px solid var(--border-purple-soft); border-radius: 10px; background: var(--bg-input); color: var(--text-primary); font: inherit; color-scheme: dark; }
+.aguardando-acoes { grid-column: 1 / -1; display: flex; justify-content: flex-end; }
+.aguardando-acoes button { min-height: 46px; padding: 0 20px; border: 1px solid rgba(96,165,250,.45); border-radius: 10px; background: linear-gradient(135deg,#7c3aed,#2563eb); color: #fff; font: inherit; font-weight: 800; cursor: pointer; }
+.aguardando-acoes button:disabled, .aguardando-imprimir:disabled { cursor: not-allowed; opacity: .45; }
+.aguardando-erro { grid-column: 1 / -1; margin: 0; color: #fecaca; font-size: 14px; }
+.aguardando-resultado { margin-top: 24px; overflow: hidden; border: 1px solid var(--border-purple-subtle); border-radius: var(--radius-xl); background: var(--bg-card); box-shadow: 0 14px 32px rgba(0,0,0,.16); }
+.aguardando-resultado-header { padding: 18px 20px; display: flex; align-items: center; justify-content: space-between; gap: 16px; border-bottom: 1px solid rgba(148,163,184,.1); }
+.aguardando-resultado-header h2 { margin: 0; color: var(--text-primary); font-size: 19px; }
+.aguardando-imprimir { min-height: 42px; padding: 0 16px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; border: 1px solid rgba(139,92,246,.42); border-radius: 10px; background: rgba(139,92,246,.13); color: var(--text-primary); font: inherit; font-weight: 800; cursor: pointer; }
+.aguardando-filtros-impressao, .aguardando-marca-impressao { display: none; }
+.aguardando-table-wrapper { width: 100%; overflow-x: auto; }
+.aguardando-table { width: 100%; min-width: 980px; border-collapse: collapse; }
+.aguardando-table th, .aguardando-table td { padding: 14px 16px; border-bottom: 1px solid rgba(148,163,184,.08); color: var(--text-secondary); font-size: 13px; text-align: left; }
+.aguardando-table th { color: var(--text-primary); background: rgba(255,255,255,.02); }
+.aguardando-table td:first-child { color: #93c5fd; font-weight: 800; }
+.aguardando-tempo { color: #fcd34d; font-weight: 800; white-space: nowrap; }
+.aguardando-vazio { margin: 0; padding: 32px 20px; color: var(--text-muted); text-align: center; }
+@media (max-width: 1024px) { .aguardando-page { padding: 0; } }
+@media (max-width: 600px) { .aguardando-filtros { grid-template-columns: minmax(0,1fr); padding: 16px; } .aguardando-acoes { grid-column: auto; } .aguardando-acoes button, .aguardando-imprimir { width: 100%; } .aguardando-resultado-header { align-items: stretch; flex-direction: column; } }
+@media print {
+  @page { margin: 14mm; }
+  body * { visibility: hidden; }
+  .aguardando-resultado, .aguardando-resultado * { visibility: visible; }
+  .aguardando-resultado { position: absolute; inset: 0 auto auto 0; width: 100%; margin: 0; border: 0; border-radius: 0; background: #fff; box-shadow: none; }
+  .aguardando-imprimir { display: none; }
+  .aguardando-marca-impressao { display: flex; justify-content: space-between; align-items: flex-end; padding-bottom: 14px; border-bottom: 2px solid #4f46e5; color: #111827; }
+  .aguardando-marca-impressao strong { color: #4f46e5; font-size: 24px; }
+  .aguardando-marca-impressao span, .aguardando-filtros-impressao { color: #4b5563; font-size: 12px; }
+  .aguardando-filtros-impressao { display: block; margin: 6px 0 0; }
+  .aguardando-resultado-header, .aguardando-table th, .aguardando-table td { color: #111827; border-color: #d1d5db; }
+  .aguardando-table th { background: #f3f4f6; }
+  .aguardando-tempo { color: #92400e; }
+}

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import CabecalhoRelatorio from "../../../components/CabecalhoRelatorio";
 import "./VisualizarEstoque.css";
 import {
   FiChevronsLeft,
@@ -361,8 +362,10 @@ const VisualizarEstoque = () => {
   return (
     <div className="estoque-view">
       <div className="estoque-view-header">
-        <h1>Visualizar Estoque</h1>
-        <p>Visualize os almoxarifados vinculados ao sistema</p>
+        <CabecalhoRelatorio
+          titulo="Visualizar Estoque"
+          descricao="Visualize os almoxarifados vinculados ao sistema"
+        />
       </div>
       <div className="estoque-view-actions">
         <input

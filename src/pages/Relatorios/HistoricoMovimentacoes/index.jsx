@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
+import CabecalhoRelatorio from "../../../components/CabecalhoRelatorio";
 import { FiPrinter, FiChevronLeft, FiChevronRight } from "react-icons/fi";
 import {
   gerarPdfHistoricoMovimentacoes,
@@ -259,10 +260,10 @@ const HistoricoMovimentacoes = () => {
   return (
     <div className="historico-page">
       <div className="historico-header">
-        <div>
-          <h1>Histórico de Movimentações</h1>
-          <p>Consulte todas as alterações realizadas no estoque</p>
-        </div>
+        <CabecalhoRelatorio
+          titulo="Histórico de Movimentações"
+          descricao="Consulte todas as alterações realizadas no estoque"
+        />
 
         <button
           type="button"

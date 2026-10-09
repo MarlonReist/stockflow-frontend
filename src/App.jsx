@@ -24,7 +24,6 @@ import CadastroEntrada from "./pages/Entrada/Cadastro";
 import ItensEntrada from "./pages/Entrada/Itens";
 import ItensDetalhe from "./pages/Entrada/ItensDetalhe";
 
-
 import VisualizarEstoque from "./pages/Estoque/VisualizarEstoque";
 import ProdutosEstoqueBaixo from "./pages/Estoque/ProdutosEstoqueBaixo";
 import Transferencia from "./pages/Estoque/Transferencia";
@@ -34,8 +33,19 @@ import Ajustes from "./pages/Estoque/Ajustes";
 
 import OrdemServico from "./pages/OrdemServico";
 import CadastroOrdemServico from "./pages/OrdemServico/Cadastro";
-import Relatorios from "./pages/Relatorios";
+import Relatorios from "./pages/Relatorios/ListaRelatorios";
 import HistoricoMovimentacoes from "./pages/Relatorios/HistoricoMovimentacoes";
+import RelatoriosTecnicos from "./pages/Relatorios/OrdensServico";
+import AtendimentosColaborador from "./pages/Relatorios/OrdensServico/AtendimentosColaborador";
+import ResumoResponsavel from "./pages/Relatorios/OrdensServico/ResumoResponsavel";
+import AtendimentosTipo from "./pages/Relatorios/OrdensServico/AtendimentosTipo";
+import TempoAtendimento from "./pages/Relatorios/OrdensServico/TempoAtendimento";
+import PendentesAgendadas from "./pages/Relatorios/OrdensServico/PendentesAgendadas";
+import AguardandoConferencia from "./pages/Relatorios/OrdensServico/AguardandoConferencia";
+import Canceladas from "./pages/Relatorios/OrdensServico/Canceladas";
+import StatusAtual from "./pages/Relatorios/OrdensServico/StatusAtual";
+import HistoricoCliente from "./pages/Relatorios/OrdensServico/HistoricoCliente";
+import MateriaisUtilizados from "./pages/Relatorios/OrdensServico/MateriaisUtilizados";
 import Dashboard from "./pages/Dashboard";
 
 import Acessos from "./pages/Acessos";
@@ -124,7 +134,9 @@ function App() {
 
             <Route
               path="/saida/*"
-              element={<Navigate to="/relatorios/historico-movimentacoes" replace />}
+              element={
+                <Navigate to="/relatorios/historico-movimentacoes" replace />
+              }
             />
 
             <Route path="/estoque/visualizar" element={<VisualizarEstoque />} />
@@ -143,6 +155,50 @@ function App() {
           </Route>
 
           <Route element={<PrivateRoute perfisPermitidos={["ADMIN"]} />}>
+            <Route
+              path="/relatorios/tecnicos"
+              element={<RelatoriosTecnicos />}
+            />
+            <Route
+              path="/relatorios/tecnicos/atendimentos-colaborador"
+              element={<AtendimentosColaborador />}
+            />
+            <Route
+              path="/relatorios/tecnicos/resumo-responsavel"
+              element={<ResumoResponsavel />}
+            />
+            <Route
+              path="/relatorios/tecnicos/atendimentos-tipo"
+              element={<AtendimentosTipo />}
+            />
+            <Route
+              path="/relatorios/tecnicos/tempo-atendimento"
+              element={<TempoAtendimento />}
+            />
+            <Route
+              path="/relatorios/tecnicos/pendentes-agendadas"
+              element={<PendentesAgendadas />}
+            />
+            <Route
+              path="/relatorios/tecnicos/aguardando-conferencia"
+              element={<AguardandoConferencia />}
+            />
+            <Route
+              path="/relatorios/tecnicos/canceladas"
+              element={<Canceladas />}
+            />
+            <Route
+              path="/relatorios/tecnicos/status-atual"
+              element={<StatusAtual />}
+            />
+            <Route
+              path="/relatorios/tecnicos/historico-cliente"
+              element={<HistoricoCliente />}
+            />
+            <Route
+              path="/relatorios/tecnicos/materiais-utilizados"
+              element={<MateriaisUtilizados />}
+            />
             <Route path="/acessos" element={<Acessos />} />
             <Route path="/tipos-os" element={<TipoOrdemServico />} />
             <Route path="/tipos-os/editar/:id" element={<TipoOrdemServico />} />

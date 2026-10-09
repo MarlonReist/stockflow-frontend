@@ -1,0 +1,50 @@
+.relatorio-titulo-com-volta {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  min-width: 0;
+}
+
+.relatorio-titulo-com-volta > div {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.relatorio-voltar {
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border-purple-soft);
+  border-radius: 12px;
+  background-color: rgba(255, 255, 255, 0.03);
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+
+.relatorio-voltar:hover {
+  color: var(--text-primary);
+  background-color: rgba(255, 255, 255, 0.07);
+  border-color: rgba(167, 139, 250, 0.45);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.16);
+}
+
+.relatorio-voltar:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 3px;
+}
+
+.relatorio-voltar svg {
+  width: 18px;
+  height: 18px;
+}
+
+@media (max-width: 600px) {
+  .relatorio-titulo-com-volta {
+    align-items: flex-start;
+    gap: 12px;
+  }
+}
