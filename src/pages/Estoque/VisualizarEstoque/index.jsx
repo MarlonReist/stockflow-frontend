@@ -243,11 +243,23 @@ const VisualizarEstoque = () => {
       (produto) => produto.id === item.produtoId,
     );
 
+    const precoInformado = produtoRelacionado?.preco;
+    const precoConvertido = Number(precoInformado);
+    const precoValido =
+      precoInformado !== null &&
+      precoInformado !== undefined &&
+      precoInformado !== "" &&
+      Number.isFinite(precoConvertido) &&
+      precoConvertido >= 0;
+    const saldo = Number(item.saldo ?? item.quantidade ?? 0);
+
     return {
       ...item,
       unidadeFormatada: formatarUnidadeMedida(
         item.unidadeMedida || produtoRelacionado?.unidadeMedida,
       ),
+      preco: precoValido ? precoConvertido : null,
+      valorTotal: precoValido ? saldo * precoConvertido : null,
     };
   });
 
@@ -294,9 +306,16 @@ const VisualizarEstoque = () => {
     ) {
       valorA = Number(a.produtoId || a.id);
       valorB = Number(b.produtoId || b.id);
-    } else if (ordenacaoProduto.coluna === "saldo") {
+    } else if (
+      ["saldo", "preco", "valorTotal"].includes(ordenacaoProduto.coluna)
+    ) {
       valorA = Number(a.saldo ?? a.quantidade ?? 0);
       valorB = Number(b.saldo ?? b.quantidade ?? 0);
+
+      if (ordenacaoProduto.coluna !== "saldo") {
+        valorA = Number(a[ordenacaoProduto.coluna] ?? -1);
+        valorB = Number(b[ordenacaoProduto.coluna] ?? -1);
+      }
     } else if (ordenacaoProduto.coluna === "unidadeFormatada") {
       valorA = String(a.unidadeFormatada ?? "").toLowerCase();
       valorB = String(b.unidadeFormatada ?? "").toLowerCase();
@@ -358,6 +377,12 @@ const VisualizarEstoque = () => {
   const handleUltimaPaginaProduto = () => {
     setPaginaProdutoAtual(totalPaginasProduto);
   };
+
+  const formatarMoeda = (valor) =>
+    Number(valor || 0).toLocaleString("pt-BR", {
+      style: "currency",
+      currency: "BRL",
+    });
 
   return (
     <div className="estoque-view">
@@ -615,6 +640,28 @@ const VisualizarEstoque = () => {
                           ))}
                       </span>
                     </th>
+                    <th onClick={() => handleOrdenarProduto("preco")}>
+                      <span className="sortable-header">
+                        Valor unitário
+                        {ordenacaoProduto.coluna === "preco" &&
+                          (ordenacaoProduto.direcao === "asc" ? (
+                            <FiChevronUp />
+                          ) : (
+                            <FiChevronDown />
+                          ))}
+                      </span>
+                    </th>
+                    <th onClick={() => handleOrdenarProduto("valorTotal")}>
+                      <span className="sortable-header">
+                        Valor total
+                        {ordenacaoProduto.coluna === "valorTotal" &&
+                          (ordenacaoProduto.direcao === "asc" ? (
+                            <FiChevronUp />
+                          ) : (
+                            <FiChevronDown />
+                          ))}
+                      </span>
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
@@ -625,11 +672,13 @@ const VisualizarEstoque = () => {
                         <td>{item.produtoNome || item.nome}</td>
                         <td>{item.unidadeFormatada || "-"}</td>
                         <td>{item.saldo ?? item.quantidade ?? 0}</td>
+                        <td>{item.preco === null ? "Sem custo" : formatarMoeda(item.preco)}</td>
+                        <td>{item.valorTotal === null ? "—" : formatarMoeda(item.valorTotal)}</td>
                       </tr>
                     ))
                   ) : (
                     <tr>
-                      <td colSpan={4}>
+                      <td colSpan={6}>
                         Nenhum produto encontrado para este almoxarifado.
                       </td>
                     </tr>

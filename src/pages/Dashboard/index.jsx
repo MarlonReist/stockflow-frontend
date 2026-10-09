@@ -1,13 +1,29 @@
 import React, { useEffect, useState } from "react";
-import { FiAlertTriangle, FiBox, FiClipboard, FiRepeat } from "react-icons/fi";
-import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
+import { FiAlertTriangle, FiBox, FiClipboard, FiRepeat, FiX } from "react-icons/fi";
+import {
+  Bar,
+  BarChart,
+  CartesianGrid,
+  Cell,
+  Pie,
+  PieChart,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from "recharts";
 import { useNavigate } from "react-router-dom";
 import {
   buscarMovimentacoesRecentesDashboard,
   buscarOsPorStatusDashboard,
   buscarResumoDashboard,
 } from "../../services/dashboardService";
-import { listarEstoquesBaixos } from "../../services/almoxarifadoEstoqueService";
+import {
+  listarAlmoxarifadosEstoque,
+  listarEstoquesBaixos,
+} from "../../services/almoxarifadoEstoqueService";
+import { listarAlmoxarifados } from "../../services/almoxarifadoService";
+import { listarProdutos } from "../../services/produtoService";
 import { listarOrdensServico } from "../../services/ordemServicoService";
 import "./Dashboard.css";
 
@@ -31,6 +47,10 @@ const Dashboard = () => {
   const [dataFimPersonalizada, setDataFimPersonalizada] = useState("");
   const [erroPeriodo, setErroPeriodo] = useState("");
   const [ordensServicoDashboard, setOrdensServicoDashboard] = useState([]);
+  const [estoquePorAlmoxarifado, setEstoquePorAlmoxarifado] = useState([]);
+  const [carregandoValorizacao, setCarregandoValorizacao] = useState(false);
+  const [erroValorizacao, setErroValorizacao] = useState("");
+  const [almoxarifadoDetalhado, setAlmoxarifadoDetalhado] = useState(null);
 
   const usuarioLogado = JSON.parse(
     localStorage.getItem("stockflow_usuario") || "{}",
@@ -130,6 +150,89 @@ const Dashboard = () => {
 
     carregarEstoquesBaixos();
   }, []);
+
+  useEffect(() => {
+    if (!usuarioAdmin) return;
+
+    const carregarValorizacaoEstoque = async () => {
+      setCarregandoValorizacao(true);
+      setErroValorizacao("");
+
+      try {
+        const [almoxarifadosResponse, estoquesResponse, produtosResponse] =
+          await Promise.all([
+            listarAlmoxarifados(),
+            listarAlmoxarifadosEstoque(),
+            listarProdutos(),
+          ]);
+
+        const produtosPorId = new Map(
+          produtosResponse.data.map((produto) => [Number(produto.id), produto]),
+        );
+
+        const estoquesValorizados = estoquesResponse.data.map((item) => {
+          const produto = produtosPorId.get(Number(item.produtoId));
+          const quantidade = Math.max(0, Number(item.quantidade || 0));
+          const precoInformado = produto?.preco;
+          const precoConvertido = Number(precoInformado);
+          const custoValido =
+            precoInformado !== null &&
+            precoInformado !== undefined &&
+            precoInformado !== "" &&
+            Number.isFinite(precoConvertido) &&
+            precoConvertido >= 0;
+          const custoUnitario = custoValido ? precoConvertido : null;
+
+          return {
+            ...item,
+            produtoNome: item.produtoNome || produto?.nome || `Produto #${item.produtoId}`,
+            quantidade,
+            custoUnitario,
+            valorTotal: custoUnitario === null ? 0 : quantidade * custoUnitario,
+          };
+        });
+
+        const dados = almoxarifadosResponse.data.map((almoxarifado) => {
+          const produtos = estoquesValorizados.filter(
+            (item) => Number(item.almoxarifadoId) === Number(almoxarifado.id),
+          );
+
+          return {
+            id: almoxarifado.id,
+            nome: almoxarifado.nome,
+            produtos,
+            valorTotal: produtos.reduce(
+              (total, produto) => total + produto.valorTotal,
+              0,
+            ),
+          };
+        });
+
+        setEstoquePorAlmoxarifado(dados);
+      } catch (error) {
+        setEstoquePorAlmoxarifado([]);
+        setErroValorizacao(
+          error.response?.data?.message ||
+            "Não foi possível calcular o valor atual do estoque.",
+        );
+      } finally {
+        setCarregandoValorizacao(false);
+      }
+    };
+
+    carregarValorizacaoEstoque();
+  }, [usuarioAdmin]);
+
+  useEffect(() => {
+    if (!almoxarifadoDetalhado) return undefined;
+
+    const fecharComEscape = (event) => {
+      if (event.key === "Escape") setAlmoxarifadoDetalhado(null);
+    };
+
+    document.addEventListener("keydown", fecharComEscape);
+    return () => document.removeEventListener("keydown", fecharComEscape);
+  }, [almoxarifadoDetalhado]);
 
   useEffect(() => {
     const carregarDadosDashboard = async () => {
@@ -306,21 +409,41 @@ const Dashboard = () => {
 
   const cardsGerenciaisAdmin = [
     {
-      titulo: "Valor das Entradas",
-      valor: formatarMoeda(resumo.valorTotalEntradasPeriodo),
-      cor: "green",
+      titulo: "Valor Total em Estoque",
+      valor: carregandoValorizacao
+        ? "Calculando..."
+        : formatarMoeda(
+            estoquePorAlmoxarifado.reduce(
+              (total, almoxarifado) => total + almoxarifado.valorTotal,
+              0,
+            ),
+          ),
+      cor: "purple",
     },
     {
-      titulo: "Valor das Saídas",
-      valor: formatarMoeda(resumo.valorTotalSaidasPeriodo),
-      cor: "red",
-    },
-    {
-      titulo: "Custo das OS",
+      titulo: "Custo das OS no Período",
       valor: formatarMoeda(resumo.custoTotalOrdensServicoPeriodo),
       cor: "blue",
     },
   ];
+
+  const valorTotalEstoque = estoquePorAlmoxarifado.reduce(
+    (total, almoxarifado) => total + almoxarifado.valorTotal,
+    0,
+  );
+
+  const tooltipValorEstoque = ({ active, payload }) => {
+    if (!active || !payload?.length) return null;
+    const almoxarifado = payload[0].payload;
+
+    return (
+      <div className="dashboard-stock-tooltip">
+        <strong>{almoxarifado.nome}</strong>
+        <span>{formatarMoeda(almoxarifado.valorTotal)}</span>
+        <small>Clique para ver os produtos</small>
+      </div>
+    );
+  };
 
   return (
     <div className="dashboard-page">
@@ -432,7 +555,7 @@ const Dashboard = () => {
         <section className="dashboard-admin-metrics">
           <div className="dashboard-admin-metrics-header">
             <h2>Indicadores gerenciais</h2>
-            <span>Valores do período selecionado</span>
+            <span>Posição atual do estoque e custos do período selecionado</span>
           </div>
 
           <div className="dashboard-admin-metrics-grid">
@@ -446,6 +569,76 @@ const Dashboard = () => {
               </div>
             ))}
           </div>
+        </section>
+      )}
+
+      {usuarioAdmin && (
+        <section className="dashboard-stock-value-panel">
+          <div className="dashboard-panel-header dashboard-stock-value-header">
+            <div>
+              <h2>Valor do Estoque por Almoxarifado</h2>
+              <p>
+                Soma das quantidades disponíveis pelo preço de referência de cada produto.
+              </p>
+            </div>
+            <strong>{formatarMoeda(valorTotalEstoque)}</strong>
+          </div>
+
+          {carregandoValorizacao ? (
+            <p className="dashboard-empty-text">Calculando valorização do estoque...</p>
+          ) : erroValorizacao ? (
+            <p className="dashboard-stock-error" role="alert">{erroValorizacao}</p>
+          ) : estoquePorAlmoxarifado.length === 0 ? (
+            <p className="dashboard-empty-text">Nenhum almoxarifado encontrado.</p>
+          ) : (
+            <div className="dashboard-stock-chart-scroll">
+              <div
+                className="dashboard-stock-chart"
+                style={{ height: Math.max(280, estoquePorAlmoxarifado.length * 58) }}
+              >
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart
+                    data={estoquePorAlmoxarifado}
+                    layout="vertical"
+                    margin={{ top: 8, right: 34, bottom: 8, left: 12 }}
+                  >
+                    <CartesianGrid stroke="rgba(148, 163, 184, 0.1)" horizontal={false} />
+                    <XAxis
+                      type="number"
+                      tickFormatter={(valor) =>
+                        Number(valor).toLocaleString("pt-BR", {
+                          notation: "compact",
+                          maximumFractionDigits: 1,
+                        })
+                      }
+                      stroke="#94a3b8"
+                      fontSize={12}
+                    />
+                    <YAxis
+                      type="category"
+                      dataKey="nome"
+                      width={160}
+                      tick={{ fill: "#e2e8f0", fontSize: 13, fontWeight: 700 }}
+                      tickFormatter={(nome) =>
+                        nome.length > 22 ? `${nome.slice(0, 20)}…` : nome
+                      }
+                    />
+                    <Tooltip content={tooltipValorEstoque} cursor={{ fill: "rgba(139, 92, 246, 0.08)" }} />
+                    <Bar
+                      dataKey="valorTotal"
+                      fill="#8b5cf6"
+                      radius={[0, 8, 8, 0]}
+                      minPointSize={3}
+                      cursor="pointer"
+                      onClick={(dados) =>
+                        setAlmoxarifadoDetalhado(dados.payload)
+                      }
+                    />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+          )}
         </section>
       )}
 
@@ -578,6 +771,83 @@ const Dashboard = () => {
           </div>
         </section>
       </div>
+
+      {almoxarifadoDetalhado && (
+        <div
+          className="dashboard-stock-modal-overlay"
+          onMouseDown={(event) => {
+            if (event.target === event.currentTarget) {
+              setAlmoxarifadoDetalhado(null);
+            }
+          }}
+        >
+          <div
+            className="dashboard-stock-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="dashboard-stock-modal-title"
+          >
+            <div className="dashboard-stock-modal-header">
+              <div>
+                <span>Detalhamento do estoque</span>
+                <h2 id="dashboard-stock-modal-title">
+                  {almoxarifadoDetalhado.nome}
+                </h2>
+              </div>
+              <button
+                type="button"
+                aria-label="Fechar detalhamento"
+                onClick={() => setAlmoxarifadoDetalhado(null)}
+              >
+                <FiX />
+              </button>
+            </div>
+
+            <div className="dashboard-stock-modal-total">
+              <span>Valor total do estoque</span>
+              <strong>{formatarMoeda(almoxarifadoDetalhado.valorTotal)}</strong>
+            </div>
+
+            <div className="dashboard-stock-table-wrapper">
+              <table className="dashboard-stock-table">
+                <thead>
+                  <tr>
+                    <th>Produto</th>
+                    <th>Quantidade disponível</th>
+                    <th>Custo unitário</th>
+                    <th>Valor total</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {almoxarifadoDetalhado.produtos.length > 0 ? (
+                    almoxarifadoDetalhado.produtos.map((produto) => (
+                      <tr key={produto.id}>
+                        <td>
+                          <strong>{produto.produtoNome}</strong>
+                          <span>#{produto.produtoId}</span>
+                        </td>
+                        <td>{produto.quantidade.toLocaleString("pt-BR")}</td>
+                        <td>
+                          {produto.custoUnitario === null
+                            ? "Sem custo cadastrado"
+                            : formatarMoeda(produto.custoUnitario)}
+                        </td>
+                        <td>{formatarMoeda(produto.valorTotal)}</td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan="4" className="dashboard-stock-table-empty">
+                        Este almoxarifado não possui produtos cadastrados.
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
