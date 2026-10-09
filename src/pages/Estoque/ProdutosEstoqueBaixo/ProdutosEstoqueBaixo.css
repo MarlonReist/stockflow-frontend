@@ -43,6 +43,35 @@
   cursor: pointer;
 }
 
+.produtos-estoque-baixo-acoes {
+  display: flex;
+  gap: 10px;
+}
+
+.produtos-estoque-baixo-imprimir {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 18px;
+  border: 0;
+  border-radius: var(--radius-lg);
+  color: #ffffff;
+  background: linear-gradient(to right, var(--primary), var(--accent));
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.produtos-estoque-baixo-imprimir:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.produtos-estoque-baixo-marca-impressao,
+.produtos-estoque-baixo-cabecalho-impressao {
+  display: none;
+}
+
 .produtos-estoque-baixo-refresh:hover {
   border-color: var(--primary);
   background: rgba(124, 58, 237, 0.12);
@@ -90,6 +119,23 @@
   color: var(--text-secondary);
   font-size: 13px;
   font-weight: 600;
+}
+
+.produtos-estoque-baixo-resumo {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 28px;
+  margin-bottom: 18px;
+  padding: 14px 16px;
+  border: 1px solid var(--border-purple-subtle);
+  border-radius: var(--radius-lg);
+  color: var(--text-secondary);
+  background: rgba(124, 58, 237, 0.06);
+  font-size: 14px;
+}
+
+.produtos-estoque-baixo-resumo strong {
+  color: var(--text-primary);
 }
 
 .produtos-estoque-baixo-table-wrapper {
@@ -157,13 +203,149 @@
   }
 
   .produtos-estoque-baixo-refresh {
+    justify-content: center;
+  }
+
+  .produtos-estoque-baixo-acoes {
     width: 100%;
+  }
+
+  .produtos-estoque-baixo-refresh,
+  .produtos-estoque-baixo-imprimir {
+    flex: 1;
     justify-content: center;
   }
 
   .produtos-estoque-baixo-toolbar {
     align-items: stretch;
     flex-direction: column;
+  }
+}
+
+@media print {
+  @page {
+    size: landscape;
+    margin: 12mm;
+  }
+
+  body * {
+    visibility: hidden;
+  }
+
+  .produtos-estoque-baixo-page,
+  .produtos-estoque-baixo-page * {
+    visibility: visible;
+  }
+
+  .produtos-estoque-baixo-page {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    padding: 0;
+    color: #111827;
+    background: #ffffff;
+  }
+
+  .produtos-estoque-baixo-header,
+  .produtos-estoque-baixo-toolbar,
+  .estoque-baixo-message {
+    display: none;
+  }
+
+  .produtos-estoque-baixo-marca-impressao {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 18px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #111827;
+    color: #111827;
+  }
+
+  .produtos-estoque-baixo-marca-impressao strong {
+    font-size: 20px;
+  }
+
+  .produtos-estoque-baixo-marca-impressao span {
+    color: #4b5563;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .produtos-estoque-baixo-cabecalho-impressao {
+    display: block;
+    margin-bottom: 16px;
+    color: #111827;
+  }
+
+  .produtos-estoque-baixo-cabecalho-impressao h1 {
+    margin: 0 0 6px;
+    font-size: 22px;
+  }
+
+  .produtos-estoque-baixo-cabecalho-impressao p {
+    margin: 0;
+    color: #4b5563;
+    font-size: 12px;
+  }
+
+  .produtos-estoque-baixo-card {
+    width: 100%;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: #ffffff;
+    box-shadow: none;
+  }
+
+  .produtos-estoque-baixo-resumo {
+    margin-bottom: 16px;
+    padding: 10px 12px;
+    border-color: #d1d5db;
+    color: #374151;
+    background: #f9fafb;
+  }
+
+  .produtos-estoque-baixo-resumo strong {
+    color: #111827;
+  }
+
+  .produtos-estoque-baixo-table-wrapper {
+    overflow: visible;
+    border-color: #d1d5db;
+    border-radius: 0;
+  }
+
+  .produtos-estoque-baixo-table {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .produtos-estoque-baixo-table thead {
+    display: table-header-group;
+  }
+
+  .produtos-estoque-baixo-table tr {
+    break-inside: avoid;
+  }
+
+  .produtos-estoque-baixo-table th,
+  .produtos-estoque-baixo-table td {
+    padding: 8px 10px;
+    border-color: #d1d5db;
+    color: #1f2937;
+    font-size: 11px;
+  }
+
+  .produtos-estoque-baixo-table th {
+    color: #111827;
+    background: #f3f4f6;
+  }
+
+  .produtos-estoque-baixo-table tbody tr {
+    border-left-color: #d97706;
   }
 }
 

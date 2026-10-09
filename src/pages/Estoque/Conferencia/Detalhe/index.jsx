@@ -6,6 +6,7 @@ import {
   FiChevronUp,
   FiChevronsLeft,
   FiChevronsRight,
+  FiPrinter,
   FiRefreshCw,
 } from "react-icons/fi";
 import { useNavigate, useParams } from "react-router-dom";
@@ -205,10 +206,6 @@ const DetalheConferencia = () => {
   );
   const paginaLimitada = Math.min(paginaAtual, totalPaginas);
   const indiceInicial = (paginaLimitada - 1) * itensPorPagina;
-  const itensPaginados = itensOrdenados.slice(
-    indiceInicial,
-    indiceInicial + itensPorPagina,
-  );
 
   const indicadorOrdenacao = (coluna) => {
     if (ordenacao.coluna !== coluna) return null;
@@ -244,8 +241,40 @@ const DetalheConferencia = () => {
     return divergencia > 0 ? `+${divergencia}` : divergencia;
   };
 
+  const formatarData = (data) => {
+    if (!data) return "-";
+    return new Date(data).toLocaleString("pt-BR");
+  };
+
+  const handleImprimir = () => {
+    const tituloOriginal = document.title;
+
+    document.title = `Conferência de Estoque #${conferencia.id}`;
+    window.print();
+
+    setTimeout(() => {
+      document.title = tituloOriginal;
+    }, 500);
+  };
+
   return (
     <div className="detalhe-conferencia-page">
+      <div className="detalhe-conferencia-marca-impressao">
+        <strong>StockFlow</strong>
+        <span>Relatório de Estoque</span>
+      </div>
+
+      <div className="detalhe-conferencia-cabecalho-impressao">
+        <h1>Conferência de Estoque #{conferencia.id}</h1>
+        <p>
+          Almoxarifado: {conferencia.almoxarifadoNome}
+          {" · "}
+          Início: {formatarData(conferencia.dataHoraInicio)}
+          {" · "}
+          Emitido em {new Date().toLocaleString("pt-BR")}
+        </p>
+      </div>
+
       <div className="detalhe-conferencia-header">
         <button type="button" onClick={() => navigate("/estoque/conferencias")}>
           Voltar
@@ -257,6 +286,16 @@ const DetalheConferencia = () => {
             Almoxarifado: <strong>{conferencia.almoxarifadoNome}</strong>
           </p>
         </div>
+
+        <button
+          type="button"
+          className="detalhe-conferencia-imprimir"
+          onClick={handleImprimir}
+          disabled={itensOrdenados.length === 0}
+        >
+          <FiPrinter />
+          Imprimir
+        </button>
       </div>
 
       <div className="detalhe-conferencia-summary">
@@ -289,23 +328,36 @@ const DetalheConferencia = () => {
               </tr>
             </thead>
             <tbody>
-              {itensPaginados.map((item) => (
-                <tr key={item.id}>
+              {itensOrdenados.map((item, indice) => (
+                <tr
+                  key={item.id}
+                  className={
+                    indice < indiceInicial ||
+                    indice >= indiceInicial + itensPorPagina
+                      ? "detalhe-conferencia-linha-fora-pagina"
+                      : ""
+                  }
+                >
                   <td>{item.produtoNome}</td>
                   <td>{item.quantidadeEsperada}</td>
                   <td>
                     {conferenciaAberta ? (
-                      <input
-                        type="number"
-                        min="0"
-                        value={contagens[item.id] ?? ""}
-                        onChange={(event) =>
-                          setContagens((valoresAtuais) => ({
-                            ...valoresAtuais,
-                            [item.id]: event.target.value,
-                          }))
-                        }
-                      />
+                      <>
+                        <input
+                          type="number"
+                          min="0"
+                          value={contagens[item.id] ?? ""}
+                          onChange={(event) =>
+                            setContagens((valoresAtuais) => ({
+                              ...valoresAtuais,
+                              [item.id]: event.target.value,
+                            }))
+                          }
+                        />
+                        <span className="detalhe-conferencia-valor-impressao">
+                          {item.quantidadeContada ?? "-"}
+                        </span>
+                      </>
                     ) : (
                       (item.quantidadeContada ?? "-")
                     )}

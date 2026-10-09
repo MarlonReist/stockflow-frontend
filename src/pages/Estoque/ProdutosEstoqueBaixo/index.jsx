@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { FiRefreshCw } from "react-icons/fi";
+import { FiPrinter, FiRefreshCw } from "react-icons/fi";
 import { listarEstoquesBaixos } from "../../../services/almoxarifadoEstoqueService";
 import "./ProdutosEstoqueBaixo.css";
 
@@ -41,8 +41,44 @@ const ProdutosEstoqueBaixo = () => {
     );
   });
 
+  const calcularReposicao = (produto) =>
+    Math.max(
+      0,
+      Number(produto.estoqueMinimo) - Number(produto.quantidadeAtual),
+    );
+
+  const totalReposicao = produtosFiltrados.reduce(
+    (total, produto) => total + calcularReposicao(produto),
+    0,
+  );
+
+  const handleImprimir = () => {
+    const tituloOriginal = document.title;
+
+    document.title = "Produtos com Estoque Baixo";
+    window.print();
+
+    setTimeout(() => {
+      document.title = tituloOriginal;
+    }, 500);
+  };
+
   return (
     <div className="produtos-estoque-baixo-page">
+      <div className="produtos-estoque-baixo-marca-impressao">
+        <strong>StockFlow</strong>
+        <span>Relatório de Estoque</span>
+      </div>
+
+      <div className="produtos-estoque-baixo-cabecalho-impressao">
+        <h1>Produtos com estoque baixo</h1>
+        <p>
+          Emitido em {new Date().toLocaleString("pt-BR")}
+          {" · "}
+          Filtro: {busca.trim() || "Todos os produtos"}
+        </p>
+      </div>
+
       <div className="produtos-estoque-baixo-header">
         <div>
           <h1>Produtos com estoque baixo</h1>
@@ -51,15 +87,27 @@ const ProdutosEstoqueBaixo = () => {
           </p>
         </div>
 
-        <button
-          type="button"
-          className="produtos-estoque-baixo-refresh"
-          onClick={carregarProdutos}
-          disabled={carregando}
-        >
-          <FiRefreshCw />
-          Atualizar
-        </button>
+        <div className="produtos-estoque-baixo-acoes">
+          <button
+            type="button"
+            className="produtos-estoque-baixo-refresh"
+            onClick={carregarProdutos}
+            disabled={carregando}
+          >
+            <FiRefreshCw />
+            Atualizar
+          </button>
+
+          <button
+            type="button"
+            className="produtos-estoque-baixo-imprimir"
+            onClick={handleImprimir}
+            disabled={carregando || produtosFiltrados.length === 0}
+          >
+            <FiPrinter />
+            Imprimir
+          </button>
+        </div>
       </div>
 
       <div className="produtos-estoque-baixo-card">
@@ -73,6 +121,17 @@ const ProdutosEstoqueBaixo = () => {
 
           <span>{produtosFiltrados.length} produto(s)</span>
         </div>
+
+        {!mensagemErro && !carregando && produtosFiltrados.length > 0 && (
+          <div className="produtos-estoque-baixo-resumo">
+            <span>
+              Itens abaixo do mínimo: <strong>{produtosFiltrados.length}</strong>
+            </span>
+            <span>
+              Reposição mínima sugerida: <strong>{totalReposicao}</strong>
+            </span>
+          </div>
+        )}
 
         {mensagemErro ? (
           <p className="estoque-baixo-message estoque-baixo-message-error">
@@ -93,6 +152,7 @@ const ProdutosEstoqueBaixo = () => {
                   <th>Produto</th>
                   <th>Quantidade atual</th>
                   <th>Estoque mínimo</th>
+                  <th>Reposição sugerida</th>
                   <th>Almoxarifado principal</th>
                 </tr>
               </thead>
@@ -103,6 +163,7 @@ const ProdutosEstoqueBaixo = () => {
                     <td>{produto.produtoNome}</td>
                     <td>{produto.quantidadeAtual}</td>
                     <td>{produto.estoqueMinimo}</td>
+                    <td>{calcularReposicao(produto)}</td>
                     <td>{produto.almoxarifadoNome}</td>
                   </tr>
                 ))}

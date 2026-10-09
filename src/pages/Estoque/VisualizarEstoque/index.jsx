@@ -218,7 +218,10 @@ const VisualizarEstoque = () => {
       const janelaPdf = window.open(pdfUrl, "_blank");
 
       if (!janelaPdf) {
-        mostrarMensagem("Permita pop-ups para imprimir o estoque.", "erro");
+        mostrarMensagem(
+          "Permita pop-ups para imprimir a valorização do estoque.",
+          "erro",
+        );
         return;
       }
 
@@ -230,7 +233,7 @@ const VisualizarEstoque = () => {
         URL.revokeObjectURL(pdfUrl);
       }, 10000);
     } catch (error) {
-      mostrarMensagem("Erro ao gerar PDF do estoque.", "erro");
+      mostrarMensagem("Erro ao gerar PDF da valorização do estoque.", "erro");
     }
   };
 
@@ -510,7 +513,7 @@ const VisualizarEstoque = () => {
                   onClick={handleImprimirProdutosAlmoxarifado}
                 >
                   <FiPrinter />
-                  Imprimir Estoque
+                  Imprimir
                 </button>
                 <button
                   type="button"

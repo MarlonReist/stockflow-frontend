@@ -26,6 +26,35 @@
   cursor: pointer;
 }
 
+.detalhe-conferencia-header .detalhe-conferencia-imprimir {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+  padding: 0 16px;
+  color: #ffffff;
+  background: linear-gradient(to right, var(--primary), var(--accent));
+  font-weight: 700;
+}
+
+.detalhe-conferencia-header .detalhe-conferencia-imprimir:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+.detalhe-conferencia-marca-impressao,
+.detalhe-conferencia-cabecalho-impressao {
+  display: none;
+}
+
+.detalhe-conferencia-linha-fora-pagina {
+  display: none;
+}
+
+.detalhe-conferencia-valor-impressao {
+  display: none;
+}
+
 .detalhe-conferencia-header h1 {
   margin: 0 0 6px;
   color: var(--text-primary);
@@ -303,5 +332,150 @@
 
   .detalhe-conferencia-card {
     padding: 14px;
+  }
+}
+
+@media print {
+  @page {
+    size: landscape;
+    margin: 12mm;
+  }
+
+  body * {
+    visibility: hidden;
+  }
+
+  .detalhe-conferencia-page,
+  .detalhe-conferencia-page * {
+    visibility: visible;
+  }
+
+  .detalhe-conferencia-page {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    padding: 0;
+    color: #111827;
+    background: #ffffff;
+  }
+
+  .detalhe-conferencia-header,
+  .detalhe-conferencia-message,
+  .detalhe-conferencia-pagination,
+  .detalhe-conferencia-actions,
+  .detalhe-conferencia-table th:nth-child(5),
+  .detalhe-conferencia-table td:nth-child(5) {
+    display: none;
+  }
+
+  .detalhe-conferencia-marca-impressao {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 18px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #111827;
+    color: #111827;
+  }
+
+  .detalhe-conferencia-marca-impressao strong {
+    font-size: 20px;
+  }
+
+  .detalhe-conferencia-marca-impressao span {
+    color: #4b5563;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .detalhe-conferencia-cabecalho-impressao {
+    display: block;
+    margin-bottom: 16px;
+    color: #111827;
+  }
+
+  .detalhe-conferencia-cabecalho-impressao h1 {
+    margin: 0 0 6px;
+    font-size: 22px;
+  }
+
+  .detalhe-conferencia-cabecalho-impressao p {
+    margin: 0;
+    color: #4b5563;
+    font-size: 12px;
+  }
+
+  .detalhe-conferencia-summary {
+    width: 100%;
+    margin-bottom: 16px;
+    padding: 10px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    color: #374151;
+    background: #f9fafb;
+    box-sizing: border-box;
+  }
+
+  .detalhe-conferencia-summary strong {
+    color: #111827;
+  }
+
+  .detalhe-conferencia-card {
+    width: 100%;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: #ffffff;
+  }
+
+  .detalhe-conferencia-table-wrapper {
+    overflow: visible;
+  }
+
+  .detalhe-conferencia-table {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .detalhe-conferencia-table thead {
+    display: table-header-group;
+  }
+
+  .detalhe-conferencia-table tr {
+    break-inside: avoid;
+  }
+
+  .detalhe-conferencia-table th,
+  .detalhe-conferencia-table td {
+    padding: 8px 10px;
+    border-color: #d1d5db;
+    color: #1f2937;
+    font-size: 11px;
+  }
+
+  .detalhe-conferencia-table th {
+    color: #111827;
+    background: #f3f4f6;
+  }
+
+  .detalhe-conferencia-table input {
+    display: none;
+  }
+
+  .detalhe-conferencia-valor-impressao {
+    display: inline;
+  }
+
+  .divergencia-badge {
+    padding: 2px 6px;
+    border-color: #6b7280;
+    color: #111827;
+    background: transparent;
+  }
+
+  .detalhe-conferencia-linha-fora-pagina {
+    display: table-row;
   }
 }

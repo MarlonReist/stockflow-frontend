@@ -578,6 +578,22 @@
   height: 42px;
 }
 
+.ajustes-historico-filtros .ajustes-imprimir {
+  width: auto;
+  gap: 8px;
+  padding: 0 14px;
+  font-weight: 600;
+}
+
+.ajustes-marca-impressao,
+.ajustes-cabecalho-impressao {
+  display: none;
+}
+
+.ajustes-linha-fora-pagina {
+  display: none;
+}
+
 .ajustes-historico-tabela-wrapper {
   width: 100%;
   overflow-x: auto;
@@ -719,5 +735,123 @@
 
   .ajustes-card {
     padding: 16px;
+  }
+}
+
+@media print {
+  @page {
+    size: landscape;
+    margin: 12mm;
+  }
+
+  body * {
+    visibility: hidden;
+  }
+
+  .ajustes-historico,
+  .ajustes-historico * {
+    visibility: visible;
+  }
+
+  .ajustes-historico {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: #ffffff;
+    box-shadow: none;
+  }
+
+  .ajustes-historico-header,
+  .ajustes-historico-paginacao {
+    display: none;
+  }
+
+  .ajustes-marca-impressao {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 18px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #111827;
+    color: #111827;
+  }
+
+  .ajustes-marca-impressao strong {
+    font-size: 20px;
+  }
+
+  .ajustes-marca-impressao span {
+    color: #4b5563;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .ajustes-cabecalho-impressao {
+    display: block;
+    margin-bottom: 18px;
+    color: #111827;
+  }
+
+  .ajustes-cabecalho-impressao h1 {
+    margin: 0 0 6px;
+    font-size: 22px;
+  }
+
+  .ajustes-cabecalho-impressao p {
+    margin: 0;
+    color: #4b5563;
+    font-size: 12px;
+  }
+
+  .ajustes-historico-tabela-wrapper {
+    overflow: visible;
+  }
+
+  .ajustes-historico-tabela {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .ajustes-historico-tabela thead {
+    display: table-header-group;
+  }
+
+  .ajustes-historico-tabela tr {
+    break-inside: avoid;
+  }
+
+  .ajustes-historico-tabela th,
+  .ajustes-historico-tabela td {
+    padding: 7px 6px;
+    border-color: #d1d5db;
+    color: #1f2937;
+    font-size: 10px;
+  }
+
+  .ajustes-historico-tabela th {
+    background: #f3f4f6;
+    color: #111827;
+  }
+
+  .ajustes-historico-tabela .ajustes-motivo {
+    min-width: 0;
+  }
+
+  .ajustes-tipo-badge {
+    padding: 2px 5px;
+    border-color: #6b7280;
+    color: #111827;
+    background: transparent;
+  }
+
+  .ajustes-linha-fora-pagina {
+    display: table-row;
   }
 }

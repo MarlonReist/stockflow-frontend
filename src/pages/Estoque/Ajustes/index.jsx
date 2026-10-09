@@ -8,6 +8,7 @@ import {
   FiChevronsRight,
   FiRefreshCw,
   FiSearch,
+  FiPrinter,
 } from "react-icons/fi";
 import { listarAlmoxarifados } from "../../../services/almoxarifadoService";
 import { listarProdutos } from "../../../services/produtoService";
@@ -33,7 +34,10 @@ const Ajustes = () => {
   const abrirProdutos = () => {
     setBuscaProduto("");
     setPaginaProduto(1);
-    setProdutoSelecionado(produtos.find((produto) => String(produto.id) === formulario.produtoId) || null);
+    setProdutoSelecionado(
+      produtos.find((produto) => String(produto.id) === formulario.produtoId) ||
+        null,
+    );
     setMostrarProdutos(true);
   };
   const [paginaProduto, setPaginaProduto] = useState(1);
@@ -61,13 +65,17 @@ const Ajustes = () => {
 
   const carregarDados = async () => {
     try {
-      const [almoxarifadosResponse, produtosResponse, ajustesResponse, estoquesResponse] =
-        await Promise.all([
-          listarAlmoxarifados(),
-          listarProdutos(),
-          listarAjustes(),
-          listarAlmoxarifadosEstoque(),
-        ]);
+      const [
+        almoxarifadosResponse,
+        produtosResponse,
+        ajustesResponse,
+        estoquesResponse,
+      ] = await Promise.all([
+        listarAlmoxarifados(),
+        listarProdutos(),
+        listarAjustes(),
+        listarAlmoxarifadosEstoque(),
+      ]);
 
       setAlmoxarifados(almoxarifadosResponse.data);
       setProdutos(produtosResponse.data);
@@ -96,30 +104,47 @@ const Ajustes = () => {
     setFormulario((atual) => ({
       ...atual,
       [name]: value,
-      ...(name === "produtoId" ? {
-        produtoNome: produtos.find((produto) => String(produto.id) === value)?.nome || "",
-      } : {}),
+      ...(name === "produtoId"
+        ? {
+            produtoNome:
+              produtos.find((produto) => String(produto.id) === value)?.nome ||
+              "",
+          }
+        : {}),
     }));
   };
 
   const saldosProdutos = new Map();
   for (const estoque of estoques) {
-    if (Number(estoque.almoxarifadoId ?? estoque.almoxarifado?.id) === Number(formulario.almoxarifadoId)) {
+    if (
+      Number(estoque.almoxarifadoId ?? estoque.almoxarifado?.id) ===
+      Number(formulario.almoxarifadoId)
+    ) {
       const id = String(estoque.produtoId ?? estoque.produto?.id);
-      saldosProdutos.set(id, (saldosProdutos.get(id) || 0) + Number(estoque.saldo ?? estoque.quantidade ?? 0));
+      saldosProdutos.set(
+        id,
+        (saldosProdutos.get(id) || 0) +
+          Number(estoque.saldo ?? estoque.quantidade ?? 0),
+      );
     }
   }
-  const produtosFiltrados = produtos.map((produto) => ({
-    ...produto,
-    saldo: formulario.almoxarifadoId ? (saldosProdutos.get(String(produto.id)) || 0) : null,
-  })).filter((produto) => {
-    const termo = buscaProduto.trim().toLowerCase();
-    return (
-      !termo ||
-      String(produto.id).includes(termo) ||
-      String(produto.nome || "").toLowerCase().includes(termo)
-    );
-  });
+  const produtosFiltrados = produtos
+    .map((produto) => ({
+      ...produto,
+      saldo: formulario.almoxarifadoId
+        ? saldosProdutos.get(String(produto.id)) || 0
+        : null,
+    }))
+    .filter((produto) => {
+      const termo = buscaProduto.trim().toLowerCase();
+      return (
+        !termo ||
+        String(produto.id).includes(termo) ||
+        String(produto.nome || "")
+          .toLowerCase()
+          .includes(termo)
+      );
+    });
 
   const produtosOrdenados = [...produtosFiltrados].sort((a, b) => {
     const valorA = a[ordenacaoProduto.coluna] ?? "";
@@ -152,13 +177,18 @@ const Ajustes = () => {
 
   const indicadorOrdenacaoProduto = (coluna) => {
     if (ordenacaoProduto.coluna !== coluna) return null;
-    return ordenacaoProduto.direcao === "asc" ? <FiChevronUp /> : <FiChevronDown />;
+    return ordenacaoProduto.direcao === "asc" ? (
+      <FiChevronUp />
+    ) : (
+      <FiChevronDown />
+    );
   };
 
   const ajustesOrdenados = [...ajustes]
-    .filter((ajuste) =>
-      !filtroDataAjuste ||
-      String(ajuste.dataHora || "").slice(0, 10) === filtroDataAjuste,
+    .filter(
+      (ajuste) =>
+        !filtroDataAjuste ||
+        String(ajuste.dataHora || "").slice(0, 10) === filtroDataAjuste,
     )
     .sort((a, b) => {
       const valorA = a[ordenacaoAjuste.coluna] ?? "";
@@ -175,10 +205,10 @@ const Ajustes = () => {
     Math.ceil(ajustesOrdenados.length / ajustesPorPagina),
   );
   const paginaAjusteLimitada = Math.min(paginaAjuste, totalPaginasAjuste);
-  const ajustesPaginados = ajustesOrdenados.slice(
-    (paginaAjusteLimitada - 1) * ajustesPorPagina,
-    paginaAjusteLimitada * ajustesPorPagina,
-  );
+
+  const inicioPaginaAjuste = (paginaAjusteLimitada - 1) * ajustesPorPagina;
+
+  const fimPaginaAjuste = inicioPaginaAjuste + ajustesPorPagina;
 
   const ordenarAjustes = (coluna) => {
     setOrdenacaoAjuste((atual) =>
@@ -191,7 +221,11 @@ const Ajustes = () => {
 
   const indicadorOrdenacaoAjuste = (coluna) => {
     if (ordenacaoAjuste.coluna !== coluna) return null;
-    return ordenacaoAjuste.direcao === "asc" ? <FiChevronUp /> : <FiChevronDown />;
+    return ordenacaoAjuste.direcao === "asc" ? (
+      <FiChevronUp />
+    ) : (
+      <FiChevronDown />
+    );
   };
 
   const formatarDataHora = (dataHora) =>
@@ -199,6 +233,17 @@ const Ajustes = () => {
 
   const formatarTipoAjuste = (tipo) =>
     tipo === "AJUSTE_ENTRADA" ? "Entrada" : "Saída";
+
+  const handleImprimir = () => {
+    const tituloOriginal = document.title;
+
+    document.title = "Histórico de Ajustes de Estoque";
+    window.print();
+
+    setTimeout(() => {
+      document.title = tituloOriginal;
+    }, 500);
+  };
 
   const selecionarProduto = (produto) => {
     setFormulario((atual) => ({
@@ -224,7 +269,10 @@ const Ajustes = () => {
       return;
     }
 
-    if (!Number.isInteger(Number(formulario.quantidade)) || Number(formulario.quantidade) <= 0) {
+    if (
+      !Number.isInteger(Number(formulario.quantidade)) ||
+      Number(formulario.quantidade) <= 0
+    ) {
       setMensagem("Informe uma quantidade inteira maior que zero.");
       return;
     }
@@ -252,9 +300,11 @@ const Ajustes = () => {
       setMostrarProdutos(false);
 
       const dadosAtualizados = await carregarDados();
-      setMensagem(dadosAtualizados
-        ? "Ajuste criado com sucesso."
-        : "Ajuste criado com sucesso, mas não foi possível atualizar a listagem. Recarregue a página.");
+      setMensagem(
+        dadosAtualizados
+          ? "Ajuste criado com sucesso."
+          : "Ajuste criado com sucesso, mas não foi possível atualizar a listagem. Recarregue a página.",
+      );
     } catch (error) {
       setMensagem(
         error.response?.data?.message || "Não foi possível criar o ajuste.",
@@ -323,7 +373,12 @@ const Ajustes = () => {
                 value={formulario.produtoNome}
                 aria-label="Nome do produto; abrir seleção"
                 onClick={abrirProdutos}
-                onKeyDown={(event) => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); abrirProdutos(); } }}
+                onKeyDown={(event) => {
+                  if (event.key === "Enter" || event.key === " ") {
+                    event.preventDefault();
+                    abrirProdutos();
+                  }
+                }}
                 readOnly
               />
               <button
@@ -334,8 +389,6 @@ const Ajustes = () => {
                 <FiSearch />
               </button>
             </div>
-
-
           </div>
 
           <label>
@@ -367,6 +420,23 @@ const Ajustes = () => {
         </form>
       </section>
       <section className="ajustes-card ajustes-historico">
+        <div className="ajustes-marca-impressao">
+          <strong>StockFlow</strong>
+          <span>Relatório de Estoque</span>
+        </div>
+
+        <div className="ajustes-cabecalho-impressao">
+          <h1>Histórico de Ajustes de Estoque</h1>
+
+          <p>
+            Emitido em {new Date().toLocaleString("pt-BR")}
+            {" · "}
+            Data consultada:{" "}
+            {filtroDataAjuste
+              ? filtroDataAjuste.split("-").reverse().join("/")
+              : "Todas as datas"}
+          </p>
+        </div>
         <div className="ajustes-historico-header">
           <div>
             <h2>Histórico de ajustes</h2>
@@ -394,6 +464,15 @@ const Ajustes = () => {
             >
               <FiRefreshCw />
             </button>
+            <button
+              type="button"
+              className="ajustes-imprimir"
+              onClick={handleImprimir}
+              disabled={ajustesOrdenados.length === 0}
+            >
+              <FiPrinter />
+              Imprimir
+            </button>
           </div>
         </div>
 
@@ -401,25 +480,57 @@ const Ajustes = () => {
           <table className="ajustes-historico-tabela">
             <thead>
               <tr>
-                <th onClick={() => ordenarAjustes("id")}>ID {indicadorOrdenacaoAjuste("id")}</th>
-                <th onClick={() => ordenarAjustes("dataHora")}>Data {indicadorOrdenacaoAjuste("dataHora")}</th>
-                <th onClick={() => ordenarAjustes("tipo")}>Tipo {indicadorOrdenacaoAjuste("tipo")}</th>
-                <th onClick={() => ordenarAjustes("produtoNome")}>Produto {indicadorOrdenacaoAjuste("produtoNome")}</th>
-                <th onClick={() => ordenarAjustes("almoxarifadoNome")}>Almoxarifado {indicadorOrdenacaoAjuste("almoxarifadoNome")}</th>
-                <th onClick={() => ordenarAjustes("quantidade")}>Quantidade {indicadorOrdenacaoAjuste("quantidade")}</th>
-                <th onClick={() => ordenarAjustes("usuarioResponsavelNome")}>Responsável {indicadorOrdenacaoAjuste("usuarioResponsavelNome")}</th>
+                <th onClick={() => ordenarAjustes("id")}>
+                  ID {indicadorOrdenacaoAjuste("id")}
+                </th>
+                <th onClick={() => ordenarAjustes("dataHora")}>
+                  Data {indicadorOrdenacaoAjuste("dataHora")}
+                </th>
+                <th onClick={() => ordenarAjustes("tipo")}>
+                  Tipo {indicadorOrdenacaoAjuste("tipo")}
+                </th>
+
+                <th>Origem</th>
+
+                <th onClick={() => ordenarAjustes("produtoNome")}>
+                  Produto {indicadorOrdenacaoAjuste("produtoNome")}
+                </th>
+                <th onClick={() => ordenarAjustes("almoxarifadoNome")}>
+                  Almoxarifado {indicadorOrdenacaoAjuste("almoxarifadoNome")}
+                </th>
+                <th onClick={() => ordenarAjustes("quantidade")}>
+                  Quantidade {indicadorOrdenacaoAjuste("quantidade")}
+                </th>
+                <th onClick={() => ordenarAjustes("usuarioResponsavelNome")}>
+                  Responsável{" "}
+                  {indicadorOrdenacaoAjuste("usuarioResponsavelNome")}
+                </th>
                 <th>Motivo</th>
               </tr>
             </thead>
             <tbody>
-              {ajustesPaginados.map((ajuste) => (
-                <tr key={ajuste.id}>
+              {ajustesOrdenados.map((ajuste, indice) => (
+                <tr
+                  key={ajuste.id}
+                  className={
+                    indice < inicioPaginaAjuste || indice >= fimPaginaAjuste
+                      ? "ajustes-linha-fora-pagina"
+                      : ""
+                  }
+                >
                   <td>{ajuste.id}</td>
                   <td>{formatarDataHora(ajuste.dataHora)}</td>
                   <td>
-                    <span className={`ajustes-tipo-badge ${ajuste.tipo === "AJUSTE_ENTRADA" ? "entrada" : "saida"}`}>
+                    <span
+                      className={`ajustes-tipo-badge ${ajuste.tipo === "AJUSTE_ENTRADA" ? "entrada" : "saida"}`}
+                    >
                       {formatarTipoAjuste(ajuste.tipo)}
                     </span>
+                  </td>
+                  <td>
+                    {ajuste.conferenciaEstoqueId
+                      ? `Conferência #${ajuste.conferenciaEstoqueId}`
+                      : "Manual"}
                   </td>
                   <td>{ajuste.produtoNome}</td>
                   <td>{ajuste.almoxarifadoNome}</td>
@@ -428,9 +539,9 @@ const Ajustes = () => {
                   <td className="ajustes-motivo">{ajuste.motivo}</td>
                 </tr>
               ))}
-              {ajustesPaginados.length === 0 && (
+              {ajustesOrdenados.length === 0 && (
                 <tr>
-                  <td colSpan={8} className="ajustes-sem-registros">
+                  <td colSpan={9} className="ajustes-sem-registros">
                     Nenhum ajuste encontrado.
                   </td>
                 </tr>
@@ -440,105 +551,227 @@ const Ajustes = () => {
         </div>
 
         <div className="ajustes-historico-paginacao">
-          <button type="button" onClick={() => setPaginaAjuste(1)} disabled={paginaAjusteLimitada === 1}><FiChevronsLeft /></button>
-          <button type="button" onClick={() => setPaginaAjuste((pagina) => Math.max(1, pagina - 1))} disabled={paginaAjusteLimitada === 1}><FiChevronLeft /></button>
-          <button type="button" onClick={() => carregarDados()} title="Atualizar"><FiRefreshCw /></button>
-          <button type="button" onClick={() => setPaginaAjuste((pagina) => Math.min(totalPaginasAjuste, pagina + 1))} disabled={paginaAjusteLimitada === totalPaginasAjuste}><FiChevronRight /></button>
-          <button type="button" onClick={() => setPaginaAjuste(totalPaginasAjuste)} disabled={paginaAjusteLimitada === totalPaginasAjuste}><FiChevronsRight /></button>
+          <button
+            type="button"
+            onClick={() => setPaginaAjuste(1)}
+            disabled={paginaAjusteLimitada === 1}
+          >
+            <FiChevronsLeft />
+          </button>
+          <button
+            type="button"
+            onClick={() => setPaginaAjuste((pagina) => Math.max(1, pagina - 1))}
+            disabled={paginaAjusteLimitada === 1}
+          >
+            <FiChevronLeft />
+          </button>
+          <button
+            type="button"
+            onClick={() => carregarDados()}
+            title="Atualizar"
+          >
+            <FiRefreshCw />
+          </button>
+          <button
+            type="button"
+            onClick={() =>
+              setPaginaAjuste((pagina) =>
+                Math.min(totalPaginasAjuste, pagina + 1),
+              )
+            }
+            disabled={paginaAjusteLimitada === totalPaginasAjuste}
+          >
+            <FiChevronRight />
+          </button>
+          <button
+            type="button"
+            onClick={() => setPaginaAjuste(totalPaginasAjuste)}
+            disabled={paginaAjusteLimitada === totalPaginasAjuste}
+          >
+            <FiChevronsRight />
+          </button>
           <span>
-            {ajustesOrdenados.length ? (paginaAjusteLimitada - 1) * ajustesPorPagina + 1 : 0}
+            {ajustesOrdenados.length
+              ? (paginaAjusteLimitada - 1) * ajustesPorPagina + 1
+              : 0}
             {" - "}
-            {Math.min(paginaAjusteLimitada * ajustesPorPagina, ajustesOrdenados.length)}
-            {" / "}{ajustesOrdenados.length}
+            {Math.min(
+              paginaAjusteLimitada * ajustesPorPagina,
+              ajustesOrdenados.length,
+            )}
+            {" / "}
+            {ajustesOrdenados.length}
           </span>
         </div>
       </section>
-            {mostrarProdutos && (
-              <div className="ajustes-produto-overlay">
-                <div className="ajustes-produto-modal" role="dialog" aria-modal="true" aria-labelledby="ajustes-produtos-titulo" onKeyDown={(event) => { if (event.key === "Escape") setMostrarProdutos(false); }}>
-                  <div className="ajustes-produto-modal-header">
-                    <h2 id="ajustes-produtos-titulo">Produtos</h2>
-                    <button
-                      type="button"
-                      aria-label="Fechar seleção de produtos"
-                      onClick={() => setMostrarProdutos(false)}
-                    >
-                      ×
-                    </button>
-                  </div>
+      {mostrarProdutos && (
+        <div className="ajustes-produto-overlay">
+          <div
+            className="ajustes-produto-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="ajustes-produtos-titulo"
+            onKeyDown={(event) => {
+              if (event.key === "Escape") setMostrarProdutos(false);
+            }}
+          >
+            <div className="ajustes-produto-modal-header">
+              <h2 id="ajustes-produtos-titulo">Produtos</h2>
+              <button
+                type="button"
+                aria-label="Fechar seleção de produtos"
+                onClick={() => setMostrarProdutos(false)}
+              >
+                ×
+              </button>
+            </div>
 
-                  <div className="ajustes-produto-modal-toolbar">
-                    <input
-                      className="ajustes-produto-modal-busca"
-                      value={buscaProduto}
-                      onChange={(event) => {
-                        setBuscaProduto(event.target.value);
-                        setPaginaProduto(1);
-                      }}
-                      placeholder="Buscar por ID ou nome..."
-                      autoFocus
-                    />
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setBuscaProduto("");
-                        setPaginaProduto(1);
-                      }}
-                    >
-                      <FiRefreshCw />
-                    </button>
-                  <div className="ajustes-produto-paginacao">
-                    <button type="button" onClick={() => setPaginaProduto(1)} disabled={paginaProdutoLimitada === 1}><FiChevronsLeft /></button>
-                    <button type="button" onClick={() => setPaginaProduto((pagina) => Math.max(1, pagina - 1))} disabled={paginaProdutoLimitada === 1}><FiChevronLeft /></button>
-                    <span>{produtosOrdenados.length ? (paginaProdutoLimitada - 1) * produtosPorPagina + 1 : 0} - {Math.min(paginaProdutoLimitada * produtosPorPagina, produtosOrdenados.length)} / {produtosOrdenados.length}</span>
-                    <button type="button" onClick={() => setPaginaProduto((pagina) => Math.min(totalPaginasProduto, pagina + 1))} disabled={paginaProdutoLimitada === totalPaginasProduto}><FiChevronRight /></button>
-                    <button type="button" onClick={() => setPaginaProduto(totalPaginasProduto)} disabled={paginaProdutoLimitada === totalPaginasProduto}><FiChevronsRight /></button>
-                  </div>
-                  </div>
+            <div className="ajustes-produto-modal-toolbar">
+              <input
+                className="ajustes-produto-modal-busca"
+                value={buscaProduto}
+                onChange={(event) => {
+                  setBuscaProduto(event.target.value);
+                  setPaginaProduto(1);
+                }}
+                placeholder="Buscar por ID ou nome..."
+                autoFocus
+              />
+              <button
+                type="button"
+                onClick={() => {
+                  setBuscaProduto("");
+                  setPaginaProduto(1);
+                }}
+              >
+                <FiRefreshCw />
+              </button>
+              <div className="ajustes-produto-paginacao">
+                <button
+                  type="button"
+                  onClick={() => setPaginaProduto(1)}
+                  disabled={paginaProdutoLimitada === 1}
+                >
+                  <FiChevronsLeft />
+                </button>
+                <button
+                  type="button"
+                  onClick={() =>
+                    setPaginaProduto((pagina) => Math.max(1, pagina - 1))
+                  }
+                  disabled={paginaProdutoLimitada === 1}
+                >
+                  <FiChevronLeft />
+                </button>
+                <span>
+                  {produtosOrdenados.length
+                    ? (paginaProdutoLimitada - 1) * produtosPorPagina + 1
+                    : 0}{" "}
+                  -{" "}
+                  {Math.min(
+                    paginaProdutoLimitada * produtosPorPagina,
+                    produtosOrdenados.length,
+                  )}{" "}
+                  / {produtosOrdenados.length}
+                </span>
+                <button
+                  type="button"
+                  onClick={() =>
+                    setPaginaProduto((pagina) =>
+                      Math.min(totalPaginasProduto, pagina + 1),
+                    )
+                  }
+                  disabled={paginaProdutoLimitada === totalPaginasProduto}
+                >
+                  <FiChevronRight />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setPaginaProduto(totalPaginasProduto)}
+                  disabled={paginaProdutoLimitada === totalPaginasProduto}
+                >
+                  <FiChevronsRight />
+                </button>
+              </div>
+            </div>
 
-                  <div className="ajustes-produto-resultados">
-                    <table className="ajustes-produto-tabela">
-                    <thead><tr>
+            <div className="ajustes-produto-resultados">
+              <table className="ajustes-produto-tabela">
+                <thead>
+                  <tr>
                     <th>
-                      <button type="button" onClick={() => ordenarProdutos("id")}>
+                      <button
+                        type="button"
+                        onClick={() => ordenarProdutos("id")}
+                      >
                         ID {indicadorOrdenacaoProduto("id")}
                       </button>
-                    </th><th>
-                      <button type="button" onClick={() => ordenarProdutos("nome")}>
+                    </th>
+                    <th>
+                      <button
+                        type="button"
+                        onClick={() => ordenarProdutos("nome")}
+                      >
                         Nome {indicadorOrdenacaoProduto("nome")}
                       </button>
-                    </th><th>
-                      <button type="button" onClick={() => ordenarProdutos("saldo")}>
-                        Quantidade em estoque {indicadorOrdenacaoProduto("saldo")}
-                      </button>
-                    </th></tr></thead>
-                    <tbody>
-                    {produtosPaginados.map((produto) => (
-                      <tr
-                        className={produtoSelecionado?.id === produto.id ? "selected-row" : ""}
-                        key={produto.id}
-                        tabIndex={0}
-                        aria-selected={produtoSelecionado?.id === produto.id}
-                        onClick={() => setProdutoSelecionado(produto)}
-                        onDoubleClick={() => selecionarProduto(produto)}
-                        onKeyDown={(event) => { if (event.key === "Enter") selecionarProduto(produto); }}
+                    </th>
+                    <th>
+                      <button
+                        type="button"
+                        onClick={() => ordenarProdutos("saldo")}
                       >
-                        <td>{produto.id}</td>
-                        <td>{produto.nome}</td>
-                        <td>{produto.saldo === null ? "Selecione o almoxarifado" : produto.saldo.toLocaleString("pt-BR")}</td>
-                      </tr>
-                    ))}
-                    {produtosPaginados.length === 0 && <tr><td colSpan={3}>Nenhum produto encontrado.</td></tr>}
-                    </tbody></table>
-                  </div>
-                  <div className="ajustes-produto-footer">
-                    <button type="button" disabled={!produtoSelecionado} onClick={() => selecionarProduto(produtoSelecionado)}>Selecionar</button>
-                  </div>
-
-
-                </div>
-              </div>
-            )}
+                        Quantidade em estoque{" "}
+                        {indicadorOrdenacaoProduto("saldo")}
+                      </button>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {produtosPaginados.map((produto) => (
+                    <tr
+                      className={
+                        produtoSelecionado?.id === produto.id
+                          ? "selected-row"
+                          : ""
+                      }
+                      key={produto.id}
+                      tabIndex={0}
+                      aria-selected={produtoSelecionado?.id === produto.id}
+                      onClick={() => setProdutoSelecionado(produto)}
+                      onDoubleClick={() => selecionarProduto(produto)}
+                      onKeyDown={(event) => {
+                        if (event.key === "Enter") selecionarProduto(produto);
+                      }}
+                    >
+                      <td>{produto.id}</td>
+                      <td>{produto.nome}</td>
+                      <td>
+                        {produto.saldo === null
+                          ? "Selecione o almoxarifado"
+                          : produto.saldo.toLocaleString("pt-BR")}
+                      </td>
+                    </tr>
+                  ))}
+                  {produtosPaginados.length === 0 && (
+                    <tr>
+                      <td colSpan={3}>Nenhum produto encontrado.</td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+            <div className="ajustes-produto-footer">
+              <button
+                type="button"
+                disabled={!produtoSelecionado}
+                onClick={() => selecionarProduto(produtoSelecionado)}
+              >
+                Selecionar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
