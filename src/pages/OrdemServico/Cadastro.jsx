@@ -188,8 +188,10 @@ const CadastroOrdemServico = () => {
     ordem.status,
   );
   const clienteBloqueado = ordemSalva || modoEdicao;
+  const agendamentoEditavel =
+    modoEdicao && ["ABERTA", "AGENDADA"].includes(ordem.status);
   const colaboradorBloqueado =
-    ordemSalva || (modoEdicao && ordem.status !== "ABERTA");
+    ordemSalva || (modoEdicao && !agendamentoEditavel);
   const descricaoBloqueada = (ordemSalva && !modoEdicao) || ordemSomenteLeitura;
   const tipoOrdemServicoBloqueado =
     ordemSalva || (modoEdicao && ordem.status !== "ABERTA");
@@ -812,10 +814,15 @@ const CadastroOrdemServico = () => {
   };
 
   const handleAgendarOrdem = async () => {
-    if (!modoEdicao || ordem.status !== "ABERTA") {
-      mostrarMensagem("Apenas ordens abertas podem ser agendadas.", "erro");
+    if (!agendamentoEditavel) {
+      mostrarMensagem(
+        "Apenas ordens abertas ou agendadas podem ter o agendamento atualizado.",
+        "erro",
+      );
       return;
     }
+
+    const atualizandoAgendamento = ordem.status === "AGENDADA";
 
     const camposComErro = {};
 
@@ -869,7 +876,12 @@ const CadastroOrdemServico = () => {
       }));
 
       setCamposInvalidos({});
-      mostrarMensagem("Ordem de serviço agendada com sucesso.", "sucesso");
+      mostrarMensagem(
+        atualizandoAgendamento
+          ? "Agendamento atualizado com sucesso."
+          : "Ordem de serviço agendada com sucesso.",
+        "sucesso",
+      );
     } catch (error) {
       mostrarMensagem(
         error.response?.data?.message ||
@@ -1341,7 +1353,7 @@ const CadastroOrdemServico = () => {
                   name="dataAgendada"
                   value={ordem.dataAgendada}
                   onChange={handleChange}
-                  disabled={ordem.status !== "ABERTA"}
+                  disabled={!agendamentoEditavel}
                   className={camposInvalidos.dataAgendada ? "input-error" : ""}
                 />
               </div>
@@ -1461,14 +1473,20 @@ const CadastroOrdemServico = () => {
               </div>
             )}
             <div className="form-actions">
-              {modoEdicao && ordem.status === "ABERTA" && (
+              {agendamentoEditavel && (
                 <button
                   type="button"
                   className="schedule-order-button"
                   onClick={handleAgendarOrdem}
                   disabled={agendando}
                 >
-                  {agendando ? "Agendando..." : "Agendar OS"}
+                  {agendando
+                    ? ordem.status === "AGENDADA"
+                      ? "Atualizando..."
+                      : "Agendando..."
+                    : ordem.status === "AGENDADA"
+                      ? "Atualizar agendamento"
+                      : "Agendar OS"}
                 </button>
               )}
 
