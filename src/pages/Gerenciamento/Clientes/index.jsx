@@ -9,6 +9,7 @@ import {
   FiRefreshCw,
   FiChevronRight,
   FiChevronsRight,
+  FiWifi,
 } from "react-icons/fi";
 import "./Clientes.css";
 import {
@@ -16,12 +17,14 @@ import {
   deletarCliente,
 } from "../../../services/clientesService";
 import { useNavigate } from "react-router-dom";
+import RoteadorPrincipalModal from "./RoteadorPrincipalModal";
 
 const GerenciamentoClientes = () => {
   const [clientes, setClientes] = useState([]);
   const [mensagens, setMensagens] = useState([]);
   const [busca, setBusca] = useState("");
   const [clienteSelecionado, setClienteSelecionado] = useState(null);
+  const [clienteRoteador, setClienteRoteador] = useState(null);
   const [paginaAtual, setPaginaAtual] = useState(1);
 
   const [ordenacao, setOrdenacao] = useState({
@@ -29,6 +32,10 @@ const GerenciamentoClientes = () => {
     direcao: "asc",
   });
   const itensPorPagina = 10;
+  const usuarioLogado = JSON.parse(
+    localStorage.getItem("stockflow_usuario") || "{}",
+  );
+  const usuarioAdmin = usuarioLogado.perfil === "ADMIN";
 
   const navigate = useNavigate();
 
@@ -76,6 +83,15 @@ const GerenciamentoClientes = () => {
       mostrarMensagem(mensagemErro, "erro");
       setClienteSelecionado(null);
     }
+  };
+
+  const atualizarClienteNaLista = (clienteAtualizado) => {
+    setClientes((clientesAtuais) =>
+      clientesAtuais.map((cliente) =>
+        cliente.id === clienteAtualizado.id ? clienteAtualizado : cliente,
+      ),
+    );
+    setClienteRoteador(clienteAtualizado);
   };
 
   const clientesFiltrados = clientes.filter((cliente) => {
@@ -331,6 +347,17 @@ const GerenciamentoClientes = () => {
                     ))}
                 </span>
               </th>
+              <th onClick={() => handleOrdenar("modeloRoteadorPrincipal")}>
+                <span className="sortable-header">
+                  Roteador principal
+                  {ordenacao.coluna === "modeloRoteadorPrincipal" &&
+                    (ordenacao.direcao === "asc" ? (
+                      <FiChevronUp />
+                    ) : (
+                      <FiChevronDown />
+                    ))}
+                </span>
+              </th>
               <th>Ações</th>
             </tr>
           </thead>
@@ -364,6 +391,31 @@ const GerenciamentoClientes = () => {
                   <div className="endereco-cell">{cliente.endereco}</div>
                 </td>
                 <td>
+                  {cliente.modeloRoteadorPrincipal ? (
+                    <div className="roteador-cell">
+                      <strong>{cliente.modeloRoteadorPrincipal}</strong>
+                      <span>
+                        {cliente.propriedadeRoteadorPrincipal === "PROPRIO"
+                          ? "Próprio"
+                          : cliente.propriedadeRoteadorPrincipal === "COMODATO"
+                            ? "Comodato"
+                            : "Não informado"}
+                      </span>
+                    </div>
+                  ) : (
+                    <span className="roteador-nao-informado">Não informado</span>
+                  )}
+                </td>
+                <td>
+                  <button
+                    type="button"
+                    className="action-button router-button"
+                    onClick={() => setClienteRoteador(cliente)}
+                    title="Consultar roteador principal"
+                    aria-label={`Consultar roteador principal de ${cliente.nome}`}
+                  >
+                    <FiWifi />
+                  </button>
                   <button
                     type="button"
                     className="action-button edit-button"
@@ -414,6 +466,15 @@ const GerenciamentoClientes = () => {
             </div>
           </div>
         </div>
+      )}
+      {clienteRoteador && (
+        <RoteadorPrincipalModal
+          cliente={clienteRoteador}
+          podeAdministrar={usuarioAdmin}
+          onClose={() => setClienteRoteador(null)}
+          onAtualizado={atualizarClienteNaLista}
+          mostrarMensagem={mostrarMensagem}
+        />
       )}
     </div>
   );

@@ -62,6 +62,22 @@ const ConferenciaOSTab = ({
             <strong>{cliente?.telefone || "-"}</strong>
           </div>
 
+          <div>
+            <span>Roteador principal atual</span>
+            <strong>
+              {cliente?.modeloRoteadorPrincipal
+                ? `${cliente.modeloRoteadorPrincipal} — ${
+                    cliente.propriedadeRoteadorPrincipal === "PROPRIO"
+                      ? "Próprio"
+                      : cliente.propriedadeRoteadorPrincipal === "COMODATO"
+                        ? "Comodato"
+                        : "Propriedade não informada"
+                  }`
+                : "Não informado"}
+            </strong>
+            <small className="conferencia-os-current-note">Dado atual do cliente</small>
+          </div>
+
           <div className="conferencia-os-wide">
             <span>Endereço</span>
             <strong>{cliente?.endereco || "-"}</strong>

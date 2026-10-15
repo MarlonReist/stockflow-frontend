@@ -30,12 +30,50 @@ import AnexosOSTab from "./components/AnexosOSTab";
 import ProdutosOSTab from "./components/ProdutosOSTab";
 import ConferenciaOSTab from "./components/ConferenciaOSTab";
 
-const formatarDataHoraParaInput = (valor) => {
+const separarDataHoraLocal = (valor) => {
   if (!valor) {
-    return "";
+    return null;
   }
 
-  return String(valor).slice(0, 16);
+  const texto = String(valor);
+  const possuiFuso = /(?:Z|[+-]\d{2}:?\d{2})$/i.test(texto);
+
+  // Datas sem fuso representam o horário digitado pelo usuário. Já respostas
+  // ISO com Z ou offset representam um instante em UTC e precisam ser levadas
+  // para o horário local antes de serem exibidas em um datetime-local.
+  if (!possuiFuso) {
+    const [data, horario = ""] = texto.split("T");
+    const [ano, mes, dia] = data.split("-");
+
+    if (!ano || !mes || !dia) {
+      return null;
+    }
+
+    return { ano, mes, dia, horaMinuto: horario.slice(0, 5) };
+  }
+
+  const data = new Date(texto);
+
+  if (Number.isNaN(data.getTime())) {
+    return null;
+  }
+
+  const completar = (numero) => String(numero).padStart(2, "0");
+
+  return {
+    ano: String(data.getFullYear()),
+    mes: completar(data.getMonth() + 1),
+    dia: completar(data.getDate()),
+    horaMinuto: `${completar(data.getHours())}:${completar(data.getMinutes())}`,
+  };
+};
+
+const formatarDataHoraParaInput = (valor) => {
+  const partes = separarDataHoraLocal(valor);
+
+  return partes
+    ? `${partes.ano}-${partes.mes}-${partes.dia}T${partes.horaMinuto}`
+    : "";
 };
 
 const formatarDataHoraExibicao = (valor) => {
@@ -43,18 +81,15 @@ const formatarDataHoraExibicao = (valor) => {
     return "-";
   }
 
-  const [data, horario = ""] = String(valor).split("T");
-  const [ano, mes, dia] = data.split("-");
+  const partes = separarDataHoraLocal(valor);
 
-  if (!ano || !mes || !dia) {
+  if (!partes) {
     return "-";
   }
 
-  const horaMinuto = horario.slice(0, 5);
-
-  return horaMinuto
-    ? `${dia}/${mes}/${ano} ${horaMinuto}`
-    : `${dia}/${mes}/${ano}`;
+  return partes.horaMinuto
+    ? `${partes.dia}/${partes.mes}/${partes.ano} ${partes.horaMinuto}`
+    : `${partes.dia}/${partes.mes}/${partes.ano}`;
 };
 
 const formatarStatusOrdem = (status) => {
@@ -1205,6 +1240,28 @@ const CadastroOrdemServico = () => {
               </div>
             </div>
 
+            {ordem.clienteId && ordem.clienteNome && (
+              <div className="os-router-summary" aria-live="polite">
+                <span>Roteador principal atual do cliente</span>
+                <strong>
+                  {clienteDaOrdem?.modeloRoteadorPrincipal
+                    ? `${clienteDaOrdem.modeloRoteadorPrincipal} — ${
+                        clienteDaOrdem.propriedadeRoteadorPrincipal === "PROPRIO"
+                          ? "Próprio"
+                          : clienteDaOrdem.propriedadeRoteadorPrincipal === "COMODATO"
+                            ? "Comodato"
+                            : "Propriedade não informada"
+                      }`
+                    : "Não informado"}
+                </strong>
+                {modoEdicao && (
+                  <small>
+                    Informação atual do cliente; pode ser diferente do equipamento existente na data desta OS.
+                  </small>
+                )}
+              </div>
+            )}
+
             <div className="form-group">
               <label>Técnico responsável</label>
               <div
@@ -1280,6 +1337,7 @@ const CadastroOrdemServico = () => {
                 <input
                   ref={dataAgendadaInputRef}
                   type="datetime-local"
+                  lang="pt-BR"
                   name="dataAgendada"
                   value={ordem.dataAgendada}
                   onChange={handleChange}
